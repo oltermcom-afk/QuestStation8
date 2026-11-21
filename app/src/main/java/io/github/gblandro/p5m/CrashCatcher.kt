@@ -60,6 +60,7 @@ class P5MApp: Application()
 		}
 		// QS8: jednorazowy preset ekranu „Kino” przy pierwszym uruchomieniu (plan 1F).
 		try { io.github.gblandro.p5m.qs8.PresetKino.zastosujRaz(this) } catch(e: Throwable) { Log.e("P5MVR", "QS8 cinema preset failed", e) }
+		io.github.gblandro.p5m.qs8.Tlumaczenia.zainstaluj(this)  // QS8: wersja polska / angielska ekranów 2D.
 		val previous = Thread.getDefaultUncaughtExceptionHandler()
 		Thread.setDefaultUncaughtExceptionHandler { thread, error ->
 			try

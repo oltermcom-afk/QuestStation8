@@ -112,6 +112,7 @@ object PainelDeAjuste
 	fun desenhar(bitmap: Bitmap, atalho: String, tela: List<Linha>, imagem: List<Linha>,
 			outros: List<Linha>, medidores: List<Medidor>)
 	{
+		val tela = io.github.gblandro.p5m.qs8.Tlumaczenia.linie(tela); val imagem = io.github.gblandro.p5m.qs8.Tlumaczenia.linie(imagem); val outros = io.github.gblandro.p5m.qs8.Tlumaczenia.linie(outros); val medidores = io.github.gblandro.p5m.qs8.Tlumaczenia.odczyty(medidores)  // QS8: PL/EN.
 		val canvas = Canvas(bitmap)
 		canvas.drawColor(Color.TRANSPARENT, android.graphics.PorterDuff.Mode.CLEAR)
 		val w = bitmap.width.toFloat()
@@ -159,12 +160,13 @@ object PainelDeAjuste
 			textSize = 34f
 			typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
 		}
-		canvas.drawText("Screen settings", x, 78f, nomeDaTela)
-		x += nomeDaTela.measureText("Screen settings") + 32f
+		val ajustes = io.github.gblandro.p5m.qs8.Tlumaczenia.t("Screen settings")  // QS8: PL/EN.
+		canvas.drawText(ajustes, x, 78f, nomeDaTela)
+		x += nomeDaTela.measureText(ajustes) + 32f
 		canvas.drawCircle(x + 7f, 66f, 7f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = cor(Estado.ATENCAO) })
 		// O jogo nao pausa: so os botoes do painel deixam de ir ao console, e os
 		// analogicos ficam mudos. Dizer "pausado" seria prometer o que nao ha.
-		canvas.drawText("The game gets no input while this is open", x + 24f, 74f,
+		canvas.drawText(io.github.gblandro.p5m.qs8.Tlumaczenia.t("The game gets no input while this is open"), x + 24f, 74f,  // QS8: PL/EN.
 				Paint(Paint.ANTI_ALIAS_FLAG).apply { color = AVISO_TEXTO; textSize = 22f })
 
 		// QS8: skroty z przyciskami Questa obok PS5 (LegendaTouch rysuje tez kreske ponizej).
@@ -190,6 +192,7 @@ object PainelDeAjuste
 
 	private fun secao(canvas: Canvas, x0: Float, x1: Float, y: Float, texto: String)
 	{
+		val texto = io.github.gblandro.p5m.qs8.Tlumaczenia.t(texto)  // QS8: PL/EN.
 		val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 			color = CABECALHO
 			textSize = 17f
@@ -265,7 +268,7 @@ object PainelDeAjuste
 		val detalhe = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = CABECALHO; textSize = 17f }
 		if(lista.isEmpty())
 		{
-			canvas.drawText("No readings from this runtime", x0, TOPOS[0] + 40f, nome)
+			canvas.drawText(io.github.gblandro.p5m.qs8.Tlumaczenia.t("No readings from this runtime"), x0, TOPOS[0] + 40f, nome)  // QS8: PL/EN.
 			return
 		}
 		// Cinco cabem com o passo um pouco mais curto: o do controle (dev.216)
@@ -410,6 +413,7 @@ object PainelDeAjuste
 	fun faixa(bitmap: Bitmap, titulo: String, corTitulo: Int, linha1: String, linha2: String,
 			pilulaTitulo: Boolean = false)
 	{
+		val titulo = io.github.gblandro.p5m.qs8.Tlumaczenia.t(titulo); val linha1 = io.github.gblandro.p5m.qs8.Tlumaczenia.t(linha1); val linha2 = io.github.gblandro.p5m.qs8.Tlumaczenia.t(linha2)  // QS8: PL/EN.
 		val canvas = Canvas(bitmap)
 		canvas.drawColor(Color.TRANSPARENT, android.graphics.PorterDuff.Mode.CLEAR)
 		val w = bitmap.width.toFloat()

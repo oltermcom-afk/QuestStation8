@@ -38,7 +38,7 @@ object RejestracjaPsn
 	fun podepnij(activity: AppCompatActivity, binding: ActivityRegistBinding)
 	{
 		binding.broadcastCheckBox.isChecked = false
-		binding.pinTextInputLayout.helperText = POMOC_PIN
+		binding.pinTextInputLayout.helperText = Tlumaczenia.t(POMOC_PIN)
 		// Link z instrukcją chiaki-ng staje się przyciskiem logowania.
 		binding.psnAccountIdHelpURLTextView.autoLinkMask = 0
 		binding.psnAccountIdHelpURLTextView.movementMethod = null
@@ -63,9 +63,9 @@ object RejestracjaPsn
 
 		if(konto == null)
 		{
-			pomoc.text = "Sign in to PSN on this headset and the account ID fills in by itself. " +
-					"Use the account that will play here (for Home mode: the second account)."
-			link.text = "Sign in with PSN  ›"
+			pomoc.text = Tlumaczenia.t("Sign in to PSN on this headset and the account ID fills in by itself. " +
+					"Use the account that will play here (for Home mode: the second account).")
+			link.text = Tlumaczenia.t("Sign in with PSN  ›")
 			link.setOnClickListener { activity.startActivity(logowanie(activity)) }
 			if(wypelnione != null && obecne == wypelnione)
 				pole.setText("")
@@ -73,9 +73,9 @@ object RejestracjaPsn
 		}
 
 		val b64 = Base64.encodeToString(konto, Base64.NO_WRAP)
-		pomoc.text = "Account ID filled in from the PSN account signed in on this headset " +
-				"(account number ${numer(konto)})."
-		link.text = "Use a different PSN account  ›"
+		pomoc.text = Tlumaczenia.t("Account ID filled in from the PSN account signed in on this headset " +
+				"(account number ${numer(konto)}).")
+		link.text = Tlumaczenia.t("Use a different PSN account  ›")
 		link.setOnClickListener {
 			// Jak „Sign out” w PsnRemoteActivity: tokeny i ciasteczka Sony, żeby strona nie zalogowała z pamięci.
 			PsnAuth.forget(activity)

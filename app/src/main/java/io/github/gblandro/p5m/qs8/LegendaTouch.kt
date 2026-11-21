@@ -98,8 +98,9 @@ object LegendaTouch
 		val dica = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = SZARY; textSize = 22f; textAlign = Paint.Align.RIGHT }
 		var x = w - 52f
 		val cy = 66f
-		fun tekst(t: String)
+		fun tekst(en: String)
 		{
+			val t = Tlumaczenia.t(en)
 			canvas.drawText(t, x, 74f, dica)
 			x -= dica.measureText(t) + 14f
 		}
@@ -146,10 +147,11 @@ object LegendaTouch
 		if(padPrzyQuescie)
 		{
 			xTytulu = x + rzadOdLewej(canvas, listOf(Element.Ps(PainelDeAjuste.Botao.Nome(akord))), x, cy, 24f) + 16f
-			canvas.drawText("or", xTytulu, r.top + 66f, zwykly)
-			xTytulu += zwykly.measureText("or") + 16f
+			val lub = Tlumaczenia.t("or")
+			canvas.drawText(lub, xTytulu, r.top + 66f, zwykly)
+			xTytulu += zwykly.measureText(lub) + 16f
 			xTytulu += rzadOdLewej(canvas, listOf(Element.Menu), xTytulu, cy, 24f) + 20f
-			canvas.drawText("opens the settings panel", xTytulu, r.top + 68f, tytul)
+			canvas.drawText(Tlumaczenia.t("opens the settings panel"), xTytulu, r.top + 68f, tytul)
 			linie = listOf(
 				"The menu button on the left Quest controller works too. Same button closes the panel.",
 				"Move, resize and sharpen the screen, and click the touchpad.")
@@ -157,14 +159,16 @@ object LegendaTouch
 		else
 		{
 			xTytulu = x + rzadOdLewej(canvas, listOf(Element.Menu), x, cy, 24f) + 20f
-			canvas.drawText("on the left Quest controller opens the settings panel", xTytulu, r.top + 68f, tytul)
+			canvas.drawText(Tlumaczenia.t("on the left Quest controller opens the settings panel"), xTytulu, r.top + 68f, tytul)
 			linie = listOf(
 				"Home mode: your PS5 controller is connected to the console, as it should be.",
-				"With a controller paired to the Quest instead, $akord opens the panel too.")
+				if(Tlumaczenia.polski) "Gdy pad jest sparowany z Questem, panel otwiera też $akord."
+				else "With a controller paired to the Quest instead, $akord opens the panel too.")
 		}
 		var y = r.top + 120f
-		for(linia in linie)
+		for(en in linie)
 		{
+			val linia = Tlumaczenia.t(en)
 			val p = Paint(zwykly).apply { textSize = 27f }
 			while(p.textSize > 18f && p.measureText(linia) > r.width() - 96f)
 				p.textSize -= 1f
