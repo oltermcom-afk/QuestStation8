@@ -288,9 +288,9 @@ class LauncherActivity: Activity()
 						+ "the tools for testing the controller and the video path.") {
 			launch(Intent(this, DiagnosticActivity::class.java), "diagnostics")
 		})
+		// QS8: opis wyłącznika zgodny z aktualizacjami z release „dev” forka.
 		coluna.addView(linha("Check for updates", { liga(Atualizacao.ligado(this)) }, {
-			"Looks for a new public release on GitHub when P5M opens, at most every six " +
-					"hours. Downloading is up to you: the button opens the APK in the browser."
+			io.github.gblandro.p5m.qs8.AktualizacjeDev.OPIS_WYLACZNIKA
 		}) {
 			Atualizacao.definirLigado(this, !Atualizacao.ligado(this))
 			Log.i(TAG, "Check for updates: ${Atualizacao.ligado(this)}")
@@ -328,8 +328,8 @@ class LauncherActivity: Activity()
 		cartao.background = null
 		val oferta = Atualizacao.oferta(this) ?: return
 		cartao.addView(TextView(this).apply {
-			text = "P5M ${oferta.versao} is available. You have ${versionName()}. " +
-					"Update downloads it and opens the installer."
+			// QS8: karta mówi, co to za build (numer, gałąź/PR, tytuł commita).
+			text = io.github.gblandro.p5m.qs8.AktualizacjeDev.tekstKarty(context, oferta.versao, versionName())
 			setTextColor(Estilo.DESTAQUE)
 			setTextSize(TypedValue.COMPLEX_UNIT_SP, Estilo.TAM_APOIO)
 			setPadding(dp(18), dp(14), dp(18), dp(8))

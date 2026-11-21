@@ -36,7 +36,8 @@ object Atualizacao
 	private const val KEY_OFERTA = "offered-version"
 	private const val KEY_URL = "offered-url"
 	private const val KEY_LIGADO = "check-for-updates"
-	private const val INTERVALO_MS = 6 * 60 * 60 * 1000L
+	// QS8: buildy dev pojawiają się często; 15 min to wciąż daleko od limitu 60 zapytań/h bez konta.
+	private const val INTERVALO_MS = 15 * 60 * 1000L
 
 	@Volatile private var consultando = false
 
@@ -87,7 +88,8 @@ object Atualizacao
 			try
 			{
 				val instalada = versaoInstalada(app)
-				val melhor = buscarMaisNova()
+				// QS8: oferta z release „dev” forka zamiast z wydań z tagiem (buscarMaisNova zostaje dla merge'u).
+				val melhor = io.github.gblandro.p5m.qs8.AktualizacjeDev.buscar(app)
 				p.edit().putLong(KEY_ULTIMA, System.currentTimeMillis()).apply()
 				when
 				{
@@ -159,8 +161,9 @@ object Atualizacao
 	}
 
 	/** null quando não dá para saber; false nas builds -dev e locais. */
+	// QS8: buildy -dev też dostają ofertę (QS8 wydaje tylko buildy dev); lokalne nadal nie.
 	private fun publica(versao: String): Boolean? =
-		if(versao.isEmpty()) null else !(versao.contains("-dev") || versao.endsWith("-local"))
+		if(versao.isEmpty()) null else !versao.endsWith("-local")
 
 	private fun versaoInstalada(context: Context): String = try
 	{

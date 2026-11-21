@@ -18,9 +18,20 @@ class Qs8Prefs(context: Context)
 		get() = prefs.getBoolean(KLUCZ_PRESET_KINO, false)
 		set(value) { prefs.edit().putBoolean(KLUCZ_PRESET_KINO, value).apply() }
 
+	/** Opis ostatnio znalezionego builda z release „dev” (dla karty aktualizacji), razem z jego wersją. */
+	fun opisAktualizacji(wersja: String): String? =
+		if(prefs.getString(KLUCZ_AKT_WERSJA, null) == wersja) prefs.getString(KLUCZ_AKT_OPIS, null) else null
+
+	fun zapiszOpisAktualizacji(wersja: String, opis: String)
+	{
+		prefs.edit().putString(KLUCZ_AKT_WERSJA, wersja).putString(KLUCZ_AKT_OPIS, opis).apply()
+	}
+
 	companion object
 	{
 		private const val PLIK = "qs8_prefs"
 		private const val KLUCZ_PRESET_KINO = "preset_kino_rozstrzygniety"
+		private const val KLUCZ_AKT_WERSJA = "aktualizacja_wersja"
+		private const val KLUCZ_AKT_OPIS = "aktualizacja_opis"
 	}
 }
