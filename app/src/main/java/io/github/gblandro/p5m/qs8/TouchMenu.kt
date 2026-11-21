@@ -146,7 +146,7 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 
 		/** Przyciski są przy każdym wierszu (LegendaTouch); tu tylko, co znaczą skróty i czego Quest nie robi. */
 		private const val LEGENDA = "Quest / PS5 controller  ·  LT RT  Quest triggers  ·  Grip  grip buttons  ·  " +
-				"stick: either one, L / R: press the stick  ·  hold A / ✕: size 1:1 pixel  ·  " +
+				"stick: either one, L / R: press the stick  ·  hold A / ✕: size 1:1 pixel  ·  hold X / □: original / enhanced  ·  " +
 				"triggers, touchpad: PS5 only"
 
 		/**
