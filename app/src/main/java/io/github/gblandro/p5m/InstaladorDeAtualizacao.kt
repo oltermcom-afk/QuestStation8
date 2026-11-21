@@ -53,7 +53,8 @@ object InstaladorDeAtualizacao
 			Trace.log(activity, "Update: asking for permission to install apps")
 			activity.startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
 					Uri.parse("package:${activity.packageName}")))
-			fim("Allow P5M to install apps, then select Update again.")
+			// QS8: na Queście są obie aplikacje; zgodę daje się QuestStation8.
+			fim("Allow QuestStation8 to install apps, then select Update again.")
 			return
 		}
 		baixando = true
