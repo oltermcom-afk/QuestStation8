@@ -2,6 +2,7 @@
 #include "xr_session.h"
 #include "spatializer.h"
 #include "log.h"
+#include "qs8_touch.h"  // QS8: kontrolery Questa -> panel ustawien (plan 1B).
 
 #include <chrono>
 #include <algorithm>
@@ -463,6 +464,7 @@ bool XrVideoSession::Create(JavaVM *vm, jobject activity)
 	space_info.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_VIEW;
 	XR_CHECK(instance_, xrCreateReferenceSpace(session_, &space_info, &view_space_),
 			"xrCreateReferenceSpace(VIEW)");
+	qs8::TouchCreate(instance_, session_);  // QS8: action set kontrolerow Touch (blad nie jest fatalny).
 
 	// O app nao renderiza geometria, entao em tese nao precisa saber nada sobre
 	// as views. Mas todo app OpenXR faz este handshake, e um runtime pode muito
@@ -2107,6 +2109,7 @@ void XrVideoSession::RenderFrame()
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		return;
 	}
+	qs8::TouchSync(session_);  // QS8: stan kontrolerow Touch raz na klatke.
 
 	XrFrameBeginInfo begin_info{XR_TYPE_FRAME_BEGIN_INFO};
 	XrResult begin_res = xrBeginFrame(session_, &begin_info);
@@ -2670,6 +2673,7 @@ void XrVideoSession::Destroy()
 	app_space_ = XR_NULL_HANDLE;
 	view_space_ = XR_NULL_HANDLE;
 
+	qs8::TouchDestroy();  // QS8: action set kontrolerow Touch.
 	if(session_ != XR_NULL_HANDLE)
 		xrDestroySession(session_);
 	session_ = XR_NULL_HANDLE;
