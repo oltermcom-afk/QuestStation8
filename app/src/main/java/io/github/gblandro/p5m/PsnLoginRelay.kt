@@ -174,7 +174,7 @@ class PsnLoginRelay(private val context: Context)
 	private fun pageHome() = page("""
 		<h1>Sign in to PSN</h1>
 		<p class="sub">You are on your phone. The sign-in happens here, where your
-		passkey works with one tap, and P5M receives only the result.</p>
+		passkey works with one tap, and ${io.github.gblandro.p5m.qs8.Marka.NAZWA} receives only the result.</p>
 
 		<div class="passo">
 			<span class="n">1</span>
@@ -227,7 +227,7 @@ class PsnLoginRelay(private val context: Context)
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>P5M — sign in to PSN</title>
+<title>${io.github.gblandro.p5m.qs8.Marka.NAZWA} — sign in to PSN</title>
 <style>
   :root { color-scheme: dark; }
   body { margin:0; padding:24px; background:#101014; color:#e8eaed;

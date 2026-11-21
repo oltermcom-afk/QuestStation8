@@ -474,7 +474,7 @@ class DiagnosticActivity: Activity()
 			else -> buildString {
 				if(ours.isNotEmpty())
 				{
-					append("--- P5M ---\n")
+					append("--- ${io.github.gblandro.p5m.qs8.Marka.NAZWA} ---\n")  // QS8: nazwa aplikacji.
 					append(ours.takeLast(MAX_MARK_LINES).joinToString("\n"))
 					append("\n\n")
 				}
@@ -556,7 +556,7 @@ class DiagnosticActivity: Activity()
 	private fun clipboard(text: String, message: String)
 	{
 		val manager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-		manager.setPrimaryClip(ClipData.newPlainText("P5M diagnostics", text))
+		manager.setPrimaryClip(ClipData.newPlainText("${io.github.gblandro.p5m.qs8.Marka.NAZWA} diagnostics", text))  // QS8: nazwa aplikacji.
 		Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 	}
 
@@ -579,7 +579,7 @@ class DiagnosticActivity: Activity()
 			val intent = Intent(Intent.ACTION_SEND).apply {
 				type = "text/plain"
 				putExtra(Intent.EXTRA_STREAM, uri)
-				putExtra(Intent.EXTRA_SUBJECT, "P5M — diagnostics")
+				putExtra(Intent.EXTRA_SUBJECT, "${io.github.gblandro.p5m.qs8.Marka.NAZWA} — diagnostics")  // QS8: nazwa aplikacji.
 				addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 			}
 			startActivity(Intent.createChooser(intent, "Send diagnostics"))

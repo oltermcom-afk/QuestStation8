@@ -48,7 +48,7 @@
         android:name="io.github.gblandro.p5m.P5MApp"
         android:allowBackup="false"
         android:networkSecurityConfig="@xml/p5m_network_security"
-        android:icon="@mipmap/ic_p5m"
+        android:icon="@mipmap/ic_qs8"
         android:label="QuestStation8"
         android:isGame="true"
         android:banner="@mipmap/atv_banner"
@@ -187,7 +187,7 @@
              o tema do chiaki, para nao herdar os modos de falha que investiga. -->
         <activity
             android:name="io.github.gblandro.p5m.DiagnosticActivity"
-            android:label="P5M Diagnostics"
+            android:label="QuestStation8 Diagnostics"
             android:exported="false"
             android:theme="@android:style/Theme.Material"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
@@ -204,7 +204,7 @@
              concorrer para ser a entrada do app. -->
         <activity
             android:name="io.github.gblandro.p5m.BancoDeEnsaioActivity"
-            android:label="P5M — test bench"
+            android:label="QuestStation8 — test bench"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
@@ -220,7 +220,7 @@
              no Horizon OS nao recriar a activity no meio de uma medicao. -->
         <activity
             android:name="io.github.gblandro.p5m.StickCalibrationActivity"
-            android:label="P5M — stick calibration"
+            android:label="QuestStation8 — stick calibration"
             android:exported="false"
             android:theme="@android:style/Theme.Material"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
@@ -234,7 +234,7 @@
              e o caminho que enderaca o console pela conta em vez de pelo IP. -->
         <activity
             android:name="io.github.gblandro.p5m.PsnRemoteActivity"
-            android:label="P5M — remote connection"
+            android:label="QuestStation8 — remote connection"
             android:exported="false"
             android:theme="@android:style/Theme.Material"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">

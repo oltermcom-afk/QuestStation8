@@ -864,7 +864,7 @@ class VrStreamActivity: ComponentActivity()
 	private fun showMessage(message: String)
 	{
 		setContentView(TextView(this).apply {
-			text = "P5M\n\n$message"
+			text = "${io.github.gblandro.p5m.qs8.Marka.NAZWA}\n\n$message"  // QS8: nazwa aplikacji.
 			setTextColor(Color.WHITE)
 			setBackgroundColor(Color.parseColor("#101014"))
 			setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)

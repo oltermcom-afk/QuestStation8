@@ -177,7 +177,7 @@ class LogServer(context: Context)
 			path.startsWith("/timing") -> filtrar(context, "timing:")
 			path.startsWith("/tail") -> ultimas(context, 120)
 			else -> buildString {
-				append("=== P5M — diagnostics ===\n\n")
+				append("=== ${io.github.gblandro.p5m.qs8.Marka.NAZWA} — diagnostics ===\n\n")  // QS8: nazwa aplikacji.
 				P5MApp.lastCrash(context)?.let {
 					append("--- last crash ---\n").append(it).append("\n\n")
 				}
@@ -338,7 +338,7 @@ class LogServer(context: Context)
 			return
 		val nsd = context.getSystemService(Context.NSD_SERVICE) as? android.net.nsd.NsdManager ?: return
 		val info = android.net.nsd.NsdServiceInfo().apply {
-			serviceName = "P5M Quest"
+			serviceName = io.github.gblandro.p5m.qs8.Marka.NAZWA  // QS8: nazwa widoczna w sieci lokalnej.
 			serviceType = "_p5m._tcp"
 			port = PORT
 		}

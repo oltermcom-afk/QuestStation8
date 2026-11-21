@@ -297,7 +297,11 @@ class LauncherActivity: Activity()
 			preencherCartaoDeVersao()
 			Atualizacao.consultar(this) { runOnUiThread { preencherCartaoDeVersao() } }
 		})
-		coluna.addView(navegacao("Support development on Patreon",
+		// QS8: skąd pochodzi QuestStation8 (AGPL-3.0) — link do P5M; wsparcie autora P5M niżej bez zmian.
+		coluna.addView(navegacao(io.github.gblandro.p5m.qs8.Marka.P5M_ROTULO, io.github.gblandro.p5m.qs8.Marka.P5M_OPIS) {
+			abrir(io.github.gblandro.p5m.qs8.Marka.P5M_REPO, "P5M repository")
+		})
+		coluna.addView(navegacao("Support P5M development on Patreon",  // QS8: wsparcie autora P5M, nie QS8.
 				"P5M is free and the source is open. If it is useful to you, chipping in "
 						+ "pays for the hours that keep it moving.") {
 			abrir(PATREON_URL, "Patreon")
