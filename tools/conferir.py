@@ -53,8 +53,11 @@ def manifesto():
 def jni():
     print("Assinaturas JNI")
     kt = {}
-    for f in glob.glob(os.path.join(ROOT, "app/src/main/java/io/github/gblandro/p5m/*.kt")):
-        classe = os.path.basename(f)[:-3]
+    # QS8: klasy z qs8/ tez; ich nazwa JNI ma prefiks pakietu "qs8_".
+    kt_pliki = [(f, "") for f in glob.glob(os.path.join(ROOT, "app/src/main/java/io/github/gblandro/p5m/*.kt"))]
+    kt_pliki += [(f, "qs8_") for f in glob.glob(os.path.join(ROOT, "app/src/main/java/io/github/gblandro/p5m/qs8/*.kt"))]
+    for f, prefiks in kt_pliki:
+        classe = prefiks + os.path.basename(f)[:-3]
         src = open(f, encoding="utf-8").read()
         for m in re.finditer(r"external fun (\w+)\(([^)]*)\)", src, re.S):
             n = len([p for p in m.group(2).split(",") if p.strip()])

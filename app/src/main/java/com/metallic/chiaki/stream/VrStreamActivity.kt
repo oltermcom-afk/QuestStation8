@@ -459,6 +459,8 @@ class VrStreamActivity: ComponentActivity()
 	{
 		super.onCreate(savedInstanceState)
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		// QS8: kontrolery Questa -> tylko panel ustawien (plan 1B), przez qs8TouchKey.
+		lifecycle.addObserver(io.github.gblandro.p5m.qs8.TouchMenu { qs8TouchKey(it) })
 
 		Log.i(TAG, "VrStreamActivity.onCreate action=${intent?.action} " +
 				"categories=${intent?.categories} temConnectInfo=" +
@@ -1757,6 +1759,40 @@ class VrStreamActivity: ComponentActivity()
 		return true
 	}
 
+	/**
+	 * QS8 (plan 1B): klawisz z kontrolera Questa (qs8/TouchMenu). Trafia tylko do
+	 * panelu i klawiatury PIN-u, nigdy do StreamInput: puszczen (UP) nie podajemy
+	 * do handleAdjustKey, handleQuitHold ani teclaNoPin, bo te przekazuja UP konsoli,
+	 * a menu przelacza panel bez releaseChordButtons (ta wysyla stan pada do konsoli).
+	 */
+	private fun qs8TouchKey(event: KeyEvent)
+	{
+		val down = event.action == KeyEvent.ACTION_DOWN
+		val b = event.keyCode == KeyEvent.KEYCODE_BUTTON_B
+		val pin = tecladoPin
+		when
+		{
+			pin != null -> if(down) teclaNoPin(pin, event) else if(b) handler.removeCallbacks(pinQuitTick)
+			event.keyCode == KeyEvent.KEYCODE_MENU -> if(down && event.repeatCount == 0)
+			{
+				adjustMode = !adjustMode
+				trace(if(adjustMode) "Tuning mode on (Quest controller)" else "Tuning mode off (Quest controller)")
+				handler.removeCallbacks(holdTick)
+			}
+			!adjustMode -> {}
+			down -> handleAdjustKey(event)
+			b ->
+			{
+				handler.removeCallbacks(quitTick)
+				if(quitArmed)
+				{
+					quitArmed = false
+					adjustMode = false
+				}
+			}
+		}
+	}
+
 	private val quitTick = Runnable {
 		quitArmed = false
 		trace("Ending the session from the tuning panel")
@@ -2373,6 +2409,7 @@ class VrStreamActivity: ComponentActivity()
 
 		PainelDeAjuste.desenhar(bitmap, StreamQualityPrefs.CHORD_NAMES[qualityPrefs.tuningChord].uppercase(),
 				tela, imagem, outros, medidores())
+		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap)  // QS8: legenda kontrolerow Questa (plan 1B).
 		xr?.setHudBitmap(bitmap)
 	}
 
