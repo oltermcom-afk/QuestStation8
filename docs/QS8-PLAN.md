@@ -63,22 +63,49 @@ w Trybie domowym i mobilnym, aktualizacja do kolejnego buildu bez utraty rejestr
   źródło w `CMakeLists.txt`.
 - Kotlin `qs8/TouchMenu.kt`: zbocza → syntetyczne `KeyEvent`: thumbstick → `DPAD_*`
   (z `repeatCount` przy trzymaniu), A → `BUTTON_A`, B → `BUTTON_B` (trzymanie = koniec
-  sesji), X → `BUTTON_X`, Y → `BUTTON_Y`, gripy → `L1`/`R1`, ≡ → `toggleAdjustMode()`.
+  sesji), X → `BUTTON_X`, Y → `BUTTON_Y`, gripy → `L1`/`R1`, triggery → `L2`/`R2`
+  (kształt ekranu płaski/zakrzywiony i stopień krzywizny), ≡ → `toggleAdjustMode()`.
+- Mapowanie pokazać w panelu jako legendę dla kontrolerów Questa (Tryb domowy).
 - **Krytyczne:** zdarzenia idą WYŁĄCZNIE do `toggleAdjustMode`, `handleAdjustKey`,
   `handleQuitHold`, `teclaNoPin` (`VrStreamActivity.kt` ~l.1699–1790) przez jedną nową
   metodę `qs8TouchKey(event)`. Nigdy do `dispatchKeyEvent`/`StreamInput` — inaczej
   kontroler Questa sterowałby konsolą jako gracz 2.
 - Odpytywanie na istniejącym zegarze aktywności lub wątku tła, nie blokująco na głównym.
 
-### 1E. Rejestracja jak w Asobi
-- Na ekranie rejestracji (`external/chiaki-ng/android/.../regist/RegistActivity.kt`,
-  zmiana przez nowy plik w `patches/`) przycisk „Zaloguj przez PSN” → istniejący
-  przepływ `PsnAuth`/`PsnRemoteActivity` → pole Account ID wypełnia się
-  `Base64.encodeToString(PsnAuth.accountId(ctx), NO_WRAP)`. Logika w `qs8/RejestracjaPsn.kt`.
-- Wskazówka: „PIN wygeneruj na PS5 na koncie, na które się logujesz”.
-- Możliwość przelogowania na inne konto.
-- „Broadcast” domyślnie odznaczony. Poprawkę portu w libchiaki robić tylko, jeśli
-  patch `0053` ani aktualny upstream jej nie zawiera.
+### 1E. Rejestracja jak w Asobi — bez Maca, bez ręcznego Account ID
+Cel: użytkownik loguje się do PSN w goglach i konsola rejestruje się sama.
+
+Co już istnieje:
+- `PsnRemoteActivity.kt`: logowanie Sony w WebView w goglach, przekierowanie z kodem
+  przechwytywane automatycznie (`shouldOverrideUrlLoading`); dla kont z passkey
+  (bez hasła) awaryjnie `PsnLoginRelay.kt` — logowanie na telefonie przez adres w LAN.
+  Po zalogowaniu `PsnAuth.accountId(ctx)` zwraca 8-bajtowy ID.
+- libchiaki ma **rejestrację przez PSN bez PIN-u** (`session.c`: `auto_regist`,
+  zdarzenie `CHIAKI_EVENT_REGIST` z `ChiakiRegisteredHost`; tak robi chiaki-ng desktop:
+  `gui/src/qmlbackend.cpp` → `QmlBackend::autoRegister` / `finishAutoRegister`).
+  Port Androida (P5M) tego nie wystawia — brak `auto_regist` w JNI i Kotlinie.
+
+Krok 1E-1 (mały, najpierw):
+- Ekran rejestracji (`external/chiaki-ng/android/.../regist/RegistActivity.kt`, zmiana
+  przez nowy plik w `patches/`): jeśli użytkownik jest zalogowany do PSN — pole Account ID
+  wypełnione automatycznie `Base64.encodeToString(PsnAuth.accountId(ctx), NO_WRAP)`;
+  jeśli nie — przycisk „Zaloguj przez PSN” → istniejący przepływ z `PsnRemoteActivity`
+  → powrót z wypełnionym polem. Logika w `qs8/RejestracjaPsn.kt`.
+- Wskazówka przy PIN-ie: „PIN wygeneruj na PS5 na koncie, na które się logujesz”.
+- „Broadcast” domyślnie odznaczony. Poprawkę portu w libchiaki tylko, jeśli patch `0053`
+  ani aktualny upstream jej nie zawiera.
+
+Krok 1E-2 (docelowo, jak w Asobi — bez PIN-u):
+- Wystawić `auto_regist` przez JNI (patch w `external/chiaki-ng/android/app/src/main/cpp`)
+  i obsłużyć `CHIAKI_EVENT_REGIST` → zapis hosta w istniejącej bazie konsol P5M.
+- Przepływ: „Zaloguj przez PSN” → lista konsol z konta → „Połącz” → rejestracja
+  automatyczna przy pierwszym połączeniu. PIN zostaje jako opcja awaryjna.
+- Najpierw przeczytać i opisać, jak robi to chiaki-ng desktop, potem zaproponować
+  Damianowi minimalny zakres. Działanie wymaga testu na Queście (dla PS5; dla PS4
+  Sony pozwala tylko na konsolę główną konta).
+
+- Oba kroki: możliwość wylogowania i zalogowania na inne konto (drugie konto PSN do
+  Trybu domowego), z czytelną informacją, które konto jest aktywne.
 
 ### 1C. Tryb domowy jako tryb, nie błąd
 - `qs8/Qs8Prefs.kt`: `trybDomowy` (domyślnie false). Przy false — zero zmian zachowania.
@@ -86,6 +113,22 @@ w Trybie domowym i mobilnym, aktualizacja do kolejnego buildu bez utraty rejestr
   diagnostyka) i przypomnienia o L3+R3 (~l.112) — „Menu: przycisk ≡ na lewym kontrolerze”.
 - Moduły szukające pada w pętli (`EspelhoDualSense.kt` ~l.402, `GamepadMonitor.kt`)
   nie powinny wtedy obciążać CPU ani dziennika — tylko jeśli to drobna zmiana.
+
+### 1F. Ekran „Kino” jak w Asobi + lepsze centrowanie
+Życzenie Damiana: zakrzywiony ekran, wokół czarno (bez pokoju), ekran zawsze przed nim.
+Wszystko to P5M już umie (`ScreenPrefs.kt` + panel: Trójkąt cyklicznie przyciemnia
+passthrough aż do wyłączenia = czarne tło, L2 płaski/zakrzywiony, R2 krzywizna, D-pad
+rozmiar/odległość, L1/R1 wysokość, Krzyżyk centruje). Domyślnie P5M ma passthrough
+włączony i ekran płaski.
+- Przy pierwszym uruchomieniu QS8 (flaga w `Qs8Prefs`) jednorazowo ustaw preset „Kino”:
+  passthrough wył., kształt cylinder, krzywizna ~0.6, rozmiar/odległość jak domyślne.
+  Przez istniejące settery `ScreenPrefs`, **bez** zmiany wartości domyślnych w pliku P5M.
+- Centrowanie: `xr_session.cpp` nie obsługuje `XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING`,
+  a P5M trzyma własną orientację (`recenter_orientation_`), więc systemowe przytrzymanie
+  przycisku Meta nie przestawia ekranu. Obsłużyć to zdarzenie wywołaniem `Recenter()`
+  (punkt `// QS8:` w pętli `xrPollEvent`). Po tym centrowanie działa systemowo i przyciskiem A.
+- Test: start sesji → zakrzywiony ekran na czarnym tle; przytrzymanie Meta i A
+  ustawiają ekran przed wzrokiem.
 
 ### 1D. Ekran startowy
 - Dwa duże przyciski „Tryb domowy” / „Tryb mobilny” w `LauncherActivity.kt`,

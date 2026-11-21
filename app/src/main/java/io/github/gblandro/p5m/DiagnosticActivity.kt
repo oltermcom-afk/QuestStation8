@@ -758,7 +758,8 @@ class DiagnosticActivity: Activity()
 		/** Extra que faz a tela ja abrir montando o relatorio. */
 		const val EXTRA_REPORT = "io.github.gblandro.p5m.REPORT"
 
-		private const val ISSUE_URL = "https://github.com/beecrepaldi-afk/P5M/issues/new"
+		// QS8: zgłoszenia z QuestStation8 trafiają do forka, nie do autora P5M.
+		private const val ISSUE_URL = "https://github.com/oltermcom-afk/QuestStation8/issues/new"
 
 		/**
 		 * Quanto do relatorio cabe na URL.
