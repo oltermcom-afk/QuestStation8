@@ -58,6 +58,8 @@ class P5MApp: Application()
 		{
 			Log.e("P5MVR", "Failed to prepare the trust roots", e)
 		}
+		// QS8: jednorazowy preset ekranu „Kino” przy pierwszym uruchomieniu (plan 1F).
+		try { io.github.gblandro.p5m.qs8.PresetKino.zastosujRaz(this) } catch(e: Throwable) { Log.e("P5MVR", "QS8 cinema preset failed", e) }
 		val previous = Thread.getDefaultUncaughtExceptionHandler()
 		Thread.setDefaultUncaughtExceptionHandler { thread, error ->
 			try
