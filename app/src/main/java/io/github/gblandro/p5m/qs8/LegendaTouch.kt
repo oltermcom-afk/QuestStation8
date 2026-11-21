@@ -42,8 +42,10 @@ object LegendaTouch
 	{
 		/** Okrągły przycisk Questa z literą (A, B, X, Y). */
 		data class Litera(val litera: String): Element()
-		/** Thumbstick Questa. */
+		/** Thumbstick Questa (wychylenie którejkolwiek). */
 		object Galka: Element()
+		/** Wciśnięcie lewego ("L") albo prawego ("R") thumbsticka Questa. */
+		data class KlikGalki(val strona: String): Element()
 		/** Przycisk ≡ Questa. */
 		object Menu: Element()
 		/** Przycisk Questa w pigułce z nazwą (gripy, triggery). */
@@ -66,7 +68,9 @@ object LegendaTouch
 			"L1R1" -> Element.QuestNazwa("Grip")
 			"L2" -> Element.QuestNazwa("LT")
 			"R2" -> Element.QuestNazwa("RT")
-			// Share, Options, R3, PS: TouchMenu ich nie wysyła (PS = touchpad konsoli, nigdy z Touch).
+			"Share" -> Element.KlikGalki("L")
+			"Options" -> Element.KlikGalki("R")
+			// R3, PS: TouchMenu ich nie wysyła (PS = touchpad konsoli, nigdy z Touch).
 			else -> null
 		}
 	}
@@ -213,6 +217,7 @@ object LegendaTouch
 	private fun szerokosc(e: Element, f: Float): Float = when(e)
 	{
 		is Element.Litera, Element.Galka -> 32f
+		is Element.KlikGalki -> 44f
 		Element.Menu -> 40f
 		is Element.QuestNazwa -> szerPigulki(e.tekst, f, 32f)
 		Element.Ukosnik -> 20f
@@ -241,6 +246,17 @@ object LegendaTouch
 					style = Paint.Style.STROKE; strokeWidth = 2.5f; color = TEKST
 				})
 				canvas.drawCircle(cx, cy, 4f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = TEKST })
+			}
+			is Element.KlikGalki ->
+			{
+				// Gałka z kropką (wciśnięta) i literą strony obok.
+				val g = cx - 6f
+				canvas.drawCircle(g, cy, 16f, tloQuest)
+				canvas.drawCircle(g, cy, 10f, Paint(Paint.ANTI_ALIAS_FLAG).apply {
+					style = Paint.Style.STROKE; strokeWidth = 2.5f; color = TEKST
+				})
+				canvas.drawCircle(g, cy, 6f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = TEKST })
+				canvas.drawText(e.strona, cx + 16f, cy + 6f, Paint(pigulka(16f)))
 			}
 			Element.Menu ->
 			{
