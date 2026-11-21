@@ -2001,6 +2001,18 @@ void XrVideoSession::PollEvents()
 						rate->toDisplayRefreshRate);
 				break;
 			}
+			case XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING:
+			{
+				// QS8: systemowe centrowanie (przytrzymanie Meta) ustawia przód LOCAL na kierunek wzroku, więc ekran wraca na yaw 0.
+				const auto *change = reinterpret_cast<const XrEventDataReferenceSpaceChangePending *>(&event);
+				if(change->referenceSpaceType == XR_REFERENCE_SPACE_TYPE_LOCAL)
+				{
+					std::lock_guard<std::mutex> lock(params_mutex_);
+					recenter_orientation_ = XrQuaternionf{0.0f, 0.0f, 0.0f, 1.0f};
+					LOGI("QS8: system recenter, the screen follows it");
+				}
+				break;
+			}
 			default:
 				break;
 		}
