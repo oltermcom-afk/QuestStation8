@@ -16,6 +16,7 @@ Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.m
 | #3 | zmergowany | 1F: jednorazowy preset ekranu „Kino” + centrowanie przytrzymaniem Meta. |
 | #4 | zmergowany | Aktualizacje z aplikacji z release `dev` (karta: numer, gałąź/PR, tytuł commita). |
 | #5 | zmergowany | 1B: kontrolery Touch → panel ustawień (+ ten plik). Przetestowany na dev.10. |
+| #6 | **otwarty** | Legenda „Quest / PS5” w panelu, komunikaty Trybu domowego (1C), „Zgłoś problem” bez logowania. APK dev.12. |
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
@@ -28,6 +29,7 @@ Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.m
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
 - **Tryb mobilny (pad przy Queście) nigdy nie był testowany w QS8.**
+- PR #6 (dev.12): legenda w wierszach i nagłówku, przypomnienie startowe (z padem / bez), brak „CONTROLLER DISCONNECTED” w Trybie domowym, „Zgłoś problem” bez logowania.
 
 ## Decyzje i odstępstwa od planu
 - **Keystore:** standardowy format debug Gradle (hasło i alias jak domyślny `debug.keystore`), bo workflow P5M wkłada sekret do `~/.android/debug.keystore` i podpisuje domyślną konfiguracją debug. Własne hasło wymagałoby zmian w workflow i tokenu gh ze scope `workflow` (obecny go nie ma). Ochrona = sam plik. Sekret: `P5M_DEBUG_KEYSTORE_BASE64`. SHA-256 certyfikatu: `07:B7:A8:BD:…:1D:4C:49:0F:D3`.
@@ -37,10 +39,14 @@ Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.m
 - **Updater:** źródło oferty = release `dev` forka (`qs8/AktualizacjeDev.kt`); buildy `-dev` dostają kartę (lokalne `-local` nie); interwał 15 min (było 6 h); opis z API Actions (`runs?head_sha=`), bez logowania, 2 zapytania. Wyłącznik + „Wyłącz/włącz” wymusza sprawdzenie. „Skip this version” bez zmian.
 - **1B — Touch działa zawsze** (flaga Trybu domowego dopiero w 1C). Przy zamkniętym panelu reaguje tylko ≡.
 - **1B — JNI w `qs8_touch.cpp`, nie w `p5m_jni.cpp`;** `tools/conferir.py` sprawdza też `qs8/*.kt` (klasa JNI z prefiksem `qs8_`).
+- **1C bez flagi `trybDomowy`:** Tryb domowy = w sesji nie było nazwanego pada (`qs8/TrybDomowy.kt`, reguła `acceptsGamepadAxes` z patcha 0024). Przełącznik trybu dopiero z 1D. Damian chciał, by komunikaty mówiły o ≡ zawsze (także z padem).
+- **Legenda:** `LegendaTouch.komorka` rysuje całą komórkę przycisku (Quest / PS5) zamiast P5M, tekst wierszy przesunięty o 26 px; nagłówek z ≡ / akord i B / ○. Znak „≡” w tekście nie jest używany (czcionka może go nie mieć) — przycisk menu rysowany jako trzy kreski.
+- **„Zgłoś problem”:** raport już nie idzie w URL; szablon + schowek. `REPORT_URL_BUDGET` w P5M zostaje nieużywany (ostrzeżenie kompilatora, bez skutków).
 - **1B — `qs8TouchKey` nie przekazuje UP** do funkcji panelu i nie woła `toggleAdjustMode` (patrz pułapki).
 
 ## Znane błędy / otwarte sprawy
-- **„Zgłoś problem” bez zalogowania do GitHuba:** GitHub gubi `return_to`, gdy URL > ~5 KB (raport w URL ma do 4000 znaków → 6–7 KB). Po logowaniu ląduje się na stronie głównej. Błąd odziedziczony z P5M (`DiagnosticActivity.REPORT_URL_BUDGET`). Zalogowanym działa; raport jest też w schowku.
+- „Zgłoś problem” bez zalogowania: poprawka w PR #6 (krótki URL, raport w schowku) — czeka na test.
+- Akcje tylko z pada (brak przycisku Questa): Brightness (Share), 3D strength (Options), Adaptive triggers (R3), Touchpad click (PS). Wolne na Touch: kliknięcia thumbsticków.
 - Skrypty `tools/` ze starym pakietem `io.github.gblandro.p5m`: `bitrate-latencia.sh`, `instalar-local.sh`, `tools/return/*`, `tools/haptics/*`.
 - Tekst release (`build-apk.yml`) mówi „P5M” i o L3+R3+R1 — wymaga scope `workflow`.
 - Brak sekretów do tagów `v*` (`P5M_KEYSTORE_BASE64`, `P5M_KEYSTORE_PASSWORD`) → tag nie przejdzie CI. Klucz tagów ≠ klucz dev (przejście = reinstalacja).
@@ -59,13 +65,13 @@ Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.m
 - `PresetKino` zna nazwę pliku `p5m_vr_screen` z `ScreenPrefs` — przy merge'u z upstreamem sprawdzić, czy się nie zmieniła.
 
 ## Pliki QS8
-- Nowe: `qs8/{Qs8Prefs,PresetKino,AktualizacjeDev,TouchNative,TouchMenu}.kt`, `cpp/qs8_touch.{h,cpp}`.
-- Punkty `// QS8:` w: `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt` (`P5MApp`), `xr_session.cpp`, `CMakeLists.txt`, `VrStreamActivity.kt`, `tools/conferir.py`. Lista: `git grep -n "QS8:"`.
+- Nowe: `qs8/{Qs8Prefs,PresetKino,AktualizacjeDev,TouchNative,TouchMenu,LegendaTouch,TrybDomowy}.kt`, `cpp/qs8_touch.{h,cpp}`.
+- Punkty `// QS8:` w: `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `PainelDeAjuste.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt` (`P5MApp`), `xr_session.cpp`, `CMakeLists.txt`, `VrStreamActivity.kt`, `tools/conferir.py`. Lista: `git grep -n "QS8:"`.
 
 ## Klucz podpisu
 - Lokalna kopia: `~/QuestStation8/klucze/qs8-debug.keystore` (poza repo; `*.keystore` w `.gitignore`).
 - W GitHub: sekret `P5M_DEBUG_KEYSTORE_BASE64`.
 
 ## Następne kroki
-1. Legenda panelu „Touch / PS5” + komunikaty startowe 1C (jeden PR); sprawdzić „Zgłoś problem” bez logowania.
+1. Test dev.12 (PR #6) → merge.
 2. 1E-1 (Account ID z logowania PSN), potem 1D; Etap 2.

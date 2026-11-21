@@ -221,15 +221,15 @@ class DiagnosticActivity: Activity()
 	private fun reportProblem()
 	{
 		val report = buildReport()
-		clipboard(report, "Report copied. Paste it if the page opens empty.")
+		clipboard(report, "Report copied. Paste it into the report page.")  // QS8: raport zawsze się wkleja.
 
 		val serverLine = if(server.url != null) server.url
 			else if(server.start()) server.url else null
 
+		// QS8: bez raportu w URL: niezalogowanym GitHub gubi długi adres po logowaniu (return_to); raport jest w schowku.
 		val body = "**What happened**\n\n(describe it here)\n\n" +
 				"**What I expected**\n\n\n" +
-				"<details><summary>Diagnostics</summary>\n\n```\n" +
-				report.take(REPORT_URL_BUDGET) + "\n```\n</details>\n"
+				"**Diagnostics**\n\n(paste the report here: it is on the clipboard)\n"
 		val url = "$ISSUE_URL?title=" + Uri.encode("[beta] ") +
 				"&labels=" + Uri.encode("beta") +
 				"&body=" + Uri.encode(body)
@@ -248,9 +248,9 @@ class DiagnosticActivity: Activity()
 		output.text = buildString {
 			append("--- how to send this ---\n\n")
 			if(opened)
-				append("A report page opened in the browser. Fill in what happened and\n" +
-						"press Submit. If the box came up empty, paste: the report is\n" +
-						"already on the clipboard.\n\n")
+				append("A report page opened in the browser. Sign in to GitHub if it asks,\n" +  // QS8: wklejanie zawsze.
+						"fill in what happened and paste the report under Diagnostics:\n" +
+						"it is on the clipboard. Then press Create.\n\n")
 			else
 				append("No browser answered here. The report is on the clipboard, so\n" +
 						"open $ISSUE_URL on any device and paste it.\n\n")

@@ -167,6 +167,8 @@ object PainelDeAjuste
 		canvas.drawText("The game gets no input while this is open", x + 24f, 74f,
 				Paint(Paint.ANTI_ALIAS_FLAG).apply { color = AVISO_TEXTO; textSize = 22f })
 
+		// QS8: skroty z przyciskami Questa obok PS5 (LegendaTouch rysuje tez kreske ponizej).
+		if(true) { io.github.gblandro.p5m.qs8.LegendaTouch.naglowek(canvas, w, atalho); return }
 		// Da direita para a esquerda: segurar Circle, Circle, o acorde.
 		val dica = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = SUAVE; textSize = 22f; textAlign = Paint.Align.RIGHT }
 		x = w - MARGEM
@@ -208,7 +210,8 @@ object PainelDeAjuste
 
 		val cx = x0 + 34f
 		val cy = y + 38f
-		when(val b = l.botao)
+		val qs8 = io.github.gblandro.p5m.qs8.LegendaTouch.komorka(canvas, x0, cy, l.botao)  // QS8: przycisk Questa obok przycisku PS5 (QS8 rysuje komorke).
+		if(qs8 == 0f) when(val b = l.botao)
 		{
 			is Botao.Nome -> pilula(canvas, cx, cy, b.texto, 19f)
 			Botao.DirecionalVertical, Botao.DirecionalHorizontal -> direcional(canvas, cx, cy, b == Botao.DirecionalVertical)
@@ -219,7 +222,7 @@ object PainelDeAjuste
 			}
 		}
 
-		val texto0 = x0 + 86f
+		val texto0 = x0 + 86f + qs8  // QS8: szersza komorka na dwa przyciski.
 		canvas.drawText(l.rotulo, texto0, y + 32f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = SUAVE; textSize = 21f })
 		val valor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 			color = TEXTO
