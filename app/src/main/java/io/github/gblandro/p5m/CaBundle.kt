@@ -97,7 +97,8 @@ object CaBundle
 	private data class Intermediario(val nome: String, val urls: List<String>)
 
 	/** Precisa bater com o -DCURL_CA_BUNDLE do build.gradle. */
-	const val COMPILED_PATH = "/data/user/0/io.github.gblandro.p5m/files/$FILE_NAME"
+	// QS8: applicationId QuestStation8 (pl.olterm.queststation8).
+	const val COMPILED_PATH = "/data/user/0/pl.olterm.queststation8/files/$FILE_NAME"
 
 	// Reescrito quando passa disto. As raízes mudam devagar, e reescrever a cada
 	// abertura seria gastar disco e tempo de partida à toa.

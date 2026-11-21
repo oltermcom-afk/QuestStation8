@@ -752,7 +752,8 @@ class DiagnosticActivity: Activity()
 			"extrapolated frame", "glExtrapolateTex2DQCOM", "Cadence:",
 			"E/", "W/P5MVR", "failed", "unavailable"
 		)
-		private const val FILE_PROVIDER_AUTHORITY = "io.github.gblandro.p5m.diagnostics"
+		// QS8: authority = applicationId + ".diagnostics" (AndroidManifest.xml).
+		private const val FILE_PROVIDER_AUTHORITY = "pl.olterm.queststation8.diagnostics"
 
 		/** Extra que faz a tela ja abrir montando o relatorio. */
 		const val EXTRA_REPORT = "io.github.gblandro.p5m.REPORT"

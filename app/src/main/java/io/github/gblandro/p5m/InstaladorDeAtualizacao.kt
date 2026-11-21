@@ -26,7 +26,8 @@ import kotlin.concurrent.thread
  */
 object InstaladorDeAtualizacao
 {
-	private const val AUTORIDADE = "io.github.gblandro.p5m.diagnostics"
+	// QS8: authority = applicationId + ".diagnostics" (AndroidManifest.xml).
+	private const val AUTORIDADE = "pl.olterm.queststation8.diagnostics"
 
 	@Volatile private var baixando = false
 

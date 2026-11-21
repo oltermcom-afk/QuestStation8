@@ -49,7 +49,7 @@
         android:allowBackup="false"
         android:networkSecurityConfig="@xml/p5m_network_security"
         android:icon="@mipmap/ic_p5m"
-        android:label="P5M"
+        android:label="QuestStation8"
         android:isGame="true"
         android:banner="@mipmap/atv_banner"
         android:supportsRtl="true"
@@ -90,8 +90,9 @@
              P5M ser recusada pelo sistema e precisava desinstalar o outro app
              primeiro. O nome fica em sincronia com o da LogManager.kt pelo
              patch 0028, que tambem passou a deriva-lo do applicationId. -->
+        <!-- QS8: authorities z applicationId, zeby nie kolidowaly z zainstalowanym P5M. -->
         <provider
-            android:authorities="io.github.gblandro.p5m.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:name="androidx.core.content.FileProvider"
             android:grantUriPermissions="true"
             android:exported="false">
@@ -103,8 +104,9 @@
         <!-- Provider do diagnostico, separado do provider do chiaki-ng.
              Serve para compartilhar o log como ARQUIVO: copiar texto esbarra no
              limite de caracteres de uma issue, anexar arquivo nao. -->
+        <!-- QS8: authorities z applicationId, zeby nie kolidowaly z zainstalowanym P5M. -->
         <provider
-            android:authorities="io.github.gblandro.p5m.diagnostics"
+            android:authorities="${applicationId}.diagnostics"
             android:name="io.github.gblandro.p5m.ProvedorDeArquivos"
             android:grantUriPermissions="true"
             android:exported="false">
