@@ -153,8 +153,18 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 		 * w kolumnach ustawień, przed kolumną odczytów). Geometria z
 		 * PainelDeAjuste: margines 52, pięć kolumn, odstęp 44.
 		 */
-		fun dorysujLegende(bitmap: Bitmap)
+		/** Lewa krawędź kolumny odczytów (LIVE) panelu: geometria PainelDeAjuste. */
+		private fun prawaKolumna(bitmap: Bitmap): Float
 		{
+			val kolumna = (bitmap.width - 2 * 52f - 4 * 44f) / 5
+			return 52f + 4 * (kolumna + 44f)
+		}
+
+		fun dorysujLegende(bitmap: Bitmap, jakosc: io.github.gblandro.p5m.StreamQualityPrefs)
+		{
+			// Aktywny profil (tylko podgląd) pod kolumną odczytów.
+			Canvas(bitmap).drawText("Profile: " + Profile.nazwa(jakosc), prawaKolumna(bitmap), bitmap.height - 22f,
+					Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(142, 152, 173); textSize = 18f })
 			val w = bitmap.width.toFloat()
 			val margines = 52f
 			val kolumna = (w - 2 * margines - 4 * 44f) / 5

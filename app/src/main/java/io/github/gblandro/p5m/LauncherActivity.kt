@@ -162,6 +162,13 @@ class LauncherActivity: Activity()
 
 		// ------------------------------------------------------------ stream
 		coluna.addView(pagina("Stream"))
+		// QS8: profile obrazu (Etap 2) — zestawy istniejących ustawień, bez bitrate'u.
+		coluna.addView(linha("Profile", { io.github.gblandro.p5m.qs8.Profile.nazwa(prefs) },
+				{ io.github.gblandro.p5m.qs8.Profile.opis(prefs) },
+				degraus = { io.github.gblandro.p5m.qs8.Profile.LISTA.size to io.github.gblandro.p5m.qs8.Profile.indeks(prefs) },
+				anterior = { io.github.gblandro.p5m.qs8.Profile.poprzedni(this, prefs) }) {
+			io.github.gblandro.p5m.qs8.Profile.nastepny(this, prefs)
+		})
 		coluna.addView(linha("Bitrate", { bitrateValue() }, { bitrateHint() },
 				degraus = { StreamQualityPrefs.BITRATE_STEPS.size to
 						StreamQualityPrefs.BITRATE_STEPS.indexOfFirst { it >= prefs.bitrateKbps }
