@@ -147,7 +147,7 @@ object InstaladorDeAtualizacao
 		val info = app.packageManager.getPackageArchiveInfo(apk.path, 0)
 			?: throw java.io.IOException("the file is not a valid APK")
 		if(info.packageName != app.packageName)
-			throw java.io.IOException("the APK is ${info.packageName}, not P5M")
+			throw java.io.IOException("the APK is ${info.packageName}, not ${io.github.gblandro.p5m.qs8.Marka.NAZWA}")  // QS8: nazwa aplikacji.
 		val nome = info.versionName ?: ""
 		if(Atualizacao.comparar(nome, versao) != 0)
 			Trace.log(app, "Update: the APK says $nome, the release says $versao; installing anyway")

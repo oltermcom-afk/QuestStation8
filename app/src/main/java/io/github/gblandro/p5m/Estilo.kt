@@ -219,13 +219,13 @@ object Estilo
 		gravity = Gravity.CENTER_VERTICAL
 		val lado = dp(context, (tamanho * 1.45f).toInt())
 		addView(android.widget.ImageView(context).apply {
-			setImageResource(com.metallic.chiaki.R.mipmap.ic_p5m)
+			setImageResource(com.metallic.chiaki.R.mipmap.ic_qs8)  // QS8: logo QuestStation8.
 			clipToOutline = true
 			background = arredondado(context, Color.TRANSPARENT, 10)
 			outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
 		}, LinearLayout.LayoutParams(lado, lado).apply { rightMargin = dp(context, 14) })
 		addView(TextView(context).apply {
-			text = "P5M"
+			text = io.github.gblandro.p5m.qs8.Marka.NAZWA  // QS8: nazwa aplikacji.
 			setTextColor(TEXTO)
 			setTextSize(TypedValue.COMPLEX_UNIT_SP, tamanho)
 			typeface = NEGRITO

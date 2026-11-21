@@ -73,7 +73,7 @@ object AktualizacjeDev
 	fun tekstKarty(context: Context, wersja: String, zainstalowana: String): String
 	{
 		val opis = Qs8Prefs(context).opisAktualizacji(wersja) ?: "Build $wersja"
-		return "QuestStation8 $wersja is available. You have $zainstalowana.\n" +
+		return "${Marka.NAZWA} $wersja is available. You have $zainstalowana.\n" +
 				"$opis\nUpdate downloads it and opens the installer."
 	}
 

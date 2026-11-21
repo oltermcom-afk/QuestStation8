@@ -150,8 +150,8 @@ object PainelDeAjuste
 			typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 		}
 		// A marca antes do nome da tela, como no topo das telas do app.
-		canvas.drawText("P5M", MARGEM, 78f, titulo)
-		var x = MARGEM + titulo.measureText("P5M") + 18f
+		canvas.drawText(io.github.gblandro.p5m.qs8.Marka.NAZWA, MARGEM, 78f, titulo)  // QS8: nazwa aplikacji.
+		var x = MARGEM + titulo.measureText(io.github.gblandro.p5m.qs8.Marka.NAZWA) + 18f
 		canvas.drawRect(x, 50f, x + 2f, 82f, Paint().apply { color = Color.argb(70, 255, 255, 255) })
 		x += 20f
 		val nomeDaTela = Paint(Paint.ANTI_ALIAS_FLAG).apply {
