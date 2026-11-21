@@ -27,8 +27,9 @@ object Atualizacao
 {
 	data class Oferta(val versao: String, val url: String)
 
-	private const val API = "https://api.github.com/repos/beecrepaldi-afk/P5M/releases?per_page=10"
-	private const val PAGINA = "https://github.com/beecrepaldi-afk/P5M/releases/latest"
+	// QS8: wydania forka QuestStation8 zamiast P5M.
+	private const val API = "https://api.github.com/repos/oltermcom-afk/QuestStation8/releases?per_page=10"
+	private const val PAGINA = "https://github.com/oltermcom-afk/QuestStation8/releases/latest"
 	private const val PREFS = "p5m-update"
 	private const val KEY_PULADA = "skipped-version"
 	private const val KEY_ULTIMA = "last-check-ms"

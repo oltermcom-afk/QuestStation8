@@ -95,7 +95,8 @@ android {
     ndkVersion '26.3.11579264'
 
     defaultConfig {
-        applicationId "io.github.gblandro.p5m"
+        // QS8: wlasny applicationId, zeby QuestStation8 stal obok P5M (namespace i pakiety bez zmian).
+        applicationId "pl.olterm.queststation8"
         // Quest 3 roda Android 12L (API 32). minSdk 30 libera
         // MediaCodec KEY_LOW_LATENCY, que e central para este projeto.
         minSdkVersion 30
@@ -144,7 +145,8 @@ android {
                         // arquivo em si e escrito em tempo de execucao a partir
                         // da loja de confianca do proprio Android; ver
                         // CaBundle.kt, que confere que os dois caminhos batem.
-                        "-DCURL_CA_BUNDLE=/data/user/0/io.github.gblandro.p5m/files/p5m-ca.pem",
+                        // QS8: sciezka idzie za applicationId (musi sie zgadzac z CaBundle.COMPILED_PATH).
+                        "-DCURL_CA_BUNDLE=/data/user/0/pl.olterm.queststation8/files/p5m-ca.pem",
                         "-DCHIAKI_ENABLE_STEAM_SHORTCUT=OFF",
                         "-DCHIAKI_ENABLE_STEAMDECK_NATIVE=OFF",
                         "-DANDROID_STL=c++_shared"
