@@ -260,6 +260,7 @@ class PsnRemoteActivity: Activity()
 		Thread {
 			val erro = PsnAuth.finishLogin(this, code)
 			ui.post {
+				if(erro == null && io.github.gblandro.p5m.qs8.RejestracjaPsn.poLogowaniu(this)) return@post  // QS8: logowanie z ekranu rejestracji wraca do niego.
 				showHome()
 				if(erro != null)
 					status.text = erro

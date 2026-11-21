@@ -1,0 +1,13 @@
+diff --git a/android/app/src/main/java/com/metallic/chiaki/regist/RegistActivity.kt b/android/app/src/main/java/com/metallic/chiaki/regist/RegistActivity.kt
+index 9190f9c5..f2724436 100644
+--- a/android/app/src/main/java/com/metallic/chiaki/regist/RegistActivity.kt
++++ b/android/app/src/main/java/com/metallic/chiaki/regist/RegistActivity.kt
+@@ -50,6 +50,8 @@ class RegistActivity: AppCompatActivity(), RevealActivity
+ 		binding.broadcastCheckBox.isChecked = intent.getBooleanExtra(EXTRA_BROADCAST, true)
+ 
+ 		binding.registButton.setOnClickListener { doRegist() }
++		// QS8: Account ID from the PSN sign-in, Broadcast off, PIN hint (plan 1E-1).
++		io.github.gblandro.p5m.qs8.RejestracjaPsn.podepnij(this, binding)
+ 
+ 		binding.ps4VersionRadioGroup.check(when(viewModel.ps4Version.value ?: RegistViewModel.ConsoleVersion.PS5) {
+ 			RegistViewModel.ConsoleVersion.PS5 -> R.id.ps5RadioButton
