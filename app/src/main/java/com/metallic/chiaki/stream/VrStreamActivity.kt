@@ -453,6 +453,13 @@ class VrStreamActivity: ComponentActivity()
 	private var thumbRDown = false
 	private var r1Down = false
 	private var quitArmed = false
+	// QS8: przytrzymanie w panelu (A / ✕ = rozmiar 1:1) i komunikaty panelu; logika w qs8/.
+	private val qs8Stan = io.github.gblandro.p5m.qs8.StanPanelu()
+	private val qs8Hold by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, { handleAdjustKey(it) }, { qs8Dlugo(it) })
+			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A) } }
+	private val qs8Piksel by lazy { io.github.gblandro.p5m.qs8.PikselWPiksel(handler, screenPrefs, { xr?.recommendedResolution() },
+			{ larguraFonte }, { applyScreenParams(); renderHud() }, { qs8Stan.pokaz(it); renderHud() }, { trace(it) }) }
+	private fun qs8Dlugo(kod: Int) { if(adjustMode && kod == KeyEvent.KEYCODE_BUTTON_A) qs8Piksel.dopasuj() }
 	private var returnActivated = false
 
 	override fun onCreate(savedInstanceState: Bundle?)
@@ -1782,6 +1789,7 @@ class VrStreamActivity: ComponentActivity()
 			}
 			!adjustMode -> {}
 			down -> handleAdjustKey(event)
+			!b -> qs8Hold.przechwyc(event)  // QS8: puszczenie A/X z Touch (krotkie naciśniecie).
 			b ->
 			{
 				handler.removeCallbacks(quitTick)
@@ -1821,6 +1829,7 @@ class VrStreamActivity: ComponentActivity()
 		// dos jogos.
 		if(event.keyCode == KeyEvent.KEYCODE_BUTTON_B)
 			return handleQuitHold(event)
+		if(qs8Hold.przechwyc(event)) return true  // QS8: przytrzymanie A/X w panelu; krotkie dziala po puszczeniu.
 		if(event.action == KeyEvent.ACTION_UP)
 		{
 			input?.dispatchKeyEvent(event)
@@ -2410,7 +2419,7 @@ class VrStreamActivity: ComponentActivity()
 
 		PainelDeAjuste.desenhar(bitmap, StreamQualityPrefs.CHORD_NAMES[qualityPrefs.tuningChord].uppercase(),
 				tela, imagem, outros, medidores())
-		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap, qualityPrefs)  // QS8: legenda Questa i aktywny profil.
+		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap, qualityPrefs); qs8Stan.dorysuj(bitmap)  // QS8: legenda, profil, komunikat.
 		xr?.setHudBitmap(bitmap)
 	}
 

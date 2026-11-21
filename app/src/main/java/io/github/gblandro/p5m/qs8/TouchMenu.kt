@@ -145,8 +145,9 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 			KeyEvent.KEYCODE_BUTTON_L1, KeyEvent.KEYCODE_BUTTON_R1)
 
 		/** Przyciski są przy każdym wierszu (LegendaTouch); tu tylko, co znaczą skróty i czego Quest nie robi. */
-		private const val LEGENDA = "Quest controller / PS5 controller   ·   LT RT  Quest triggers   ·   Grip  grip buttons   ·   " +
-				"stick: either one, L / R: press the left / right stick   ·   adaptive triggers, touchpad click: PS5 controller only"
+		private const val LEGENDA = "Quest / PS5 controller  ·  LT RT  Quest triggers  ·  Grip  grip buttons  ·  " +
+				"stick: either one, L / R: press the stick  ·  hold A / ✕: size 1:1 pixel  ·  " +
+				"triggers, touchpad: PS5 only"
 
 		/**
 		 * Objaśnienie legendy kontrolerów Questa w dolnym pasku panelu (pod trzecim rzędem,
