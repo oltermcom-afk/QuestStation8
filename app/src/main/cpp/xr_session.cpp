@@ -3,6 +3,7 @@
 #include "spatializer.h"
 #include "log.h"
 #include "qs8_touch.h"  // QS8: kontrolery Questa -> panel ustawien (plan 1B).
+#include "qs8_warstwa.h"  // QS8: dziennik bitow filtrow warstwy wideo.
 
 #include <chrono>
 #include <algorithm>
@@ -2321,12 +2322,11 @@ void XrVideoSession::RenderFrame()
 					// XR_ERROR_VALIDATION_FAILURE do xrEndFrame se ele vier
 					// sozinho. Nao e "escolha o que quiser", e "escolha entre
 					// estes".
+					// QS8: jedynym kandydatem jest MQSR (przy obu bitach wyostrzania Meta wybiera zwykle).
 					if(auto_filter_supported_)
 						layer_settings.layerFlags |=
 								XR_COMPOSITION_LAYER_SETTINGS_AUTO_LAYER_FILTER_BIT_META
-								| XR_COMPOSITION_LAYER_SETTINGS_NORMAL_SHARPENING_BIT_FB
-								| XR_COMPOSITION_LAYER_SETTINGS_QUALITY_SHARPENING_BIT_FB
-								| XR_COMPOSITION_LAYER_SETTINGS_NORMAL_SUPER_SAMPLING_BIT_FB;
+								| XR_COMPOSITION_LAYER_SETTINGS_QUALITY_SHARPENING_BIT_FB;
 					else
 						layer_settings.layerFlags |=
 								XR_COMPOSITION_LAYER_SETTINGS_NORMAL_SHARPENING_BIT_FB;
@@ -2339,6 +2339,8 @@ void XrVideoSession::RenderFrame()
 		// pedir mistura por alfa sobre um formato que pode nao ter canal alfa e
 		// pedir problema.
 		cylinder.layerFlags = 0;
+		qs8::LogujBityWarstwy(layer_settings_supported_ ? layer_settings.layerFlags : 0,  // QS8: bity w dzienniku.
+				layer_settings_supported_ ? (compositor_owns_filter ? "compositor filter" : "shader sharpening") : "extension unavailable");
 		if(layer_settings_supported_ && layer_settings.layerFlags != 0)
 		{
 			cylinder.next = &layer_settings;
