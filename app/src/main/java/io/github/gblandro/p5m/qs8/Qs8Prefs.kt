@@ -18,6 +18,11 @@ class Qs8Prefs(context: Context)
 		get() = prefs.getBoolean(KLUCZ_PRESET_KINO, false)
 		set(value) { prefs.edit().putBoolean(KLUCZ_PRESET_KINO, value).apply() }
 
+	/** Suwak „Peak” HDR: indeks w PeakHdr.NITY (600 / 1000 / 4000), domyślnie 1000 jak w P5M. */
+	var peakHdr: Int
+		get() = prefs.getInt(KLUCZ_PEAK_HDR, 1)
+		set(value) { prefs.edit().putInt(KLUCZ_PEAK_HDR, value).apply() }
+
 	/** Opis ostatnio znalezionego builda z release „dev” (dla karty aktualizacji), razem z jego wersją. */
 	fun opisAktualizacji(wersja: String): String? =
 		if(prefs.getString(KLUCZ_AKT_WERSJA, null) == wersja) prefs.getString(KLUCZ_AKT_OPIS, null) else null
@@ -33,5 +38,6 @@ class Qs8Prefs(context: Context)
 		private const val KLUCZ_PRESET_KINO = "preset_kino_rozstrzygniety"
 		private const val KLUCZ_AKT_WERSJA = "aktualizacja_wersja"
 		private const val KLUCZ_AKT_OPIS = "aktualizacja_opis"
+		private const val KLUCZ_PEAK_HDR = "peak_hdr"
 	}
 }

@@ -2,6 +2,7 @@
 #include "tone_mapper.h"
 #include "log.h"
 #include "profundidade_neural.h"
+#include "qs8_hdr.h"  // QS8: suwak Peak HDR.
 
 #include <cmath>
 #include <cstring>
@@ -3013,7 +3014,7 @@ bool ToneMapper::DrawEye(GLuint target, int32_t width, int32_t height, bool pq,
 		glUniformMatrix4fv(loc_tex_matrix_, 1, GL_FALSE, matrix);
 		glUniform1i(loc_pq_, pq ? 1 : 0);
 		glUniform1f(loc_target_nits_, target_nits_);
-		glUniform1f(loc_source_peak_, source_peak_nits_ / target_nits_);
+		glUniform1f(loc_source_peak_, qs8::PikHdr(source_peak_nits_) / target_nits_);  // QS8: Peak z panelu.
 		glUniform1f(loc_sharpen_, sharpen);
 		// O passo de um texel e o da fonte, que e tambem o do alvo: cada olho
 		// tem alvo proprio do tamanho da imagem. Enquanto o alvo tinha o dobro

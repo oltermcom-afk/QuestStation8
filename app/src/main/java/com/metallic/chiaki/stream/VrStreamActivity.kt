@@ -456,7 +456,7 @@ class VrStreamActivity: ComponentActivity()
 	// QS8: przytrzymanie w panelu (A / ✕ = rozmiar 1:1) i komunikaty panelu; logika w qs8/.
 	private val qs8Stan = io.github.gblandro.p5m.qs8.StanPanelu()
 	private val qs8Hold by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, { handleAdjustKey(it) }, { qs8Dlugo(it) })
-			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X) } }
+			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X); dodaj(KeyEvent.KEYCODE_BUTTON_Y) } }
 	private val qs8Piksel by lazy { io.github.gblandro.p5m.qs8.PikselWPiksel(handler, screenPrefs, { xr?.recommendedResolution() },
 			{ larguraFonte }, { applyScreenParams(); renderHud() }, { qs8Stan.pokaz(it); renderHud() }, { trace(it) }) }
 	private fun qs8Dlugo(kod: Int)
@@ -464,6 +464,7 @@ class VrStreamActivity: ComponentActivity()
 		if(!adjustMode) return
 		if(kod == KeyEvent.KEYCODE_BUTTON_A) qs8Piksel.dopasuj()
 		if(kod == KeyEvent.KEYCODE_BUTTON_X) { io.github.gblandro.p5m.qs8.PorownanieAB.przelacz(qs8Stan, qualityPrefs) { trace(it) }; applyQualityParams(); renderHud() }
+		if(kod == KeyEvent.KEYCODE_BUTTON_Y) { io.github.gblandro.p5m.qs8.PeakHdr.nastepny(this); qs8Stan.pokaz(io.github.gblandro.p5m.qs8.PeakHdr.komunikat(this, qualityPrefs)); renderHud() }
 	}
 	private var returnActivated = false
 
@@ -473,6 +474,7 @@ class VrStreamActivity: ComponentActivity()
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 		// QS8: kontrolery Questa -> tylko panel ustawien (plan 1B), przez qs8TouchKey.
 		lifecycle.addObserver(io.github.gblandro.p5m.qs8.TouchMenu { qs8TouchKey(it) })
+		io.github.gblandro.p5m.qs8.PeakHdr.zastosuj(this)  // QS8: Peak HDR z ustawien (shader czyta go na zywo).
 
 		Log.i(TAG, "VrStreamActivity.onCreate action=${intent?.action} " +
 				"categories=${intent?.categories} temConnectInfo=" +
