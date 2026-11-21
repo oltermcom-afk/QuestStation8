@@ -19,6 +19,7 @@ struct Akcje
 	XrAction gripL = XR_NULL_HANDLE, gripR = XR_NULL_HANDLE;
 	XrAction trigL = XR_NULL_HANDLE, trigR = XR_NULL_HANDLE;
 	XrAction stickL = XR_NULL_HANDLE, stickR = XR_NULL_HANDLE;
+	XrAction clickL = XR_NULL_HANDLE, clickR = XR_NULL_HANDLE;
 };
 
 Akcje g_akcje;
@@ -124,7 +125,9 @@ bool TouchCreate(XrInstance instance, XrSession session)
 			&& Utworz(XR_ACTION_TYPE_FLOAT_INPUT, "trigger_left", "Left trigger", &g_akcje.trigL)
 			&& Utworz(XR_ACTION_TYPE_FLOAT_INPUT, "trigger_right", "Right trigger", &g_akcje.trigR)
 			&& Utworz(XR_ACTION_TYPE_VECTOR2F_INPUT, "stick_left", "Left thumbstick", &g_akcje.stickL)
-			&& Utworz(XR_ACTION_TYPE_VECTOR2F_INPUT, "stick_right", "Right thumbstick", &g_akcje.stickR);
+			&& Utworz(XR_ACTION_TYPE_VECTOR2F_INPUT, "stick_right", "Right thumbstick", &g_akcje.stickR)
+			&& Utworz(XR_ACTION_TYPE_BOOLEAN_INPUT, "stick_click_left", "Left thumbstick click", &g_akcje.clickL)
+			&& Utworz(XR_ACTION_TYPE_BOOLEAN_INPUT, "stick_click_right", "Right thumbstick click", &g_akcje.clickR);
 	if(!ok)
 	{
 		TouchDestroy();
@@ -144,6 +147,8 @@ bool TouchCreate(XrInstance instance, XrSession session)
 		{g_akcje.trigR, Sciezka("/user/hand/right/input/trigger/value")},
 		{g_akcje.stickL, Sciezka("/user/hand/left/input/thumbstick")},
 		{g_akcje.stickR, Sciezka("/user/hand/right/input/thumbstick")},
+		{g_akcje.clickL, Sciezka("/user/hand/left/input/thumbstick/click")},
+		{g_akcje.clickR, Sciezka("/user/hand/right/input/thumbstick/click")},
 	};
 	XrInteractionProfileSuggestedBinding sugestia{XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING};
 	sugestia.interactionProfile = Sciezka("/interaction_profiles/oculus/touch_controller");
@@ -196,6 +201,8 @@ void TouchSync(XrSession session)
 	if(Przycisk(session, g_akcje.b)) stan |= kB;
 	if(Przycisk(session, g_akcje.x)) stan |= kX;
 	if(Przycisk(session, g_akcje.y)) stan |= kY;
+	if(Przycisk(session, g_akcje.clickL)) stan |= kStickClickLeft;
+	if(Przycisk(session, g_akcje.clickR)) stan |= kStickClickRight;
 	if(Os(session, g_akcje.gripL, poprzedni & kGripLeft)) stan |= kGripLeft;
 	if(Os(session, g_akcje.gripR, poprzedni & kGripRight)) stan |= kGripRight;
 	if(Os(session, g_akcje.trigL, poprzedni & kTriggerLeft)) stan |= kTriggerLeft;

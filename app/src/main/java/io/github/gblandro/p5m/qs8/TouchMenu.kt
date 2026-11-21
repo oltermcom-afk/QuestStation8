@@ -133,7 +133,9 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 			(1 shl 9) to KeyEvent.KEYCODE_DPAD_UP,     // thumbstick: rozmiar
 			(1 shl 10) to KeyEvent.KEYCODE_DPAD_DOWN,
 			(1 shl 11) to KeyEvent.KEYCODE_DPAD_LEFT,  // thumbstick: odległość
-			(1 shl 12) to KeyEvent.KEYCODE_DPAD_RIGHT
+			(1 shl 12) to KeyEvent.KEYCODE_DPAD_RIGHT,
+			(1 shl 13) to KeyEvent.KEYCODE_BUTTON_SELECT, // klik lewej gałki: jasność (jak Share)
+			(1 shl 14) to KeyEvent.KEYCODE_BUTTON_START   // klik prawej gałki: siła 3D (jak Options)
 		)
 
 		/** Jak AJUSTES_QUE_REPETEM w VrStreamActivity: kroki, które się powtarza trzymając. */
@@ -144,7 +146,7 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 
 		/** Przyciski są przy każdym wierszu (LegendaTouch); tu tylko, co znaczą skróty i czego Quest nie robi. */
 		private const val LEGENDA = "Quest controller / PS5 controller   ·   LT RT  Quest triggers   ·   Grip  grip buttons   ·   " +
-				"either thumbstick   ·   Brightness, 3D strength, adaptive triggers, touchpad click: PS5 controller only"
+				"stick: either one, L / R: press the left / right stick   ·   adaptive triggers, touchpad click: PS5 controller only"
 
 		/**
 		 * Objaśnienie legendy kontrolerów Questa w dolnym pasku panelu (pod trzecim rzędem,

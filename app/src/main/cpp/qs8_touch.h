@@ -28,6 +28,8 @@ enum TouchBit : int
 	kStickDown = 1 << 10,
 	kStickLeft = 1 << 11,
 	kStickRight = 1 << 12,
+	kStickClickLeft = 1 << 13,   // klik lewego thumbsticka (jasnosc)
+	kStickClickRight = 1 << 14,  // klik prawego thumbsticka (sila 3D)
 };
 
 // Po xrCreateSession, przed xrBeginSession. Blad nie jest fatalny: bez
