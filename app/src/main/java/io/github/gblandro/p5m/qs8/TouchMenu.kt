@@ -30,8 +30,10 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 	private val handler = Handler(Looper.getMainLooper())
 	private var poprzedni = 0
 	private var dziala = false
-	/** keyCode → (czas wciśnięcia, liczba powtórzeń, czas następnego powtórzenia). */
-	private val wcisniete = HashMap<Int, LongArray>()
+	/** Trzymany klawisz: kiedy wciśnięty, ile powtórzeń, kiedy następne. */
+	private class Trzymany(val od: Long, var powtorzen: Int, var nastepne: Long)
+
+	private val wcisniete = HashMap<Int, Trzymany>()
 
 	private val tick = object: Runnable
 	{
@@ -70,7 +72,7 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 		handler.removeCallbacks(tick)
 		val teraz = SystemClock.uptimeMillis()
 		for((kod, stan) in wcisniete.entries.toList())
-			naKlawisz(KeyEvent(stan[0], teraz, KeyEvent.ACTION_UP, kod, 0))
+			naKlawisz(KeyEvent(stan.od, teraz, KeyEvent.ACTION_UP, kod, 0))
 		wcisniete.clear()
 		poprzedni = 0
 	}
@@ -88,23 +90,23 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 			{
 				jest && !byl ->
 				{
-					wcisniete[kod] = longArrayOf(teraz, 0, teraz + ViewConfiguration.getKeyRepeatTimeout())
+					wcisniete[kod] = Trzymany(teraz, 0, teraz + ViewConfiguration.getKeyRepeatTimeout())
 					Log.i(TAG, "QS8 touch: ${KeyEvent.keyCodeToString(kod)} (panel only)")
 					naKlawisz(KeyEvent(teraz, teraz, KeyEvent.ACTION_DOWN, kod, 0))
 				}
 				!jest && byl ->
 				{
 					val s = wcisniete.remove(kod)
-					naKlawisz(KeyEvent(s?.get(0) ?: teraz, teraz, KeyEvent.ACTION_UP, kod, 0))
+					naKlawisz(KeyEvent(s?.od ?: teraz, teraz, KeyEvent.ACTION_UP, kod, 0))
 				}
 				jest && kod in POWTARZANE ->
 				{
 					val s = wcisniete[kod] ?: continue
-					if(teraz >= s[2])
+					if(teraz >= s.nastepne)
 					{
-						s[1] += 1
-						s[2] = teraz + ViewConfiguration.getKeyRepeatDelay()
-						naKlawisz(KeyEvent(s[0], teraz, KeyEvent.ACTION_DOWN, kod, s[1].toInt()))
+						s.powtorzen += 1
+						s.nastepne = teraz + ViewConfiguration.getKeyRepeatDelay()
+						naKlawisz(KeyEvent(s.od, teraz, KeyEvent.ACTION_DOWN, kod, s.powtorzen))
 					}
 				}
 			}
