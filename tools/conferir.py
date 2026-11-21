@@ -360,6 +360,8 @@ def interface_em_ingles():
     arquivos = (glob.glob(os.path.join(ROOT, "app/src/main/java/**/*.kt"),
                           recursive=True)
                 + glob.glob(os.path.join(ROOT, "app/src/main/cpp/*.cpp")))
+    # QS8: slownik polski (qs8/Tlumaczenia.kt) ma polskie znaki z definicji.
+    arquivos = [f for f in arquivos if not f.endswith("qs8/Tlumaczenia.kt")]
     achou = 0
     for f in arquivos:
         with open(f, encoding="utf-8") as fh:

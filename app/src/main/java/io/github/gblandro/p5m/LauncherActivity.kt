@@ -300,6 +300,12 @@ class LauncherActivity: Activity()
 
 		// -------------------------------------------------------------- ajuda
 		coluna.addView(pagina("Help"))
+		// QS8: język aplikacji (domyślnie polski); teksty tłumaczy qs8/Tlumaczenia.
+		coluna.addView(linha("Language", { if(io.github.gblandro.p5m.qs8.Tlumaczenia.polski) "Polski" else "English" },
+				{ "Polski / English. Untranslated texts stay in English." }) {
+			io.github.gblandro.p5m.qs8.Tlumaczenia.ustaw(this, !io.github.gblandro.p5m.qs8.Tlumaczenia.polski)
+			recreate()
+		})
 		coluna.addView(navegacao("Diagnostics & report",
 				"Report a problem, share the diary with a computer on your network, and "
 						+ "the tools for testing the controller and the video path.") {

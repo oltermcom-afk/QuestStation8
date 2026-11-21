@@ -31,7 +31,7 @@ class StanPanelu
 	/** Komunikat na środku nagłówka panelu, dopóki nie minie jego czas. */
 	fun dorysuj(bitmap: Bitmap)
 	{
-		val tekst = komunikat ?: return
+		val tekst = Tlumaczenia.t(komunikat ?: return)
 		if(SystemClock.uptimeMillis() > komunikatDo)
 		{
 			komunikat = null

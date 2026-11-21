@@ -164,16 +164,17 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 		fun dorysujLegende(bitmap: Bitmap, jakosc: io.github.gblandro.p5m.StreamQualityPrefs)
 		{
 			// Aktywny profil (tylko podgląd) pod kolumną odczytów.
-			Canvas(bitmap).drawText("Profile: " + Profile.nazwa(jakosc), prawaKolumna(bitmap), bitmap.height - 22f,
+			Canvas(bitmap).drawText(Tlumaczenia.t("Profile: " + Profile.nazwa(jakosc)), prawaKolumna(bitmap), bitmap.height - 22f,
 					Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(142, 152, 173); textSize = 18f })
 			val w = bitmap.width.toFloat()
 			val margines = 52f
 			val kolumna = (w - 2 * margines - 4 * 44f) / 5
 			val prawa = margines + 4 * kolumna + 3 * 44f
 			val farba = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(142, 152, 173); textSize = 20f }
-			while(farba.textSize > 13f && farba.measureText(LEGENDA) > prawa - margines)
+			val legenda = Tlumaczenia.t(LEGENDA)
+			while(farba.textSize > 13f && farba.measureText(legenda) > prawa - margines)
 				farba.textSize -= 1f
-			Canvas(bitmap).drawText(LEGENDA, margines, bitmap.height - 22f, farba)
+			Canvas(bitmap).drawText(legenda, margines, bitmap.height - 22f, farba)
 		}
 	}
 }
