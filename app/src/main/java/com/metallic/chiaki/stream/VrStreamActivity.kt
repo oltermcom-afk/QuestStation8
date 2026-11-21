@@ -1330,6 +1330,7 @@ class VrStreamActivity: ComponentActivity()
 		if(gamepads == 0)
 			trace("No gamepad visible to the app: the controller is probably " +
 					"paired with the console instead of the headset")
+		if(preferredDeviceId == null) trace(io.github.gblandro.p5m.qs8.TrybDomowy.DZIENNIK)  // QS8: Tryb domowy to nie blad.
 	}
 
 	/**
@@ -2188,6 +2189,7 @@ class VrStreamActivity: ComponentActivity()
 	private fun controleMudou()
 	{
 		val presente = input?.preferredGamepadId != null
+		if(!presente && io.github.gblandro.p5m.qs8.TrybDomowy.bezPadaWSesji(input)) return  // QS8: Tryb domowy, nie ma czego rozlaczac.
 		if(!presente && !controleAusente)
 		{
 			controleAusente = true
@@ -2195,7 +2197,7 @@ class VrStreamActivity: ComponentActivity()
 			// O console nao tem como saber: o Remote Play nao leva a queda do
 			// controle (dev.219, o aviso pelo protocolo foi aceito e ignorado).
 			mostrarFaixa("CONTROLLER DISCONNECTED", "The game keeps running; the console can't tell.",
-					"Press the PS button on the controller to reconnect.")
+					io.github.gblandro.p5m.qs8.TrybDomowy.ROZLACZONY)  // QS8: panel dziala tez z kontrolera Questa.
 		}
 		else if(presente && controleAusente)
 		{
@@ -2305,10 +2307,9 @@ class VrStreamActivity: ComponentActivity()
 			.also { hudBitmap = it }
 		// So uma faixa, e nao o painel inteiro: o resto da textura fica
 		// transparente e o jogo aparece atras dela.
-		PainelDeAjuste.faixa(bitmap, StreamQualityPrefs.CHORD_NAMES[qualityPrefs.tuningChord].uppercase(),
-				Color.WHITE, "opens the settings panel",
-				"Move, resize and sharpen the screen, and click the touchpad. Same chord closes it.",
-				pilulaTitulo = true)
+		// QS8: przypomnienie mowi tez o przycisku menu Questa; bez pada przy Queście to Tryb domowy, nie blad.
+		io.github.gblandro.p5m.qs8.LegendaTouch.przypomnienie(bitmap,
+				StreamQualityPrefs.CHORD_NAMES[qualityPrefs.tuningChord].uppercase(), input?.preferredGamepadId != null)
 
 		xr?.setHudBitmap(bitmap)
 		xr?.setHudVisible(true)

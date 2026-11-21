@@ -142,12 +142,12 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 			KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT,
 			KeyEvent.KEYCODE_BUTTON_L1, KeyEvent.KEYCODE_BUTTON_R1)
 
-		private const val LEGENDA = "Quest controllers:   ≡ open / close   ·   sticks  size, distance   ·   " +
-				"grips  height   ·   triggers  shape, curvature   ·   A  recenter   ·   X  sharpness   ·   " +
-				"Y  room   ·   B  close, hold to end"
+		/** Przyciski są przy każdym wierszu (LegendaTouch); tu tylko, co znaczą skróty i czego Quest nie robi. */
+		private const val LEGENDA = "Quest controller / PS5 controller   ·   LT RT  Quest triggers   ·   Grip  grip buttons   ·   " +
+				"either thumbstick   ·   Brightness, 3D strength, adaptive triggers, touchpad click: PS5 controller only"
 
 		/**
-		 * Legenda kontrolerów Questa w dolnym pasku panelu (pod trzecim rzędem,
+		 * Objaśnienie legendy kontrolerów Questa w dolnym pasku panelu (pod trzecim rzędem,
 		 * w kolumnach ustawień, przed kolumną odczytów). Geometria z
 		 * PainelDeAjuste: margines 52, pięć kolumn, odstęp 44.
 		 */
