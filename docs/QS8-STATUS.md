@@ -15,18 +15,18 @@ Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.m
 | #2 | zmergowany | Nowa wersja planu; „Zgłoś problem” → issues forka. |
 | #3 | zmergowany | 1F: jednorazowy preset ekranu „Kino” + centrowanie przytrzymaniem Meta. |
 | #4 | zmergowany | Aktualizacje z aplikacji z release `dev` (karta: numer, gałąź/PR, tytuł commita). |
-| #5 | **otwarty** | 1B: kontrolery Touch → panel ustawień (+ ten plik). APK dev.10. |
+| #5 | zmergowany | 1B: kontrolery Touch → panel ustawień (+ ten plik). Przetestowany na dev.10. |
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
 - dev.4 (1F): aktualizacja na dev.1 bez odinstalowania i bez utraty rejestracji; preset Kino; preset tylko raz; centrowanie Meta.
 - „Zgłoś problem”: **częściowo** (patrz znane błędy).
-- dev.7 (updater): zainstalowany ręcznie; karta/instalacja z aplikacji **nieprzetestowana**.
+- dev.7 (updater): zainstalowany ręcznie.
+- dev.7 → dev.10 z aplikacji: karta się pojawia, instalacja z aplikacji działa, rejestracja konsoli zostaje.
+- dev.10 (1B): ≡ otwiera panel, regulacja ekranu Touch działa, trzymane B kończy sesję, przyciski Questa nie wpływają na grę.
+  Uwaga z testu: legenda panelu pokazuje tylko przyciski PS5 → myli przy Touch (do poprawy razem z 1C).
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
-- Aktualizacja z aplikacji (PR #4), w tym pierwsza zgoda „Instalowanie nieznanych aplikacji”.
-- 1B (PR #5): wszystkie kroki z raportu, zwłaszcza „przyciski Questa nie wpływają na grę”.
-- Legenda Touch na panelu — położenie policzone z geometrii `PainelDeAjuste`, nie obejrzane.
 - **Tryb mobilny (pad przy Queście) nigdy nie był testowany w QS8.**
 
 ## Decyzje i odstępstwa od planu
@@ -67,5 +67,5 @@ Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.m
 - W GitHub: sekret `P5M_DEBUG_KEYSTORE_BASE64`.
 
 ## Następne kroki
-1. Wynik testu dev.10 (aktualizacja z aplikacji + 1B) → merge PR #5.
-2. Potem wg planu: 1C (flaga Trybu domowego), 1E-1, 1D; Etap 2.
+1. Legenda panelu „Touch / PS5” + komunikaty startowe 1C (jeden PR); sprawdzić „Zgłoś problem” bez logowania.
+2. 1E-1 (Account ID z logowania PSN), potem 1D; Etap 2.
