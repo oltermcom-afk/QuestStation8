@@ -152,8 +152,26 @@ i linia „Profil ◀ ▶” w panelu.
 | Ultra Płynność | shader + frames | wł. | wł. | — |
 | Kino | direct | wył. | wł. | duży, przyciemniony |
 
-MQSR włączony wszędzie (kompozytor, bez kosztu GPU). 3D osobnym przełącznikiem.
+Filtry kompozytora (MQSR = bit `QUALITY_SHARPENING`, zwykłe wyostrzanie, supersampling)
+**kosztują GPU kompozytora** (Meta: „requires more GPU resources”), więc nie są „za darmo”.
+MQSR tylko w trybie Sharpness „Automatic” (runtime decyduje, kiedy go użyć; jawne MQSR dawało
+w P5M plamę za głową). Profile nie ustawiają bitrate'u (zależy od sieci, nie od gry).
+3D osobnym przełącznikiem.
 Profile ekranu Kanapa/Kino/Biurko = zestawy `ScreenPrefs`.
+
+## Jakość obrazu — decyzje (2026-11-21, analiza: `docs/QS8-ANALIZY.md`)
+
+Kolejność: preset „piksel w piksel” → przełącznik A/B → suwak Peak HDR → MQSR tylko w „Automatic”
+(wszystkie cztery zrobione w PR #10–#14, czekają na test).
+
+- **c) chroma 4:2:0 sterowana lumą — może później.** Fundament jest (sonda `GL_EXT_YUV_target`),
+  ale zysk dotyczy tylko kolorowych krawędzi, a koszt to ~0,3–0,5 ms na ścieżce shader i ryzyko
+  przesunięcia kolorów. Wracamy, jeśli A/B pokaże problem.
+- **b) EASU/RCAS (FSR 1) — nie robimy.** Swapchain jest 1:1 ze strumieniem (nie ma czego
+  powiększać), kompozytor i tak filtruje warstwę, EASU wzmacnia artefakty kompresji, a RCAS to
+  praktycznie istniejący CAS.
+- **d) deblocking w shaderze — nie robimy.** HEVC ma deblocking i SAO w dekoderze; widoczne pasma
+  w gradientach lepiej usuwa 10-bit, a dodatkowe rozmycie walczyłoby z CAS.
 
 ## Później (po pomiarach)
 
