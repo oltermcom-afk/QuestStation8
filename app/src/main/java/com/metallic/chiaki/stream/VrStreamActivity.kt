@@ -456,10 +456,15 @@ class VrStreamActivity: ComponentActivity()
 	// QS8: przytrzymanie w panelu (A / ✕ = rozmiar 1:1) i komunikaty panelu; logika w qs8/.
 	private val qs8Stan = io.github.gblandro.p5m.qs8.StanPanelu()
 	private val qs8Hold by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, { handleAdjustKey(it) }, { qs8Dlugo(it) })
-			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A) } }
+			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X) } }
 	private val qs8Piksel by lazy { io.github.gblandro.p5m.qs8.PikselWPiksel(handler, screenPrefs, { xr?.recommendedResolution() },
 			{ larguraFonte }, { applyScreenParams(); renderHud() }, { qs8Stan.pokaz(it); renderHud() }, { trace(it) }) }
-	private fun qs8Dlugo(kod: Int) { if(adjustMode && kod == KeyEvent.KEYCODE_BUTTON_A) qs8Piksel.dopasuj() }
+	private fun qs8Dlugo(kod: Int)
+	{
+		if(!adjustMode) return
+		if(kod == KeyEvent.KEYCODE_BUTTON_A) qs8Piksel.dopasuj()
+		if(kod == KeyEvent.KEYCODE_BUTTON_X) { io.github.gblandro.p5m.qs8.PorownanieAB.przelacz(qs8Stan, qualityPrefs) { trace(it) }; applyQualityParams(); renderHud() }
+	}
 	private var returnActivated = false
 
 	override fun onCreate(savedInstanceState: Bundle?)
@@ -883,7 +888,8 @@ class VrStreamActivity: ComponentActivity()
 	private fun applyQualityParams()
 	{
 		val cinema = ScreenPrefs.CINEMA_GRADE[screenPrefs.cinema]
-		xr?.setQuality(qualityPrefs.sharpness, qualityPrefs.sharpenAmount,
+		xr?.setQuality(io.github.gblandro.p5m.qs8.PorownanieAB.ostrosc(qs8Stan, qualityPrefs.sharpness),  // QS8: A/B — oryginał bez wyostrzania.
+				io.github.gblandro.p5m.qs8.PorownanieAB.sila(qs8Stan, qualityPrefs.sharpenAmount),
 				qualityPrefs.passthroughOpacity, cinema[0], cinema[1], cinema[2],
 				qualityPrefs.brightnessScale, qualityPrefs.frameExtrapolation)
 		xr?.setSpatialAudio(qualityPrefs.spatialStrength)
