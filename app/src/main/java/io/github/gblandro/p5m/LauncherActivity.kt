@@ -190,6 +190,16 @@ class LauncherActivity: Activity()
 			prefs.tenBit = !prefs.tenBit
 			Log.i(TAG, "10-bit: ${prefs.tenBit}")
 		})
+		// QS8: szczyt jasności HDR dla krzywej tonów (też przytrzymanie Y / △ w panelu).
+		coluna.addView(linha("HDR peak", { "${io.github.gblandro.p5m.qs8.PeakHdr.wartosc(this)} nits" },
+				{ "How bright the game's highlights are assumed to be with 10-bit color. Lower brightens highlights in " +
+						"games that never reach 1000 nits; higher keeps bright games from clipping. Changes live in the " +
+						"game too: hold Y / △ in the settings panel." },
+				visivel = { prefs.tenBit },
+				degraus = { io.github.gblandro.p5m.qs8.PeakHdr.NITY.size to io.github.gblandro.p5m.qs8.PeakHdr.indeks(this) },
+				anterior = { io.github.gblandro.p5m.qs8.PeakHdr.poprzedni(this) }) {
+			io.github.gblandro.p5m.qs8.PeakHdr.nastepny(this)
+		})
 		// Tecnico demais para ficar no meio: quem precisa sabe procurar.
 		coluna.addView(secao("Advanced"))
 		coluna.addView(linha("Video path", { pathValue() }, { pathHint() },

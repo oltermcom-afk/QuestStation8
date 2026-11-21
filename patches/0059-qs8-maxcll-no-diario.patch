@@ -1,0 +1,29 @@
+diff --git a/android/app/src/main/cpp/video-decoder.c b/android/app/src/main/cpp/video-decoder.c
+index e636e0a4..0937bf57 100644
+--- a/android/app/src/main/cpp/video-decoder.c
++++ b/android/app/src/main/cpp/video-decoder.c
+@@ -628,6 +628,24 @@ static void *android_chiaki_video_decoder_output_thread_func(void *user)
+ 						"Decoder output format '%s': color-standard=%d "
+ 						"color-transfer=%d color-range=%d color-format=0x%x",
+ 						name ? name : "?", cstd, transfer, range, fmt);
++				// QS8: HDR metadata (MaxCLL) for the log only; the tone curve uses the app's Peak setting.
++				// hdr-static-info: id byte, then little-endian uint16 primaries and white point, max/min
++				// mastering luminance, MaxCLL, MaxFALL (Android MediaFormat KEY_HDR_STATIC_INFO).
++				{
++					void *hdr = NULL;
++					size_t hdr_size = 0;
++					if(AMediaFormat_getBuffer(out, "hdr-static-info", &hdr, &hdr_size) && hdr && hdr_size >= 25)
++					{
++						const uint8_t *b = (const uint8_t *)hdr;
++						__android_log_print(ANDROID_LOG_INFO, "P5MVR",
++								"QS8: HDR metadata MaxCLL=%u nits MaxFALL=%u nits mastering max=%u nits",
++								(unsigned)(b[21] | (b[22] << 8)), (unsigned)(b[23] | (b[24] << 8)),
++								(unsigned)(b[17] | (b[18] << 8)));
++					}
++					else
++						__android_log_print(ANDROID_LOG_INFO, "P5MVR",
++								"QS8: HDR metadata: no hdr-static-info from the decoder");
++				}
+ 				// O shader do app supoe PQ quando a sessao e de 10 bits. Um
+ 				// decodificador que devolvesse outra curva faria a imagem sair
+ 				// errada, e e isso que merece aviso -- nao o PQ, que e o normal.
