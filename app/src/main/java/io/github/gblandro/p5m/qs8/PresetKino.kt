@@ -30,6 +30,14 @@ object PresetKino
 	/** Krzywizna „średnia” — jeden ze stopni, które cyklicznie ustawia R2 w panelu. */
 	private const val KRZYWIZNA = 0.6f
 
+	/** Ekran „Kino”: pokój ukryty, cylinder, krzywizna 0,6 (też z profilu Cinema). */
+	fun ustawEkran(ekran: ScreenPrefs)
+	{
+		ekran.passthroughEnabled = false
+		ekran.layerShape = ScreenPrefs.SHAPE_CYLINDER
+		ekran.curvature = KRZYWIZNA
+	}
+
 	fun zastosujRaz(context: Context)
 	{
 		val qs8 = Qs8Prefs(context)
@@ -39,10 +47,7 @@ object PresetKino
 		val zapisane = context.getSharedPreferences(PLIK_EKRANU_P5M, Context.MODE_PRIVATE).all.keys
 		if(zapisane.isEmpty())
 		{
-			val ekran = ScreenPrefs(context)
-			ekran.passthroughEnabled = false
-			ekran.layerShape = ScreenPrefs.SHAPE_CYLINDER
-			ekran.curvature = KRZYWIZNA
+			ustawEkran(ScreenPrefs(context))
 			// Rozmiar, odległość i wysokość zostają domyślne P5M (nic nie zapisujemy).
 			Trace.log(context, "QS8: first run, cinema screen preset applied " +
 					"(passthrough off, curved, curvature $KRZYWIZNA)")

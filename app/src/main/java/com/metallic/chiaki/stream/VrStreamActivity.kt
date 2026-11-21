@@ -2410,7 +2410,7 @@ class VrStreamActivity: ComponentActivity()
 
 		PainelDeAjuste.desenhar(bitmap, StreamQualityPrefs.CHORD_NAMES[qualityPrefs.tuningChord].uppercase(),
 				tela, imagem, outros, medidores())
-		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap)  // QS8: legenda kontrolerow Questa (plan 1B).
+		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap, qualityPrefs)  // QS8: legenda Questa i aktywny profil.
 		xr?.setHudBitmap(bitmap)
 	}
 
