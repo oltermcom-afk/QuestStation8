@@ -2322,11 +2322,12 @@ void XrVideoSession::RenderFrame()
 					// XR_ERROR_VALIDATION_FAILURE do xrEndFrame se ele vier
 					// sozinho. Nao e "escolha o que quiser", e "escolha entre
 					// estes".
-					// QS8: jedynym kandydatem jest MQSR (przy obu bitach wyostrzania Meta wybiera zwykle).
 					if(auto_filter_supported_)
 						layer_settings.layerFlags |=
 								XR_COMPOSITION_LAYER_SETTINGS_AUTO_LAYER_FILTER_BIT_META
-								| XR_COMPOSITION_LAYER_SETTINGS_QUALITY_SHARPENING_BIT_FB;
+								| XR_COMPOSITION_LAYER_SETTINGS_NORMAL_SHARPENING_BIT_FB
+								| XR_COMPOSITION_LAYER_SETTINGS_QUALITY_SHARPENING_BIT_FB
+								| XR_COMPOSITION_LAYER_SETTINGS_NORMAL_SUPER_SAMPLING_BIT_FB;
 					else
 						layer_settings.layerFlags |=
 								XR_COMPOSITION_LAYER_SETTINGS_NORMAL_SHARPENING_BIT_FB;
