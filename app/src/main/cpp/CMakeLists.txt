@@ -44,9 +44,10 @@ add_library(p5m-vr SHARED
         profundidade_neural.cpp
         tone_mapper.cpp
         xr_session.cpp
-        # QS8: kontrolery Questa -> panel ustawien (plan 1B); suwak Peak HDR.
+        # QS8: kontrolery Questa -> panel ustawien (plan 1B); suwak Peak HDR; limit klatek.
         qs8_touch.cpp
-        qs8_hdr.cpp)
+        qs8_hdr.cpp
+        qs8_klatki.cpp)
 
 target_include_directories(p5m-vr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

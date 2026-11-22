@@ -185,9 +185,17 @@ z zestawu P5M (zwykłe i MQSR wyostrzanie, supersampling). Zostaje dziennik bit�
 - **d) deblocking w shaderze — nie robimy.** HEVC ma deblocking i SAO w dekoderze; widoczne pasma
   w gradientach lepiej usuwa 10-bit, a dodatkowe rozmycie walczyłoby z CAS.
 
+## Generowane klatki „do 120 / do 60” (PR #18, 2026-11-22)
+
+Ustawienie w launcherze (Zaawansowane, widoczne przy „shader + frames”), domyślnie „do 120” = P5M.
+„Do 60” zaokrągla krok przewidywania w dół do 1/60 s (`qs8_klatki.cpp`, jedna linia w
+`tone_mapper.cpp`): gra 30 fps → jedna przewidziana klatka (½ okresu) na prawdziwą, każda przez dwa
+odświeżenia; gra 60 fps → bez przewidywania. Automatu 60/120 nie robimy: brak wiarygodnego pomiaru
+błędu przewidywania w trakcie gry.
+
 ## Później (po pomiarach)
 
-Siła generowania klatek (30→60 vs 30→120 przy 120 Hz), inwentaryzacja i uzupełnienie
+inwentaryzacja i uzupełnienie
 diagnostyki, profile gier, tryb awaryjny, polski interfejs.
 
 ## Synchronizacja z P5M

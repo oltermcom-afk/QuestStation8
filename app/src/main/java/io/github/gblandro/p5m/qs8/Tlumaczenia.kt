@@ -228,6 +228,13 @@ object Tlumaczenia
 		"shader (automatic)" to "shader (automatycznie)",
 		"direct (automatic)" to "bezpośrednia (automatycznie)",
 		"shader + frames" to "shader + klatki",
+		"Generated frames" to "Generowane klatki",
+		"Up to 60 fps" to "do 60 fps",
+		"Up to 120 fps" to "do 120 fps",
+		"One predicted frame per console frame in 30 fps games: motion like 60 fps, fewer and smaller artifacts. In 60 fps games no frames are predicted. No added latency." to
+				"W grach 30 fps jedna przewidziana klatka na każdą z konsoli: ruch jak przy 60 fps, mniej i mniejszych artefaktów. W grach 60 fps bez przewidywania. Bez dodatkowego opóźnienia.",
+		"A predicted frame on every panel refresh: 30 fps games get three per console frame. The smoothest, with the most artifacts in fast motion. No added latency." to
+				"Przewidziana klatka przy każdym odświeżeniu panelu: w grach 30 fps trzy na każdą z konsoli. Najpłynniej, ale najwięcej artefaktów w szybkim ruchu. Bez dodatkowego opóźnienia.",
 		"direct" to "bezpośrednia",
 		"Window selects its video path from Sharpness and Color. Frame prediction is only available in immersive mode." to
 				"Okno dobiera ścieżkę wideo do ostrości i koloru. Przewidywanie klatek działa tylko w trybie immersyjnym.",

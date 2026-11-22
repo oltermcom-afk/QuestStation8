@@ -3,6 +3,7 @@
 #include "log.h"
 #include "profundidade_neural.h"
 #include "qs8_hdr.h"  // QS8: suwak Peak HDR.
+#include "qs8_klatki.h"  // QS8: limit generowanych klatek (do 120 / do 60).
 
 #include <cmath>
 #include <cstring>
@@ -2011,6 +2012,7 @@ bool ToneMapper::Render(GLuint target, int32_t width, int32_t height, bool pq,
 	// de 1 o quadro seguinte atrasou: prever mais longe so aumentaria o erro.
 	extrap_scale_ = real_newest_ns_ > 0
 			? (float)((double)(agora - real_newest_ns_) / (double)periodo_fonte_ns_) : 0.0f;
+	extrap_scale_ = qs8::SkalaPrzewidywania(extrap_scale_, periodo_fonte_ns_);  // QS8: limit "do 60".
 	// Com previsao ligada, repeticao conta como passada sem quadro novo.
 	const bool novo = fresh && !(extrapolate && repeticao);
 	// Quadro real atrasado nao e so rede: jogo de 30 que cai para 25 segura um
