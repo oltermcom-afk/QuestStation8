@@ -5,12 +5,20 @@ on:
     branches: ['**']
     tags: ['v*']
   workflow_dispatch:
+    # QS8: powrót do starszej wersji. Numer builda (dev.N) do przywrócenia; kod
+    # z tamtego commita buduje się jako nowy build dev.<run>.r<N>, który instaluje
+    # się jak zwykła aktualizacja (rejestracja i ustawienia zostają).
+    inputs:
+      powrot_do:
+        description: 'QS8: numer builda do przywrócenia (np. 25 = dev.25). Puste = zwykły build.'
+        required: false
+        default: ''
 
 # Varios pushes seguidos geram builds concorrentes que publicam todos na mesma
 # tag 'dev'. Sem isto, um build antigo pode terminar depois de um novo e deixar
 # o APK desatualizado no release. Cancela o anterior e so o mais recente publica.
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-${{ github.ref }}${{ inputs.powrot_do && format('-r{0}', inputs.powrot_do) || '' }}  # QS8: powrót nie przerywa zwykłego buildu.
   cancel-in-progress: true
 
 jobs:
@@ -35,11 +43,43 @@ jobs:
       # blob do Azure que a politica de saida daqui recusa, e a API so devolve
       # um redirecionamento para la. Ver o passo "Diagnostico" no fim.
       issues: write
+      # QS8: odczyt starych buildów (powrót do wersji) i PR-ów commita (opis wydania).
+      actions: read
+      pull-requests: read
     steps:
+      # QS8: powrót do wersji — commit i gałąź builda dev.N z historii Actions.
+      - name: QS8 powrot do wersji
+        id: powrot
+        if: github.event_name == 'workflow_dispatch' && inputs.powrot_do != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMER: ${{ inputs.powrot_do }}
+        run: |
+          set -euo pipefail
+          case "$NUMER" in ''|*[!0-9]*) echo "::error::powrot_do musi być numerem builda, np. 25"; exit 1;; esac
+          for strona in $(seq 1 30); do
+            wynik=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/build-apk.yml/runs?per_page=100&page=$strona" \
+              --jq ".workflow_runs[] | select(.run_number == $NUMER) | \"\(.head_sha) \(.conclusion) \(.head_branch)\"" | head -n1)
+            [ -n "$wynik" ] && break
+            ile=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/build-apk.yml/runs?per_page=100&page=$strona" --jq '.workflow_runs | length')
+            [ "$ile" -eq 0 ] && break
+          done
+          if [ -z "${wynik:-}" ]; then
+            echo "::error::Nie ma builda dev.$NUMER w historii Actions."; exit 1
+          fi
+          read -r sha wynik_buildu galaz <<< "$wynik"
+          if [ "$wynik_buildu" != "success" ]; then
+            echo "::error::Build dev.$NUMER skończył się wynikiem '$wynik_buildu' — nie ma do czego wracać."; exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "galaz=$galaz" >> "$GITHUB_OUTPUT"
+          echo "Powrót do dev.$NUMER: commit $sha z gałęzi $galaz"
+
       - name: Checkout
         uses: actions/checkout@v7
         with:
           submodules: recursive
+          ref: ${{ steps.powrot.outputs.sha || github.sha }}  # QS8: przy powrocie kod starego builda.
 
       # Conferencias que custam milissegundos e substituem uma volta inteira de
       # CI -- ou, pior, uma sessao de teste gasta com um APK que nao podia
@@ -147,6 +187,8 @@ jobs:
           else
             BASE=$(grep '^p5mVersionName=' gradle.properties | cut -d= -f2)
             VERSION="${BASE}-dev.${GITHUB_RUN_NUMBER}"
+            # QS8: powrót = dev.<run>.r<N> (nowszy niż wszystko dotąd, z kodem dev.N).
+            [ -n "${{ steps.powrot.outputs.sha }}" ] && VERSION="${VERSION}.r${{ inputs.powrot_do }}"
             echo "tagged=false" >> "$GITHUB_OUTPUT"
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -412,7 +454,8 @@ jobs:
             This is the newest development build, **${{ steps.version.outputs.version }}**.
             It is rebuilt on every push, so it moves fast and it can break.
 
-            Built from commit ${{ github.sha }}.
+            Built from commit ${{ steps.powrot.outputs.sha || github.sha }}.
+            ${{ steps.powrot.outputs.sha && format('QS8: powrót do dev.{0} (kod tamtego builda pod nowym numerem).', inputs.powrot_do) || '' }}
 
             ## Installing
 
@@ -455,3 +498,45 @@ jobs:
 
             P5M is free and the source is open. If you want to keep it moving:
             <https://patreon.com/gblandro>
+
+      # QS8: każdy build zostaje na stałe jako osobne wydanie qs8-dev.<run> (APK +
+      # gałąź, PR, commit). Rolujące "dev" dalej służy aktualizacji w aplikacji.
+      # Przetestowane oznaczamy potem w tytule ✅ (gh release edit).
+      - name: QS8 stale wydanie builda
+        if: steps.version.outputs.tagged == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          SHA: ${{ steps.powrot.outputs.sha || github.sha }}
+          GALAZ: ${{ steps.powrot.outputs.galaz || github.ref_name }}
+          POWROT: ${{ steps.powrot.outputs.sha && inputs.powrot_do || '' }}
+        run: |
+          set -euo pipefail
+          tag="qs8-dev.${GITHUB_RUN_NUMBER}"
+          tytul_commita=$(git log -1 --format=%s)
+          prs=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}/pulls" --jq '[.[].number | "#\(.)"] | join(", ")' 2>/dev/null || true)
+          if [ -n "$POWROT" ]; then
+            nazwa="QS8 dev.${GITHUB_RUN_NUMBER} (${POWROT}) — powrót do dev.${POWROT}"
+          else
+            nazwa="QS8 dev.${GITHUB_RUN_NUMBER}"
+          fi
+          {
+            echo "**${nazwa}** · wersja \`${VERSION}\` · build $(date -u +%Y-%m-%d)"
+            echo
+            if [ -n "$POWROT" ]; then
+              echo "Powrót do **dev.${POWROT}**: kod tamtego builda pod nowym numerem, instaluje się jak zwykła aktualizacja."
+              echo
+            fi
+            echo "- Gałąź: \`${GALAZ}\`${prs:+ (PR ${prs})}"
+            echo "- Commit: ${SHA:0:7} — ${tytul_commita}"
+            echo
+            echo "Build zostaje na stałe. Przetestowane wersje mają w tytule ✅."
+            echo
+            echo "Instalacja na Queście: pobierz \`p5m-${VERSION}.apk\` w przeglądarce, Pliki → Pobrane → trzy kropki → Zainstaluj."
+            echo "Android nie zainstaluje starszego numeru na nowszy — do powrotu: Actions → Build APK → Run workflow → numer builda."
+          } > "$RUNNER_TEMP/wydanie.md"
+          gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$tag" "p5m-${VERSION}.apk" --repo "$GITHUB_REPOSITORY" \
+            --target "$SHA" --title "$nazwa" --notes-file "$RUNNER_TEMP/wydanie.md" \
+            --prerelease --latest=false
+          echo "Stałe wydanie: $tag"
