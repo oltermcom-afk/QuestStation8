@@ -158,11 +158,16 @@ w P5M plamę za głową). Profile nie ustawiają bitrate'u (zależy od sieci, ni
 3D osobnym przełącznikiem.
 Profile ekranu Kanapa/Kino/Biurko = zestawy `ScreenPrefs`.
 
-**Pomiar dev.21 (2026-11-22, Damian):** panel 180 Hz (profil „Responsywność”) dawał 35–36 ms
-head-to-photon, a 120 Hz („Zrównoważony”) 16–17 ms przy 0 zgubionych klatek i mniejszym
-obciążeniu CPU/GPU. Profil „Responsywność” usunięty (PR #17), wszystkie profile mają 120 Hz.
-Przełącznik „Panel rate” P5M w launcherze zostaje bez zmian. Dlaczego 180 Hz jest wolniejsze,
-sprawdzimy w dzienniku (linia „Panel at … Hz”), jeśli kiedyś będzie potrzebne.
+**Pomiar dev.21 (2026-11-22, Damian), head-to-photon z kompozytora:**
+- direct + 180 Hz (profil „Responsywność”): 35–36 ms (także bez filtra, tryb A);
+- direct + 120 Hz („Zrównoważony”): 16–17 ms, 0 zgubionych klatek, mniej CPU/GPU;
+- shader (10-bit) + 180 Hz: 18–20 ms.
+
+Samo 180 Hz nie jest winne — problem wygląda na połączenie ścieżki direct z 180 Hz (kod P5M,
+stos QS8 go nie dotyka). Profil „Responsywność” usunięty (PR #17): nie dawał zysku nad
+„Zrównoważonym”. Przełącznik „Panel rate” P5M zostaje bez zmian. Do sprawdzenia: direct + 180 Hz
+ręcznie (potwierdzenie), czy to samo jest w czystym P5M (zgłoszenie do upstreamu) i czy licznik
+nie mierzy tylko wieku klatki aplikacji (direct przy 180 Hz podaje klatkę co 3 odświeżenia).
 
 ## Jakość obrazu — decyzje (2026-11-21, analiza: `docs/QS8-ANALIZY.md`)
 

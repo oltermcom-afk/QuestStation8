@@ -15,9 +15,10 @@ import io.github.gblandro.p5m.Trace
  * Profile NIE ustawiają bitrate'u ani auto bitrate'u (decyzja Damiana: to
  * zależy od sieci, nie od gry) ani 3D (osobny przełącznik).
  *
- * Wszystkie profile mają panel 120 Hz. Profil „Responsive” z panelem 180 Hz
- * usunięty po teście dev.21 (22.11.2026): 180 Hz dało 35–36 ms head-to-photon,
- * 120 Hz 16–17 ms, przy mniejszym obciążeniu CPU i GPU.
+ * Wszystkie profile mają panel 120 Hz. Profil „Responsive” (ścieżka direct +
+ * 180 Hz) usunięty po teście dev.21 (22.11.2026): 35–36 ms head-to-photon,
+ * a Balanced (direct, 120 Hz) 16–17 ms. Samo 180 Hz nie jest winne: 10-bit
+ * (shader) przy 180 Hz dał 18–20 ms. Problem wygląda na połączenie direct + 180 Hz.
  *
  * Ścieżka, 10-bit i częstotliwość panelu działają od następnego połączenia;
  * wyostrzanie i ekran od razu.
