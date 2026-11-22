@@ -236,6 +236,20 @@ object Tlumaczenia
 		"A predicted frame on every panel refresh: 30 fps games get three per console frame. The smoothest, with the most artifacts in fast motion. No added latency." to
 				"Przewidziana klatka przy każdym odświeżeniu panelu: w grach 30 fps trzy na każdą z konsoli. Najpłynniej, ale najwięcej artefaktów w szybkim ruchu. Bez dodatkowego opóźnienia.",
 		"direct" to "bezpośrednia",
+		// --- panel w grze, strona 2 „Zaawansowane” (qs8/PanelZaawansowany)
+		"ADVANCED" to "ZAAWANSOWANE",
+		"FRAMES & PANEL" to "KLATKI I PANEL",
+		"NEXT CONNECTION" to "OD NASTĘPNEGO POŁĄCZENIA",
+		"↕ choose  ·  ↔ or ✕ / A change  ·  hold Options or ≡: page 1  ·  ○ / B close" to
+				"↕ wybór  ·  ↔ albo ✕ / A zmiana  ·  przytrzymaj Options albo ≡: strona 1  ·  ○ / B zamknij",
+		"Changes live" to "Zmienia się na żywo",
+		"Saved. Takes effect from the next connection." to "Zapisane. Zadziała od następnego połączenia.",
+		"Saved. No effect in this session." to "Zapisane. W tej sesji bez efektu.",
+		"Needs the shader path: from the next connection." to "Wymaga ścieżki shader: od następnego połączenia.",
+		"Only with 10-bit color." to "Tylko przy kolorze 10-bit.",
+		"Only in a 3D session: turn on Emulated 3D." to "Tylko w sesji 3D: włącz emulację 3D.",
+		"Measured: about 35 ms latency with it, 17 ms without." to "Zmierzone: ok. 35 ms opóźnienia z nią, 17 ms bez.",
+		"3D and 10-bit always use the shader." to "3D i 10-bit zawsze używają shadera.",
 		"Window selects its video path from Sharpness and Color. Frame prediction is only available in immersive mode." to
 				"Okno dobiera ścieżkę wideo do ostrości i koloru. Przewidywanie klatek działa tylko w trybie immersyjnym.",
 		"3D requires the shader. Select to toggle experimental frame prediction." to
