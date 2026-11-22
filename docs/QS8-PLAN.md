@@ -232,6 +232,14 @@ błędu przewidywania w trakcie gry.
 5. **Poświata wokół ekranu (Ambilight).** Kolory krawędzi obrazu ~10–15 razy/s, wygładzone, jako miękka warstwa
    za ekranem w ciemnym pokoju; tylko ścieżka shader (w direct obraz nie przechodzi przez aplikację). Najpierw
    rozpoznanie warstw i pokoju w P5M, osobny plan.
+   **Zrobione w PR #23 (decyzje Damiana 2026-11-23):** poziomy wył./słaba/średnia/mocna (domyślnie wył.), działa
+   tylko w ciemnym pokoju (passthrough ukryty albo kino, `passthroughBrightness < -0,05`), zgoda na punkty QS8 w
+   4 plikach P5M. `qs8_poswiata.cpp`: (1) po `tone_mapper_.Render` strefy 16×9 (64 próbki/komórkę) z obrazu
+   swapchaina wideo (SAMPLED), (2) wygładzanie τ = 0,25 s, (3) własny swapchain 256×144 (sRGB), warstwa o
+   kształcie i pozie ekranu, większa o 0,45 wysokości ekranu z każdej strony, wstawiona pod warstwy ekranu, alfa
+   pre-mnożona z wykładniczym zanikiem. Bez świeżych danych > 0,5 s (direct, pauza) — bez warstwy. Błąd shadera /
+   FBO / swapchaina = poświata wyłączona na sesję z linią w dzienniku. Później (osobno): wykrywanie czarnych pasów,
+   zabarwienie pokoju (passthrough) kolorem gry.
 
 ## Później (po pomiarach)
 

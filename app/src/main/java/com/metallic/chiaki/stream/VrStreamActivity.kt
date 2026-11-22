@@ -487,7 +487,7 @@ class VrStreamActivity: ComponentActivity()
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 		// QS8: kontrolery Questa -> tylko panel ustawien (plan 1B), przez qs8TouchKey.
 		lifecycle.addObserver(io.github.gblandro.p5m.qs8.TouchMenu { qs8TouchKey(it) })
-		io.github.gblandro.p5m.qs8.PeakHdr.zastosuj(this); io.github.gblandro.p5m.qs8.GenerowanieKlatek.zastosuj(this); io.github.gblandro.p5m.qs8.Mqsr.zastosuj(this)  // QS8: Peak HDR, limit klatek, MQSR z ustawien (czytane na zywo).
+		io.github.gblandro.p5m.qs8.PeakHdr.zastosuj(this); io.github.gblandro.p5m.qs8.GenerowanieKlatek.zastosuj(this); io.github.gblandro.p5m.qs8.Mqsr.zastosuj(this); io.github.gblandro.p5m.qs8.Poswiata.zastosuj(this)  // QS8: Peak HDR, limit klatek, MQSR, poswiata z ustawien (czytane na zywo).
 
 		Log.i(TAG, "VrStreamActivity.onCreate action=${intent?.action} " +
 				"categories=${intent?.categories} temConnectInfo=" +

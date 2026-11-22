@@ -167,6 +167,15 @@ class LauncherActivity: Activity()
 			prefs.stereoConvergence = (((prefs.stereoConvergence * 4f).toInt() + 1) % 5) / 4f
 			Log.i(TAG, "3D convergence: ${(prefs.stereoConvergence * 100).toInt()}%")
 		})
+		// QS8: poświata wokół ekranu (też na stronie 2 panelu w grze).
+		coluna.addView(linha(io.github.gblandro.p5m.qs8.Poswiata.NAZWA, { nome(io.github.gblandro.p5m.qs8.Poswiata.nazwa(this)) },
+				{ io.github.gblandro.p5m.qs8.Poswiata.opis(this) },
+				editavel = { currentMode() == DisplayMode.IMMERSIVE },
+				degraus = { 4 to io.github.gblandro.p5m.qs8.Poswiata.poziom(this) },
+				anterior = { io.github.gblandro.p5m.qs8.Poswiata.zmien(this, -1) }) {
+			io.github.gblandro.p5m.qs8.Poswiata.zmien(this, 1)
+			Log.i(TAG, "QS8: glow ${io.github.gblandro.p5m.qs8.Poswiata.nazwa(this)}")
+		})
 
 		// ------------------------------------------------------------ stream
 		coluna.addView(pagina("Stream"))
