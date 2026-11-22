@@ -2340,6 +2340,7 @@ void XrVideoSession::RenderFrame()
 		// pedir mistura por alfa sobre um formato que pode nao ter canal alfa e
 		// pedir problema.
 		cylinder.layerFlags = 0;
+		layer_settings.layerFlags = qs8::FiltrMqsr(layer_settings.layerFlags);  // QS8: MQSR eksperymentalne (przelacznik).
 		qs8::LogujBityWarstwy(layer_settings_supported_ ? layer_settings.layerFlags : 0,  // QS8: bity w dzienniku.
 				layer_settings_supported_ ? (compositor_owns_filter ? "compositor filter" : "shader sharpening") : "extension unavailable");
 		if(layer_settings_supported_ && layer_settings.layerFlags != 0)

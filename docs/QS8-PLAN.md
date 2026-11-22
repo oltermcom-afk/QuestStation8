@@ -220,6 +220,11 @@ błędu przewidywania w trakcie gry.
    `QUALITY_SHARPENING` (wariant z dev.21), na żywo (bity warstwy co klatkę), także na stronie 2. Zgubione klatki
    z dev.21 były przy włączonej głębi neuronowej — test bez niej: 120/180 Hz, direct/shader, 3D; klatki,
    opóźnienie, „dysk za głową”, ostrość vs Automatic.
+   **Zrobione w PR #22:** `Qs8Prefs.mqsr` (domyślnie wył.), `qs8::FiltrMqsr` w jednym punkcie `// QS8:` przed
+   dziennikiem bitów w `xr_session.cpp` — działa tylko, gdy w bitach jest `AUTO_LAYER_FILTER` (ostrość Automatic,
+   rozszerzenie dostępne, nie A/B „oryginał”). Wiersz w launcherze pod Sharpness (widoczny przy Automatic) i na
+   stronie 2 panelu (wygaszony przy innej ostrości). Wynik w dzienniku: `QS8: MQSR (experimental) on/off` i linia
+   bitów warstwy `… QUALITY_SHARPENING (MQSR)` bez NORMAL_*.
 4. **Nazwane profile gier.** Zapisz jako… (nazwa z klawiatury Questa), nadpisz, zmień nazwę, usuń; „BF6
    (zmieniony)”. Zawartość: obraz, klatki, Hz, 3D, ekran (rozmiar, odległość, wysokość, kształt, krzywizna,
    pokój); bez bitrate'u. Wbudowane (Balanced, Ultra smooth, Cinema) zostają. W grze: wiersz Profil i „Zapisz do

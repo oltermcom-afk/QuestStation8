@@ -129,6 +129,14 @@ class LauncherActivity: Activity()
 			Log.i(TAG, "Sharpness: ${prefs.sharpness} "
 					+ "(${StreamQualityPrefs.SHARPNESS_NAMES[prefs.sharpness]})")
 		})
+		// QS8: MQSR eksperymentalne (tylko przy ostrości Automatic; też na stronie 2 panelu w grze).
+		coluna.addView(linha(io.github.gblandro.p5m.qs8.Mqsr.NAZWA, { liga(io.github.gblandro.p5m.qs8.Mqsr.wlaczone(this)) },
+				{ io.github.gblandro.p5m.qs8.Mqsr.opis(this) },
+				visivel = { currentMode() == DisplayMode.IMMERSIVE && effectiveSharpness() == StreamQualityPrefs.SHARPNESS_AUTO },
+				degraus = { 2 to (if(io.github.gblandro.p5m.qs8.Mqsr.wlaczone(this)) 1 else 0) }) {
+			io.github.gblandro.p5m.qs8.Mqsr.przelacz(this)
+			Log.i(TAG, "QS8: MQSR (experimental) ${io.github.gblandro.p5m.qs8.Mqsr.wlaczone(this)}")
+		})
 		coluna.addView(linha("Emulated 3D", { liga(prefs.syntheticStereo) }, { stereoHint() }) {
 			prefs.syntheticStereo = !prefs.syntheticStereo
 			if(prefs.syntheticStereo) DisplayMode.set(this, DisplayMode.IMMERSIVE)

@@ -33,4 +33,10 @@ inline void LogujBityWarstwy(XrCompositionLayerSettingsFlagsFB bity, const char 
 			(unsigned long long)bity, nazwy.empty() ? "no filter" : nazwy.c_str(), powod);
 }
 
+// MQSR (eksperymentalne, qs8_mqsr.cpp): przy wlaczonym przelaczniku i filtrze
+// automatycznym zestaw kandydatow P5M zastepuje sam QUALITY_SHARPENING (MQSR),
+// jak w dev.21. Bez bitu AUTO (inne stopnie ostrosci, brak rozszerzenia,
+// sciezka shader bez filtra kompozytora) bity zostaja bez zmian.
+XrCompositionLayerSettingsFlagsFB FiltrMqsr(XrCompositionLayerSettingsFlagsFB bity);
+
 }  // namespace qs8

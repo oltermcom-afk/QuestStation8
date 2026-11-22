@@ -33,6 +33,11 @@ class Qs8Prefs(context: Context)
 		get() = prefs.getBoolean(KLUCZ_KLATKI_60, false)
 		set(value) { prefs.edit().putBoolean(KLUCZ_KLATKI_60, value).apply() }
 
+	/** MQSR (eksperymentalne): „Automatic” = sam MQSR zamiast zestawu P5M. Domyślnie wyłączone. */
+	var mqsr: Boolean
+		get() = prefs.getBoolean(KLUCZ_MQSR, false)
+		set(value) { prefs.edit().putBoolean(KLUCZ_MQSR, value).apply() }
+
 	/** Opis ostatnio znalezionego builda z release „dev” (dla karty aktualizacji), razem z jego wersją. */
 	fun opisAktualizacji(wersja: String): String? =
 		if(prefs.getString(KLUCZ_AKT_WERSJA, null) == wersja) prefs.getString(KLUCZ_AKT_OPIS, null) else null
@@ -51,5 +56,6 @@ class Qs8Prefs(context: Context)
 		private const val KLUCZ_PEAK_HDR = "peak_hdr"
 		private const val KLUCZ_JEZYK_PL = "jezyk_polski"
 		private const val KLUCZ_KLATKI_60 = "klatki_do_60"
+		private const val KLUCZ_MQSR = "mqsr_eksperymentalne"
 	}
 }
