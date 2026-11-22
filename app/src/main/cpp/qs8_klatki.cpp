@@ -6,6 +6,7 @@
 #include <atomic>
 #include <algorithm>
 #include <cmath>
+#include <iterator>
 
 namespace qs8 {
 namespace {
