@@ -225,6 +225,14 @@ class LauncherActivity: Activity()
 			Log.i(TAG, "Video path: shader=${prefs.toneMapped} "
 					+ "extrapolated=${prefs.frameExtrapolation}")
 		})
+		// QS8: limit generowanych klatek dla „shader + frames” (do 120 / do 60).
+		coluna.addView(linha("Generated frames", { io.github.gblandro.p5m.qs8.GenerowanieKlatek.nazwa(this) },
+				{ io.github.gblandro.p5m.qs8.GenerowanieKlatek.opis(this) },
+				visivel = { prefs.immersiveUsesShader && prefs.frameExtrapolation },
+				degraus = { 2 to (if(io.github.gblandro.p5m.qs8.GenerowanieKlatek.do60(this)) 1 else 0) }) {
+			io.github.gblandro.p5m.qs8.GenerowanieKlatek.przelacz(this)
+			Log.i(TAG, "QS8: generated frames ${io.github.gblandro.p5m.qs8.GenerowanieKlatek.nazwa(this)}")
+		})
 		coluna.addView(linha("Panel rate", { if(prefs.panel180) "180 Hz" else "120 Hz" },
 			{ if(prefs.panel180) "Each console frame shown three times. About 3 ms less latency, more battery and heat."
 				else "Each console frame shown twice. The default." },

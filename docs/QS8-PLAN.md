@@ -185,9 +185,26 @@ z zestawu P5M (zwykłe i MQSR wyostrzanie, supersampling). Zostaje dziennik bit�
 - **d) deblocking w shaderze — nie robimy.** HEVC ma deblocking i SAO w dekoderze; widoczne pasma
   w gradientach lepiej usuwa 10-bit, a dodatkowe rozmycie walczyłoby z CAS.
 
+## Generowane klatki „do 120 / do 60” (PR #18, 2026-11-22)
+
+Ustawienie w launcherze (Zaawansowane, widoczne przy „shader + frames”), domyślnie „do 120” = P5M.
+„Do 60” zaokrągla krok przewidywania w dół do 1/60 s (`qs8_klatki.cpp`, jedna linia w
+`tone_mapper.cpp`): gra 30 fps → jedna przewidziana klatka (½ okresu) na prawdziwą, każda przez dwa
+odświeżenia (120 Hz); gra 60 fps → bez przewidywania.
+Test dev.23: mniej artefaktów niż „do 120”, rzadkie szarpnięcie. Próba poprawki w dev.25 (pełne
+odświeżenia z zaokrągleniem i własnym pomiarem odświeżania) była na Queście gorsza: więcej artefaktów
+i chrupnięć przy szybkich obrotach (120 i 180 Hz, 3D bez głębi neuronowej) → cofnięta, logika z dev.23.
+Hipoteza: przy 3D aplikacja chwilami nie zdąża na odświeżenie i własny pomiar odświeżania się mylił;
+dev.23 bierze prawdziwy upływ czasu. Został sam licznik w dzienniku co 10 s (`QS8: frames rhythm …`,
+nie zmienia obrazu): obrazy równe / krótsze / dłuższe, co ile rysowań prawdziwa klatka, ile rysowań
+spóźnionych. Dalej dopiero z danymi z dziennika; jeśli to rytm — okres i chwila wyświetlenia z OpenXR
+(`predictedDisplayPeriod`), nie z własnego pomiaru.
+Automatu 60/120 nie robimy: brak wiarygodnego pomiaru
+błędu przewidywania w trakcie gry.
+
 ## Później (po pomiarach)
 
-Siła generowania klatek (30→60 vs 30→120 przy 120 Hz), inwentaryzacja i uzupełnienie
+inwentaryzacja i uzupełnienie
 diagnostyki, profile gier, tryb awaryjny, polski interfejs.
 
 ## Synchronizacja z P5M
