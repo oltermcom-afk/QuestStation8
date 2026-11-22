@@ -26,7 +26,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 | #14 | `qs8/hdr-peak` | #13 | Peak HDR 600/1000/4000 w trakcie gry (przytrzymanie Y / △, wiersz w launcherze), MaxCLL do dziennika (patch 0059). |
 | #15 | `qs8/plan-jakosc` | #14 | Plan: filtry kompozytora kosztują GPU; c) chroma „może później”, b) EASU i d) deblocking „nie robimy” (tylko docs). |
 | #16 | `qs8/polski` | #15 | Wersja polska / angielska (domyślnie polski, Help › Język), słownik `qs8/Tlumaczenia.kt`. |
-| #17 | `qs8/opoznienie` | #16 | Po teście dev.21: „Automatic” znów z zestawem filtrów P5M (MQSR gubił klatki), profil „Responsywność” (direct + 180 Hz, 35 ms) usunięty. |
+| #17 | `qs8/opoznienie` | #16 | Po teście dev.21: „Automatic” znów z zestawem filtrów P5M (MQSR gubił klatki), profil „Responsywność” usunięty (wniosek okazał się błędny: 35 ms dawało 3D — do decyzji, czy wraca). |
 
 **Merge po teście:** po kolei #6 → #17 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#17) do `qs8/main` jako jeden squash, a #6–#16 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
 
@@ -35,7 +35,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - dev.4 (1F): aktualizacja bez utraty rejestracji; preset Kino raz; centrowanie Meta.
 - dev.7 → dev.10 → dev.11 z aplikacji: karta, instalacja, rejestracja zostaje.
 - dev.10 / dev.11 (1B): ≡ otwiera panel, regulacja Touch, trzymane B kończy sesję, Touch nie wpływa na grę.
-- dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary kompozytora: Responsywność (direct + 180 Hz) 35–36 ms head-to-photon; Zrównoważony (direct + 120 Hz) 16–17 ms, mniej CPU/GPU; 10-bit (shader) + 180 Hz 18–20 ms; MQSR-only w Automatic gubi 0–4 klatki, tryb A (bez filtra) 0 → poprawki w #17.
+- dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary kompozytora: 35–36 ms head-to-photon i wyższe CPU/GPU = włączona emulacja 3D (nie 180 Hz); bez 3D: direct 120 Hz 16–17 ms, shader 180 Hz 18–20 ms; MQSR-only w Automatic gubi 0–4 klatki, tryb A (bez filtra) 0 → poprawki w #17.
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
 - Reszta PR #6–#17 (APK dev.22). Lista testów: raport końcowy sesji / sekcja niżej.
@@ -55,7 +55,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - **Rebranding:** etykiety w manifeście wpisane tekstem; `PsnLoginRelay` zmieniony w surowym HTML bez `// QS8:`; TAG-i, dziennik, `_p5m._tcp`, User-Agent bez zmian.
 - **1E-1:** brak Online ID (P5M zapisuje tylko numer konta); poprawka portu Broadcast w libchiaki nie robiona.
 - **MQSR (#10 → wycofane w #17):** samo `QUALITY_SHARPENING` w Automatic gubiło klatki na dev.21; #17 przywraca zestaw P5M (`AUTO_LAYER_FILTER` + NORMAL/QUALITY_SHARPENING + NORMAL_SUPER_SAMPLING). Z #10 zostaje dziennik bitów warstwy.
-- **Profile (#11):** bez bitrate'u / auto bitrate'u / 3D (decyzja Damiana). Profile: Zrównoważony / Ultra płynność / Kino, wszystkie 120 Hz (Responsywność usunięta w #17: direct + 180 Hz = 35 ms). Aktywny profil rozpoznawany po wartościach (toneMapped, tenBit, frameExtrapolation, panel180, sharpness), ekran nie wchodzi do porównania; zmiana ostrości w panelu → „Custom”. Kino: `toneMapped=false` + `tenBit=true` (shader przez 10-bit).
+- **Profile (#11):** bez bitrate'u / auto bitrate'u / 3D (decyzja Damiana). Profile: Zrównoważony / Ultra płynność / Kino, wszystkie 120 Hz (Responsywność usunięta w #17; 35 ms dawało 3D, nie 180 Hz — do decyzji). Aktywny profil rozpoznawany po wartościach (toneMapped, tenBit, frameExtrapolation, panel180, sharpness), ekran nie wchodzi do porównania; zmiana ostrości w panelu → „Custom”. Kino: `toneMapped=false` + `tenBit=true` (shader przez 10-bit).
 - **Przytrzymania w panelu (#12–#14):** A / ✕ = rozmiar 1:1, X / □ = A/B, Y / △ = Peak HDR; próg 0,6 s; krótkie naciśnięcie wykonywane **po puszczeniu** (wcześniej natychmiast). UP pada dalej idzie do konsoli.
 - **A/B:** tylko filtry (kompozytor Off, CAS 0), tylko w sesji, bez zapisu.
 - **Peak HDR:** `Qs8Prefs.peakHdr` (domyślnie 1000 jak P5M), atomik w `qs8_hdr.cpp`, uniform `uPicoFonte` przy każdym rysowaniu.
@@ -69,7 +69,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Brak sekretów do tagów `v*` → tag nie przejdzie CI. Klucz tagów ≠ klucz dev.
 - Asset `p5m-…-dev.N.apk` kasowany przy kolejnym buildzie → stara karta daje „HTTP 404”; wyłączyć/włączyć sprawdzanie.
 - MaxCLL: nie wiadomo, czy dekoder Questa podaje `hdr-static-info` — linia w dzienniku powie.
-- Ścieżka direct + panel 180 Hz daje 35 ms head-to-photon (direct 120 Hz: 16–17, shader 180 Hz: 18–20) — przyczyna nieznana, kod P5M. Sprawdzić: potwierdzenie ręczne, czysty P5M, czy licznik mierzy wiek klatki aplikacji. Przełącznik P5M bez zmian.
+- Emulacja 3D: 35–36 ms head-to-photon i więcej CPU/GPU (kod P5M). Profil Responsywność wraca, jeśli direct + 180 Hz bez 3D będzie szybsze niż 16–17 ms.
 
 ## Pułapki w kodzie P5M
 - `VrStreamActivity`: `handleAdjustKey`, `handleQuitHold`, `teclaNoPin` przekazują **ACTION_UP do `StreamInput`** (konsola). Każde nowe źródło wejścia „tylko dla panelu” podaje im wyłącznie DOWN. `toggleAdjustMode` → `releaseChordButtons` → konsola.
