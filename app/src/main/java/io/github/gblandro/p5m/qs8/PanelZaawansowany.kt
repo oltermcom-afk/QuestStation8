@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import io.github.gblandro.p5m.PainelDeAjuste
 import io.github.gblandro.p5m.ProfundidadeNeural
+import io.github.gblandro.p5m.ScreenPrefs
 import io.github.gblandro.p5m.StreamQualityPrefs
 import io.github.gblandro.p5m.XrBridge
 import java.util.concurrent.Executors
@@ -56,6 +57,7 @@ class PanelZaawansowany(
 	private val sesjaShader = jakosc.toneMapped || jakosc.syntheticStereo || jakosc.tenBitNaSessao
 	private val sesja3D = jakosc.syntheticStereo
 	private val sesja10 = jakosc.tenBitNaSessao
+	private val ekran = ScreenPrefs(activity)
 
 	/** Start i stop sieci neuronowej po kolei, poza głównym wątkiem (stop czeka na wątek sieci do 1 s). */
 	private val neuronowa = Executors.newSingleThreadExecutor { Thread(it, "qs8-neural-toggle").apply { isDaemon = true } }
@@ -107,6 +109,21 @@ class PanelZaawansowany(
 				{ if(Mqsr.aktywne(jakosc)) Kiedy.NA_ZYWO else Kiedy.NIEAKTYWNE },
 				{ if(Mqsr.aktywne(jakosc)) "Watch dropped frames and latency on page 1." else "Only with Sharpness: Automatic (□ on page 1)." },
 				{ _ -> Mqsr.przelacz(activity) }),
+		Wiersz(0, Poswiata.NAZWA,
+				{ Poswiata.nazwa(activity) },
+				{ when
+					{
+						!sesjaShader -> Kiedy.NIE_W_TEJ_SESJI
+						!Poswiata.ciemnyPokoj(ekran) -> Kiedy.NIEAKTYWNE
+						else -> Kiedy.NA_ZYWO
+					} },
+				{ when
+					{
+						!sesjaShader -> "Needs the shader path."
+						!Poswiata.ciemnyPokoj(ekran) -> "Only in a dark room: Room hidden or cinema (△ on page 1)."
+						else -> null
+					} },
+				{ k -> Poswiata.zmien(activity, k) }),
 		// --- 3D
 		Wiersz(1, "3D strength",
 				{ if(jakosc.stereoStrength <= 0f) "0% (2D)" else pct(jakosc.stereoStrength) },
@@ -248,7 +265,7 @@ class PanelZaawansowany(
 	private val AVISO = Color.rgb(217, 184, 112)
 	private val ZYWO = Color.rgb(95, 211, 141)
 
-	private val SEKCJE = arrayOf("FRAMES & PANEL", "3D", "NEXT CONNECTION")
+	private val SEKCJE = arrayOf("PICTURE", "3D", "NEXT CONNECTION")
 
 	private fun t(s: String) = Tlumaczenia.t(s)
 
@@ -295,7 +312,7 @@ class PanelZaawansowany(
 
 		val szer = (w - 2 * margem - 2 * vao) / 3
 		val gora = 168f
-		val wys = 68f
+		val wys = 56f  // pięć wierszy w kolumnie „Obraz”
 		for(s in 0..2)
 		{
 			val x0 = margem + s * (szer + vao)
@@ -318,14 +335,14 @@ class PanelZaawansowany(
 						style = Paint.Style.STROKE; strokeWidth = 3f; color = DESTAQUE })
 				}
 				val wygaszony = wiersz.kiedy() == Kiedy.NIE_W_TEJ_SESJI || wiersz.kiedy() == Kiedy.NIEAKTYWNE
-				val linia = y + wys / 2 + 11f
+				val linia = y + wys / 2 + 10f
 				p.typeface = Typeface.DEFAULT
-				p.textSize = 30f
+				p.textSize = 28f
 				p.color = if(wygaszony) Color.argb(150, 142, 152, 173) else SUAVE
 				c.drawText(t(wiersz.nazwa), x0, linia, p)
 				val wartosc = t(wiersz.wartosc()) + if(wiersz.kiedy() == Kiedy.NASTEPNE_POLACZENIE) "  ↻" else ""
 				p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-				p.textSize = 32f
+				p.textSize = 30f
 				p.color = when
 				{
 					wygaszony -> Color.argb(150, 238, 241, 247)

@@ -38,6 +38,11 @@ class Qs8Prefs(context: Context)
 		get() = prefs.getBoolean(KLUCZ_MQSR, false)
 		set(value) { prefs.edit().putBoolean(KLUCZ_MQSR, value).apply() }
 
+	/** Poświata wokół ekranu: 0 wył. (domyślnie), 1 słaba, 2 średnia, 3 mocna. */
+	var poswiata: Int
+		get() = prefs.getInt(KLUCZ_POSWIATA, 0).coerceIn(0, 3)
+		set(value) { prefs.edit().putInt(KLUCZ_POSWIATA, value.coerceIn(0, 3)).apply() }
+
 	/** Opis ostatnio znalezionego builda z release „dev” (dla karty aktualizacji), razem z jego wersją. */
 	fun opisAktualizacji(wersja: String): String? =
 		if(prefs.getString(KLUCZ_AKT_WERSJA, null) == wersja) prefs.getString(KLUCZ_AKT_OPIS, null) else null
@@ -57,5 +62,6 @@ class Qs8Prefs(context: Context)
 		private const val KLUCZ_JEZYK_PL = "jezyk_polski"
 		private const val KLUCZ_KLATKI_60 = "klatki_do_60"
 		private const val KLUCZ_MQSR = "mqsr_eksperymentalne"
+		private const val KLUCZ_POSWIATA = "poswiata"
 	}
 }

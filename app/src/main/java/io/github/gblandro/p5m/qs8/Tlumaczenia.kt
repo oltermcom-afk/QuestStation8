@@ -238,7 +238,16 @@ object Tlumaczenia
 		"direct" to "bezpośrednia",
 		// --- panel w grze, strona 2 „Zaawansowane” (qs8/PanelZaawansowany)
 		"ADVANCED" to "ZAAWANSOWANE",
-		"FRAMES & PANEL" to "KLATKI I PANEL",
+		"PICTURE" to "OBRAZ",
+		"Glow" to "Poświata",
+		// Poziomy poświaty: własne słowa, bo „Soft/Medium/Strong” mają już formy dla ostrości i pokoju.
+		"Faint" to "Słaba",
+		"Moderate" to "Średnia",
+		"Bright" to "Mocna",
+		"Needs the shader path." to "Wymaga ścieżki shader.",
+		"Only in a dark room: Room hidden or cinema (△ on page 1)." to "Tylko w ciemnym pokoju: pokój ukryty albo kino (△ na stronie 1).",
+		"Light around the screen in the colors of its edges, like Ambilight. Only in a dark room (room hidden or dimmed for cinema) and with the shader video path. No added latency." to
+				"Światło wokół ekranu w kolorach jego krawędzi, jak Ambilight. Tylko w ciemnym pokoju (pokój ukryty albo przyciemniony na kino) i przy ścieżce wideo shader. Bez dodatkowego opóźnienia.",
 		"NEXT CONNECTION" to "OD NASTĘPNEGO POŁĄCZENIA",
 		"↕ choose  ·  ↔ or ✕ / A change  ·  hold Options or ≡: page 1  ·  ○ / B close" to
 				"↕ wybór  ·  ↔ albo ✕ / A zmiana  ·  przytrzymaj Options albo ≡: strona 1  ·  ○ / B zamknij",

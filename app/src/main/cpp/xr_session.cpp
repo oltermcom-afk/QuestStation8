@@ -4,6 +4,7 @@
 #include "log.h"
 #include "qs8_touch.h"  // QS8: kontrolery Questa -> panel ustawien (plan 1B).
 #include "qs8_warstwa.h"  // QS8: dziennik bitow filtrow warstwy wideo.
+#include "qs8_poswiata.h"  // QS8: poswiata wokol ekranu.
 
 #include <chrono>
 #include <algorithm>
@@ -1357,6 +1358,7 @@ bool XrVideoSession::RenderVideoThroughShader()
 		drawn = tone_mapper_.Render(video_images_[index].image, video_width_, video_height_,
 				tone_map_pq_.load(), sharpen, false, extrapolate,
 				right_acquired ? video_images_right_[index_right].image : 0);
+	if(drawn) qs8::PoswiataAktualizuj(video_images_[index].image, video_width_, video_height_);  // QS8: kolory krawedzi dla poswiaty.
 
 	XrSwapchainImageReleaseInfo release{XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};
 	xrReleaseSwapchainImage(video_swapchain_, &release);
@@ -2506,6 +2508,7 @@ void XrVideoSession::RenderFrame()
 			cylinder_right.eyeVisibility = XR_EYE_VISIBILITY_RIGHT;
 		}
 
+		const size_t qs8_przed = layers.size();  // QS8: tu wejdzie poswiata (pod ekran).
 		if(layer_shape_.load() == LayerShape::Cylinder)
 		{
 			layers.push_back(reinterpret_cast<const XrCompositionLayerBaseHeader *>(&cylinder));
@@ -2548,6 +2551,8 @@ void XrVideoSession::RenderFrame()
 						reinterpret_cast<const XrCompositionLayerBaseHeader *>(&quad_right));
 			}
 		}
+		qs8::PoswiataWstaw(layers, qs8_przed, session_,  // QS8: poswiata pod ekranem, tylko w ciemnym pokoju.
+				!(passthrough_supported_ && passthrough_enabled_) || quality.passthroughBrightness < -0.05f);
 	}
 
 	// O painel entra por ultimo, para ficar por cima da tela do console.
@@ -2652,6 +2657,7 @@ void XrVideoSession::Destroy()
 	if(!com_contexto && egl_display_ != EGL_NO_DISPLAY)
 		LOGW("Session release: no GL context for the teardown (0x%x)", eglGetError());
 	tone_mapper_.Destroy();
+	qs8::PoswiataZniszcz();  // QS8: swapchain i GL poswiaty.
 	// Entregue pelo Kotlin mas nunca anexada (a sessao acabou antes do
 	// primeiro quadro): so o Attach passava a posse ao tone mapper.
 	if(pending_surface_texture_)
