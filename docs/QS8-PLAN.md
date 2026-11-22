@@ -158,11 +158,14 @@ w P5M plamę za głową). Profile nie ustawiają bitrate'u (zależy od sieci, ni
 3D osobnym przełącznikiem.
 Profile ekranu Kanapa/Kino/Biurko = zestawy `ScreenPrefs`.
 
-**Pomiar dev.21 (2026-11-22, Damian), head-to-photon z kompozytora:** 35–36 ms i wyższe CPU/GPU
-daje **włączona emulacja 3D** (`profundidade_neural`, przełącznik P5M), nie panel 180 Hz ani ścieżka.
-Bez 3D: direct + 120 Hz 16–17 ms, shader (10-bit) + 180 Hz 18–20 ms. Profil „Responsywność”
-(direct + 180 Hz) usunięto w PR #17 na podstawie błędnego wniosku — wraca, jeśli direct + 180 Hz
-bez 3D okaże się szybsze od „Zrównoważonego”. Do rozważenia: informacja o koszcie 3D przy przełączniku.
+**Pomiar dev.21 (2026-11-22, Damian), head-to-photon z kompozytora:**
+- direct + 120 Hz: 16–17 ms; direct + 180 Hz: 17 ms; shader (10-bit) + 180 Hz: 18–20 ms; zawsze 0 zgubionych klatek;
+- 3D bez głębi z sieci neuronowej: bez wyraźnego wzrostu;
+- **głębia z sieci neuronowej (`profundidade_neural`, P5M): 35–36 ms i wyraźnie wyższe CPU/GPU.**
+
+Wniosek: 180 Hz nie daje mierzalnego zysku, więc profil „Responsywność” usunięty (PR #17) i nie wraca.
+Przełącznik „Panel rate” P5M zostaje. Do rozważenia później: informacja o koszcie opóźnienia przy
+przełączniku głębi neuronowej.
 
 ## Jakość obrazu — decyzje (2026-11-21, analiza: `docs/QS8-ANALIZY.md`)
 

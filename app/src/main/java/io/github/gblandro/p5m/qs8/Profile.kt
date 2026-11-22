@@ -15,10 +15,10 @@ import io.github.gblandro.p5m.Trace
  * Profile NIE ustawiają bitrate'u ani auto bitrate'u (decyzja Damiana: to
  * zależy od sieci, nie od gry) ani 3D (osobny przełącznik).
  *
- * Profil „Responsive” (direct + 180 Hz) usunięty w PR #17 po pomiarze 35–36 ms
- * na dev.21 (22.11.2026). Później okazało się, że te 35 ms daje włączona
- * emulacja 3D (osobny przełącznik, profile go nie ruszają), a nie 180 Hz —
- * powrót profilu zależy od pomiaru direct + 180 Hz bez 3D.
+ * Profil „Responsive” (direct + 180 Hz) usunięty w PR #17: pomiar na dev.21
+ * (22.11.2026) dał 17 ms przy 180 Hz wobec 16–17 ms przy 120 Hz — brak zysku,
+ * za to więcej baterii i ciepła. (Wcześniejsze 35 ms dawała głębia z sieci
+ * neuronowej w 3D, nie odświeżanie panelu.)
  *
  * Ścieżka, 10-bit i częstotliwość panelu działają od następnego połączenia;
  * wyostrzanie i ekran od razu.
