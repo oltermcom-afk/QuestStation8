@@ -147,7 +147,6 @@ i linia „Profil ◀ ▶” w panelu.
 
 | Profil | Ścieżka | Klatki | Auto bitrate | Ekran |
 |---|---|---|---|---|
-| Responsywność | direct | wył. | wył. | — |
 | Zrównoważony (domyślny) | direct | wył. | wł. | — |
 | Ultra Płynność | shader + frames | wł. | wł. | — |
 | Kino | direct | wył. | wł. | duży, przyciemniony |
@@ -159,10 +158,20 @@ w P5M plamę za głową). Profile nie ustawiają bitrate'u (zależy od sieci, ni
 3D osobnym przełącznikiem.
 Profile ekranu Kanapa/Kino/Biurko = zestawy `ScreenPrefs`.
 
+**Pomiar dev.21 (2026-11-22, Damian):** panel 180 Hz (profil „Responsywność”) dawał 35–36 ms
+head-to-photon, a 120 Hz („Zrównoważony”) 16–17 ms przy 0 zgubionych klatek i mniejszym
+obciążeniu CPU/GPU. Profil „Responsywność” usunięty (PR #17), wszystkie profile mają 120 Hz.
+Przełącznik „Panel rate” P5M w launcherze zostaje bez zmian. Dlaczego 180 Hz jest wolniejsze,
+sprawdzimy w dzienniku (linia „Panel at … Hz”), jeśli kiedyś będzie potrzebne.
+
 ## Jakość obrazu — decyzje (2026-11-21, analiza: `docs/QS8-ANALIZY.md`)
 
 Kolejność: preset „piksel w piksel” → przełącznik A/B → suwak Peak HDR → MQSR tylko w „Automatic”
-(wszystkie cztery zrobione w PR #10–#14, czekają na test).
+(zrobione w PR #10–#14).
+
+**MQSR tylko w „Automatic” — wycofane (PR #17, 2026-11-22).** Na dev.21 z samym `QUALITY_SHARPENING`
+kompozytor gubił 0–4 klatki; w trybie A (bez filtra) 0. „Automatic” znowu daje Mecie wybór
+z zestawu P5M (zwykłe i MQSR wyostrzanie, supersampling). Zostaje dziennik bitów warstwy.
 
 - **c) chroma 4:2:0 sterowana lumą — może później.** Fundament jest (sonda `GL_EXT_YUV_target`),
   ale zysk dotyczy tylko kolorowych krawędzi, a koszt to ~0,3–0,5 ms na ścieżce shader i ryzyko

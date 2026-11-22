@@ -15,6 +15,10 @@ import io.github.gblandro.p5m.Trace
  * Profile NIE ustawiają bitrate'u ani auto bitrate'u (decyzja Damiana: to
  * zależy od sieci, nie od gry) ani 3D (osobny przełącznik).
  *
+ * Wszystkie profile mają panel 120 Hz. Profil „Responsive” z panelem 180 Hz
+ * usunięty po teście dev.21 (22.11.2026): 180 Hz dało 35–36 ms head-to-photon,
+ * 120 Hz 16–17 ms, przy mniejszym obciążeniu CPU i GPU.
+ *
  * Ścieżka, 10-bit i częstotliwość panelu działają od następnego połączenia;
  * wyostrzanie i ekran od razu.
  */
@@ -31,8 +35,6 @@ object Profile
 		val ekranKino: Boolean)       // przy wyborze: cylinder, krzywizna 0,6, pokój ukryty
 
 	val LISTA = listOf(
-		Profil("Responsive", "Direct video path and a 180 Hz panel: the least latency. " +
-				"More battery and heat.", false, false, false, true, StreamQualityPrefs.SHARPNESS_MEDIUM, false),
 		Profil("Balanced", "Direct video path at 120 Hz. The default.",
 				false, false, false, false, StreamQualityPrefs.SHARPNESS_MEDIUM, false),
 		Profil("Ultra smooth", "Shader path with predicted frames between the console's: smoother motion, " +

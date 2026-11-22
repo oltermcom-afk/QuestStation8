@@ -259,13 +259,10 @@ object Tlumaczenia
 		"Only lowers" to "Tylko obniża",
 		"Up and down" to "W górę i w dół",
 		// --- profile (QS8)
-		"Responsive" to "Responsywność",
 		"Balanced" to "Zrównoważony",
 		"Ultra smooth" to "Ultra płynność",
 		"Cinema" to "Kino",
 		"Custom" to "Własny",
-		"Direct video path and a 180 Hz panel: the least latency. More battery and heat. Takes effect on the next connection." to
-				"Ścieżka bezpośrednia i panel 180 Hz: najmniejsze opóźnienie, więcej baterii i ciepła. Działa od następnego połączenia.",
 		"Direct video path at 120 Hz. The default. Takes effect on the next connection." to
 				"Ścieżka bezpośrednia, 120 Hz. Domyślnie. Działa od następnego połączenia.",
 		"Shader path with predicted frames between the console's: smoother motion, some artifacts in fast scenes. Takes effect on the next connection." to

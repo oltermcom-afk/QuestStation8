@@ -1,4 +1,4 @@
-# QuestStation8 — stan projektu (2026-11-21, koniec sesji)
+# QuestStation8 — stan projektu (2026-11-22)
 
 Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.md`.
 Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `docs/podglad/`.
@@ -10,7 +10,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
-**Ostatni APK: dev.21** (gałąź `qs8/polski`, zawiera cały stos #6–#16). Szczyt stosu: `qs8/polski`.
+**Ostatni APK: dev.22** (gałąź `qs8/opoznienie`, cały stos #6–#17). Szczyt stosu: `qs8/opoznienie`.
 
 | PR | Gałąź | Baza | Co (jedno zdanie) |
 |---|---|---|---|
@@ -19,24 +19,26 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 | #7 | `qs8/galki-touch` | #6 | Kliknięcia gałek Touch: lewa = Brightness, prawa = 3D strength. |
 | #8 | `qs8/rebranding` | #7 | Logo `ic_qs8` i nazwa QuestStation8 w tekstach widocznych (`qs8/Marka`), Help: „Based on P5M by gblandro”. |
 | #9 | `qs8/1e1-account-id` | #8 | 1E-1: Account ID z logowania PSN w goglach (patch 0058 + `qs8/RejestracjaPsn`), Broadcast domyślnie wył. |
-| #10 | `qs8/mqsr-auto` | #9 | Sharpness „Automatic” = `AUTO_LAYER_FILTER` + tylko `QUALITY_SHARPENING` (MQSR); bity filtrów w dzienniku (`qs8_warstwa.h`). |
-| #11 | `qs8/profile` | #10 | Profile Responsive / Balanced / Ultra smooth / Cinema (bez bitrate'u), „Custom”, podgląd w panelu (`qs8/Profile`). |
+| #10 | `qs8/mqsr-auto` | #9 | Sharpness „Automatic” = `AUTO_LAYER_FILTER` + tylko `QUALITY_SHARPENING` (MQSR); bity filtrów w dzienniku (`qs8_warstwa.h`). Filtry wycofane w #17. |
+| #11 | `qs8/profile` | #10 | Profile Responsive / Balanced / Ultra smooth / Cinema (bez bitrate'u), „Custom”, podgląd w panelu (`qs8/Profile`). Responsive usunięty w #17. |
 | #12 | `qs8/piksel` | #11 | Rozmiar „piksel w piksel”: przytrzymanie A / ✕ w panelu (`qs8/PikselWPiksel`, `qs8/Przytrzymanie`, `qs8/StanPanelu`). |
 | #13 | `qs8/ab` | #12 | A/B obraz oryginalny / ulepszony: przytrzymanie X / □ (`qs8/PorownanieAB`). |
 | #14 | `qs8/hdr-peak` | #13 | Peak HDR 600/1000/4000 w trakcie gry (przytrzymanie Y / △, wiersz w launcherze), MaxCLL do dziennika (patch 0059). |
 | #15 | `qs8/plan-jakosc` | #14 | Plan: filtry kompozytora kosztują GPU; c) chroma „może później”, b) EASU i d) deblocking „nie robimy” (tylko docs). |
 | #16 | `qs8/polski` | #15 | Wersja polska / angielska (domyślnie polski, Help › Język), słownik `qs8/Tlumaczenia.kt`. |
+| #17 | `qs8/opoznienie` | #16 | Po teście dev.21: „Automatic” znów z zestawem filtrów P5M (MQSR gubił klatki), profil „Responsywność” (180 Hz, 35 ms) usunięty. |
 
-**Merge po teście:** po kolei #6 → #16 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#16) do `qs8/main` jako jeden squash, a #6–#15 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
+**Merge po teście:** po kolei #6 → #17 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#17) do `qs8/main` jako jeden squash, a #6–#16 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
 - dev.4 (1F): aktualizacja bez utraty rejestracji; preset Kino raz; centrowanie Meta.
 - dev.7 → dev.10 → dev.11 z aplikacji: karta, instalacja, rejestracja zostaje.
 - dev.10 / dev.11 (1B): ≡ otwiera panel, regulacja Touch, trzymane B kończy sesję, Touch nie wpływa na grę.
+- dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary kompozytora: profil Responsywność (180 Hz) 35–36 ms head-to-photon; Zrównoważony (120 Hz) 16–17 ms, mniej CPU/GPU; MQSR-only w Automatic gubi 0–4 klatki, tryb A (bez filtra) 0 → poprawki w #17.
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
-- Wszystko z PR #6–#16 (APK dev.21). Lista testów: raport końcowy sesji / sekcja niżej.
+- Reszta PR #6–#17 (APK dev.22). Lista testów: raport końcowy sesji / sekcja niżej.
 - „Zgłoś problem” przy niezalogowanym GitHubie (poprawka w #6).
 - **Tryb mobilny (pad przy Queście) nigdy nie był testowany w QS8.**
 - Podglądy panelu (`docs/podglad/`, skrypt `tools/qs8_podglad_panelu.py`) to rekonstrukcja z kodu i fontów Roboto, nie zrzuty z Questa; wersja polska panelu niepodglądana (szerokości policzone).
@@ -52,8 +54,8 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - **Gałki Touch:** bity 13/14 → SELECT/START. Bez przycisku Questa: Adaptive triggers (R3), Touchpad click (PS).
 - **Rebranding:** etykiety w manifeście wpisane tekstem; `PsnLoginRelay` zmieniony w surowym HTML bez `// QS8:`; TAG-i, dziennik, `_p5m._tcp`, User-Agent bez zmian.
 - **1E-1:** brak Online ID (P5M zapisuje tylko numer konta); poprawka portu Broadcast w libchiaki nie robiona.
-- **MQSR (#10):** usunięto też kandydata `NORMAL_SUPER_SAMPLING` (dosłownie „tylko QUALITY_SHARPENING”). Bez rozszerzenia auto-filter zostaje `NORMAL_SHARPENING` (jawne MQSR dawało plamę za głową).
-- **Profile (#11):** bez bitrate'u / auto bitrate'u / 3D (decyzja Damiana). Aktywny profil rozpoznawany po wartościach (toneMapped, tenBit, frameExtrapolation, panel180, sharpness), ekran nie wchodzi do porównania; zmiana ostrości w panelu → „Custom”. Kino: `toneMapped=false` + `tenBit=true` (shader przez 10-bit).
+- **MQSR (#10 → wycofane w #17):** samo `QUALITY_SHARPENING` w Automatic gubiło klatki na dev.21; #17 przywraca zestaw P5M (`AUTO_LAYER_FILTER` + NORMAL/QUALITY_SHARPENING + NORMAL_SUPER_SAMPLING). Z #10 zostaje dziennik bitów warstwy.
+- **Profile (#11):** bez bitrate'u / auto bitrate'u / 3D (decyzja Damiana). Profile: Zrównoważony / Ultra płynność / Kino, wszystkie 120 Hz (Responsywność usunięta w #17 po pomiarze). Aktywny profil rozpoznawany po wartościach (toneMapped, tenBit, frameExtrapolation, panel180, sharpness), ekran nie wchodzi do porównania; zmiana ostrości w panelu → „Custom”. Kino: `toneMapped=false` + `tenBit=true` (shader przez 10-bit).
 - **Przytrzymania w panelu (#12–#14):** A / ✕ = rozmiar 1:1, X / □ = A/B, Y / △ = Peak HDR; próg 0,6 s; krótkie naciśnięcie wykonywane **po puszczeniu** (wcześniej natychmiast). UP pada dalej idzie do konsoli.
 - **A/B:** tylko filtry (kompozytor Off, CAS 0), tylko w sesji, bez zapisu.
 - **Peak HDR:** `Qs8Prefs.peakHdr` (domyślnie 1000 jak P5M), atomik w `qs8_hdr.cpp`, uniform `uPicoFonte` przy każdym rysowaniu.
@@ -67,7 +69,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Brak sekretów do tagów `v*` → tag nie przejdzie CI. Klucz tagów ≠ klucz dev.
 - Asset `p5m-…-dev.N.apk` kasowany przy kolejnym buildzie → stara karta daje „HTTP 404”; wyłączyć/włączyć sprawdzanie.
 - MaxCLL: nie wiadomo, czy dekoder Questa podaje `hdr-static-info` — linia w dzienniku powie.
-- MQSR na cylindrze: dokumentacja Mety milczy o typach warstw; ocena tylko na oko (A/B).
+- Panel 180 Hz (przełącznik P5M „Panel rate”) daje 2× wyższe head-to-photon niż 120 Hz — przyczyna nieznana (dziennik: „Panel at … Hz”). Przełącznik P5M bez zmian.
 
 ## Pułapki w kodzie P5M
 - `VrStreamActivity`: `handleAdjustKey`, `handleQuitHold`, `teclaNoPin` przekazują **ACTION_UP do `StreamInput`** (konsola). Każde nowe źródło wejścia „tylko dla panelu” podaje im wyłącznie DOWN. `toggleAdjustMode` → `releaseChordButtons` → konsola.
@@ -91,7 +93,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Lokalna kopia: `~/QuestStation8/klucze/qs8-debug.keystore` (poza repo). W GitHub: `P5M_DEBUG_KEYSTORE_BASE64`.
 
 ## Następne kroki (kolejność)
-1. Test dev.21 na Queście (cały stos #6–#16) → decyzja o merge'u stosu.
+1. Dokończyć test na dev.22 (cały stos #6–#17; dev.21 sprawdzony częściowo) → decyzja o merge'u stosu.
 2. Poprawki po teście (nowe PR-y na szczycie stosu albo na `qs8/main` po merge'u).
 3. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
 4. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
