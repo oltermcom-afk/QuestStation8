@@ -19,6 +19,9 @@ class StanPanelu
 	/** Porównanie A/B: true = obraz bez wyostrzania (oryginał), do końca sesji albo kolejnego przełączenia. */
 	var oryginal = false
 
+	/** Strona 2 panelu „Zaawansowane” ([PanelZaawansowany]); zamknięcie panelu wraca do strony 1. */
+	var strona2 = false
+
 	private var komunikat: String? = null
 	private var komunikatDo = 0L
 

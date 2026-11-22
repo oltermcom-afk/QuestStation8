@@ -211,8 +211,11 @@ błędu przewidywania w trakcie gry.
    wtedy pobrać ze stałego wydania).
 2. **Druga strona panelu w grze „Zaawansowane”.** Lista (krzyżak/drążek): klatki wył./do 60/do 120, 120/180 Hz,
    3D (2D = siła 0 w sesji z 3D), siła 3D, głębia neuronowa, pop-out, głębia ekranu, HDR peak; czego nie da się
-   zmienić w sesji — przyciemnione z dopiskiem. Zapis do ustawień. Wejście: **nie przytrzymanie △** (zajęte przez
-   Peak HDR, #14) — do ustalenia, propozycja: przytrzymanie Options.
+   zmienić w sesji — przyciemnione z dopiskiem. Zapis do ustawień. **Zrobione w PR #21:** wejście przytrzymaniem
+   Options (DualSense; krótkie Options = siła 3D po puszczeniu) albo ≡ (Touch; krótkie ≡ = panel po puszczeniu,
+   przytrzymanie przy zamkniętym panelu otwiera od razu stronę 2). Siła 3D 0% = 2D (osobnego „3D wył.” nie ma).
+   Bez bitrate'u (automatyczny bitrate P5M zmienia go w sesji). Stan sesji (shader / 3D / 10-bit) = zdjęcie z
+   pierwszego otwarcia strony 2.
 3. **MQSR (eksperymentalne).** Przełącznik przy „Automatic”, domyślnie wył.: `AUTO_LAYER_FILTER` + sam
    `QUALITY_SHARPENING` (wariant z dev.21), na żywo (bity warstwy co klatkę), także na stronie 2. Zgubione klatki
    z dev.21 były przy włączonej głębi neuronowej — test bez niej: 120/180 Hz, direct/shader, 3D; klatki,

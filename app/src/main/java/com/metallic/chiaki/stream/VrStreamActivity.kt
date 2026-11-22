@@ -284,6 +284,7 @@ class VrStreamActivity: ComponentActivity()
 		set(value)
 		{
 			field = value
+			if(!value) qs8Stan.strona2 = false  // QS8: panel zawsze otwiera się na stronie 1.
 			xr?.setHudVisible(value)
 			if(value)
 			{
@@ -456,12 +457,24 @@ class VrStreamActivity: ComponentActivity()
 	// QS8: przytrzymanie w panelu (A / ✕ = rozmiar 1:1) i komunikaty panelu; logika w qs8/.
 	private val qs8Stan = io.github.gblandro.p5m.qs8.StanPanelu()
 	private val qs8Hold by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, { handleAdjustKey(it) }, { qs8Dlugo(it) })
-			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X); dodaj(KeyEvent.KEYCODE_BUTTON_Y) } }
+			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X); dodaj(KeyEvent.KEYCODE_BUTTON_Y); dodaj(KeyEvent.KEYCODE_BUTTON_START) } }
+	private val qs8Zaaw by lazy { io.github.gblandro.p5m.qs8.PanelZaawansowany(this, qualityPrefs, qs8Stan, { xr }, { applyQualityParams() }, { trace(it) }) }
+	// Kontroler Questa: krótkie ≡ otwiera/zamyka panel (po puszczeniu), przytrzymanie = strona 2 „Zaawansowane”.
+	private val qs8Menu by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, {
+				adjustMode = !adjustMode
+				trace(if(adjustMode) "Tuning mode on (Quest controller)" else "Tuning mode off (Quest controller)")
+				handler.removeCallbacks(holdTick)
+			}, {
+				if(!adjustMode) adjustMode = true
+				qs8Zaaw.przelacz(); renderHud()
+			}).apply { dodaj(KeyEvent.KEYCODE_MENU) } }
 	private val qs8Piksel by lazy { io.github.gblandro.p5m.qs8.PikselWPiksel(handler, screenPrefs, { xr?.recommendedResolution() },
 			{ larguraFonte }, { applyScreenParams(); renderHud() }, { qs8Stan.pokaz(it); renderHud() }, { trace(it) }) }
 	private fun qs8Dlugo(kod: Int)
 	{
 		if(!adjustMode) return
+		if(kod == KeyEvent.KEYCODE_BUTTON_START) { qs8Zaaw.przelacz(); renderHud(); return }  // Options: strona 2 „Zaawansowane”.
+		if(qs8Stan.strona2) return
 		if(kod == KeyEvent.KEYCODE_BUTTON_A) qs8Piksel.dopasuj()
 		if(kod == KeyEvent.KEYCODE_BUTTON_X) { io.github.gblandro.p5m.qs8.PorownanieAB.przelacz(qs8Stan, qualityPrefs) { trace(it) }; applyQualityParams(); renderHud() }
 		if(kod == KeyEvent.KEYCODE_BUTTON_Y) { io.github.gblandro.p5m.qs8.PeakHdr.nastepny(this); qs8Stan.pokaz(io.github.gblandro.p5m.qs8.PeakHdr.komunikat(this, qualityPrefs)); renderHud() }
@@ -1536,6 +1549,7 @@ class VrStreamActivity: ComponentActivity()
 	{
 		if(!isPreferredGamepad(event.deviceId))
 			return
+		if(qs8Stan.strona2) { if(qs8Zaaw.hat(event)) renderHud(); return }  // QS8: krzyżak na stronie 2.
 
 		fun step(value: Float) = when
 		{
@@ -1789,12 +1803,7 @@ class VrStreamActivity: ComponentActivity()
 		when
 		{
 			pin != null -> if(down) teclaNoPin(pin, event) else if(b) handler.removeCallbacks(pinQuitTick)
-			event.keyCode == KeyEvent.KEYCODE_MENU -> if(down && event.repeatCount == 0)
-			{
-				adjustMode = !adjustMode
-				trace(if(adjustMode) "Tuning mode on (Quest controller)" else "Tuning mode off (Quest controller)")
-				handler.removeCallbacks(holdTick)
-			}
+			event.keyCode == KeyEvent.KEYCODE_MENU -> qs8Menu.przechwyc(event)  // QS8: ≡ krótko = panel, przytrzymanie = strona 2.
 			!adjustMode -> {}
 			down -> handleAdjustKey(event)
 			!b -> qs8Hold.przechwyc(event)  // QS8: puszczenie A/X z Touch (krotkie naciśniecie).
@@ -1838,6 +1847,7 @@ class VrStreamActivity: ComponentActivity()
 		if(event.keyCode == KeyEvent.KEYCODE_BUTTON_B)
 			return handleQuitHold(event)
 		if(qs8Hold.przechwyc(event)) return true  // QS8: przytrzymanie A/X w panelu; krotkie dziala po puszczeniu.
+		if(qs8Stan.strona2 && qs8Zaaw.klawisz(event)) { renderHud(); return true }  // QS8: strona 2 „Zaawansowane”.
 		if(event.action == KeyEvent.ACTION_UP)
 		{
 			input?.dispatchKeyEvent(event)
@@ -2343,6 +2353,7 @@ class VrStreamActivity: ComponentActivity()
 	{
 		val bitmap = hudBitmap ?: Bitmap.createBitmap(HUD_WIDTH, HUD_HEIGHT, Bitmap.Config.ARGB_8888)
 			.also { hudBitmap = it }
+		if(qs8Stan.strona2) { qs8Zaaw.rysuj(bitmap); qs8Stan.dorysuj(bitmap); xr?.setHudBitmap(bitmap); return }  // QS8: strona 2.
 
 		// O realce dura um instante: o bastante para confirmar que o botao
 		// pegou. O medidor redesenha a cada segundo, e e ele quem apaga.

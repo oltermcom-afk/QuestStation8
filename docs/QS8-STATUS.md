@@ -12,7 +12,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
-**Ostatni APK: dev.26** (gałąź `qs8/klatki-60`, cały stos #6–#18; APK z `qs8/wersje` = ten sam kod aplikacji + wersje/powrót). Szczyt stosu: `qs8/wersje`.
+**Ostatni APK: dev.26** (gałąź `qs8/klatki-60`, cały stos #6–#18; APK z `qs8/wersje` = ten sam kod aplikacji + wersje/powrót). Szczyt stosu: `qs8/panel-zaawansowany`.
 
 | PR | Gałąź | Baza | Co (jedno zdanie) |
 |---|---|---|---|
@@ -31,8 +31,9 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 | #17 | `qs8/opoznienie` | #16 | Po teście dev.21: „Automatic” znów z zestawem filtrów P5M (MQSR gubił klatki), profil „Responsywność” usunięty (180 Hz: 17 ms wobec 16–17 ms przy 120 Hz — brak zysku). |
 | #18 | `qs8/klatki-60` | #17 | Ustawienie „Generowane klatki: do 120 / do 60” dla shader + frames (`qs8/GenerowanieKlatek`, `qs8_klatki.cpp`). |
 | #20 | `qs8/wersje` | #18 | Stałe wydanie `qs8-dev.N` dla każdego builda + powrót do wersji (`powrot_do` w workflow, `dev.N.rM`, „dev.N (M)” w launcherze i karcie aktualizacji). (#19 to automatyczne zgłoszenie z nieudanego CI 24.) |
+| #21 | `qs8/panel-zaawansowany` | #20 | Strona 2 panelu w grze „Zaawansowane” (`qs8/PanelZaawansowany`): przytrzymanie Options / ≡; klatki, Hz, HDR peak, siła i głębia 3D, pop-out, głębia neuronowa na żywo; ścieżka, kolor, emulacja 3D od następnego połączenia. |
 
-**Merge po teście:** po kolei #6 → #20 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#20) do `qs8/main` jako jeden squash, a #6–#18 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
+**Merge po teście:** po kolei #6 → #21 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#21) do `qs8/main` jako jeden squash, a #6–#20 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
@@ -90,7 +91,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Geometria panelu (`PainelDeAjuste`: margines 52, 5 kolumn, odstęp 44, wiersze 170/250/330) jest powielona w `LegendaTouch`, `TouchMenu`, `StanPanelu` i `tools/qs8_podglad_panelu.py`.
 
 ## Pliki QS8
-- Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek`.
+- Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek, PanelZaawansowany`.
 - Native: `qs8_touch.{h,cpp}`, `qs8_warstwa.h`, `qs8_hdr.{h,cpp}`, `qs8_klatki.{h,cpp}`. Zasoby: `res/mipmap-*/ic_qs8.png`. Patche: `0058` (rejestracja), `0059` (MaxCLL).
 - Punkty `// QS8:` / `# QS8:` (lista: `git grep -n "QS8:"`): `.github/workflows/build-apk.yml`, `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt`, `Estilo.kt`, `PainelDeAjuste.kt`, `LogServer.kt`, `PsnLoginRelay.kt`, `PsnRemoteActivity.kt`, `VrStreamActivity.kt`, `xr_session.cpp`, `tone_mapper.cpp`, `CMakeLists.txt`, `tools/conferir.py`.
 
@@ -100,7 +101,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 ## Następne kroki (kolejność)
 1. Dokończyć test na dev.26 (cały stos #6–#18; dev.21, dev.23 i dev.25 sprawdzone częściowo; „do 60” jak w dev.23 + „Zgłoś problem” z linią `QS8: frames rhythm`) → decyzja o merge'u stosu.
 2. Poprawki po teście (nowe PR-y na szczycie stosu albo na `qs8/main` po merge'u).
-3. Kolejka uzgodniona 2026-11-22 (każde = PR na szczycie stosu): ~~wersje/powrót (#20)~~ → druga strona panelu w grze „Zaawansowane” → MQSR eksperymentalne (przełącznik, na żywo) → nazwane profile gier (obraz + ekran, bez bitrate'u, wbudowane zostają) → Poświata wokół ekranu (najpierw rozpoznanie). Szczegóły: PLAN, „Kolejka 2026-11-22”.
+3. Kolejka uzgodniona 2026-11-22 (każde = PR na szczycie stosu): ~~wersje/powrót (#20)~~ → ~~druga strona panelu w grze „Zaawansowane” (#21)~~ → MQSR eksperymentalne (przełącznik, na żywo) → nazwane profile gier (obraz + ekran, bez bitrate'u, wbudowane zostają) → Poświata wokół ekranu (najpierw rozpoznanie). Szczegóły: PLAN, „Kolejka 2026-11-22”.
 4. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
 5. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
 6. Test trybu mobilnego (pad sparowany z Questem).
