@@ -10,7 +10,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
-**Ostatni APK: dev.23** (gałąź `qs8/klatki-60`, cały stos #6–#18). Szczyt stosu: `qs8/klatki-60`.
+**Ostatni APK: dev.24** (gałąź `qs8/klatki-60`, cały stos #6–#18). Szczyt stosu: `qs8/klatki-60`.
 
 | PR | Gałąź | Baza | Co (jedno zdanie) |
 |---|---|---|---|
@@ -37,9 +37,10 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - dev.7 → dev.10 → dev.11 z aplikacji: karta, instalacja, rejestracja zostaje.
 - dev.10 / dev.11 (1B): ≡ otwiera panel, regulacja Touch, trzymane B kończy sesję, Touch nie wpływa na grę.
 - dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary kompozytora: 35–36 ms head-to-photon i wyższe CPU/GPU = głębia z sieci neuronowej w 3D (samo 3D bez wzrostu); direct 120 Hz 16–17 ms, direct 180 Hz 17 ms, shader 180 Hz 18–20 ms; MQSR-only w Automatic gubi 0–4 klatki, tryb A (bez filtra) 0 → poprawki w #17.
+- dev.23 (2026-11-22): „Generowane klatki: do 60” w grze 30 fps — mniej artefaktów niż „do 120”, rzadkie szarpnięcie (rytm 3+1 z obcinania czasu) → poprawka w #18, dev.24.
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
-- Reszta PR #6–#18 (APK dev.23). Lista testów: raport końcowy sesji / sekcja niżej.
+- Reszta PR #6–#18 (APK dev.24). Lista testów: raport końcowy sesji / sekcja niżej.
 - „Zgłoś problem” przy niezalogowanym GitHubie (poprawka w #6).
 - **Tryb mobilny (pad przy Queście) nigdy nie był testowany w QS8.**
 - Podglądy panelu (`docs/podglad/`, skrypt `tools/qs8_podglad_panelu.py`) to rekonstrukcja z kodu i fontów Roboto, nie zrzuty z Questa; wersja polska panelu niepodglądana (szerokości policzone).
@@ -94,7 +95,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Lokalna kopia: `~/QuestStation8/klucze/qs8-debug.keystore` (poza repo). W GitHub: `P5M_DEBUG_KEYSTORE_BASE64`.
 
 ## Następne kroki (kolejność)
-1. Dokończyć test na dev.23 (cały stos #6–#18; dev.21 sprawdzony częściowo) → decyzja o merge'u stosu.
+1. Dokończyć test na dev.24 (cały stos #6–#18; dev.21 i dev.23 sprawdzone częściowo; „do 60” — czy szarpnięcie zniknęło, linia `QS8: frames rhythm`) → decyzja o merge'u stosu.
 2. Poprawki po teście (nowe PR-y na szczycie stosu albo na `qs8/main` po merge'u).
 3. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
 4. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
