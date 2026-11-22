@@ -140,7 +140,7 @@ object Tlumaczenia
 		Regex("(\\d+) dropped") to { m -> "utracone: ${m.groupValues[1]}" },
 		Regex("Account ID filled in from the PSN account signed in on this headset \\(account number (\\d+)\\)\\.") to { m ->
 			"Account ID wpisane z konta PSN zalogowanego w goglach (numer konta ${m.groupValues[1]})." },
-		Regex("QuestStation8 (\\S+) is available\\. You have (\\S+)\\.\\n(.*)\\nUpdate downloads it and opens the installer\\.",
+		Regex("QuestStation8 (\\S+(?: \\(\\d+\\))?) is available\\. You have (\\S+(?: \\(\\d+\\))?)\\.\\n(.*)\\nUpdate downloads it and opens the installer\\.",
 				RegexOption.DOT_MATCHES_ALL) to { m ->
 			"Dostępna jest wersja QuestStation8 ${m.groupValues[1]}. Masz ${m.groupValues[2]}.\n${m.groupValues[3]}\n" +
 					"„Aktualizuj” pobierze ją i otworzy instalator." },

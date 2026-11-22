@@ -619,7 +619,7 @@ class LauncherActivity: Activity()
 		setPadding(dp(4), 0, dp(4), dp(20))
 		addView(Estilo.marca(context), LinearLayout.LayoutParams(0, -2, 1f))
 		addView(TextView(context).apply {
-			text = versionName()
+			text = io.github.gblandro.p5m.qs8.AktualizacjeDev.czytelna(versionName())  // QS8: powrót „dev.31 (25)”.
 			setTextColor(Estilo.SECAO)
 			setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
 		})

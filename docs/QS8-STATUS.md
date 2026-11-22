@@ -6,11 +6,13 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 ## Repozytorium
 - Fork: `oltermcom-afk/QuestStation8` (z `beecrepaldi-afk/P5M` @ `d61c8e6`). Klon: `~/QuestStation8/QuestStation8`.
 - `main` = lustro `upstream/main`; `qs8/main` = gałąź domyślna; Actions read/write; Issues włączone.
-- Każdy push buduje APK do **jednego** rolling release `dev` (`p5m.apk` + `p5m-<wersja>-dev.N.apk`; N = numer runu = versionCode). Ostatni build nadpisuje poprzedni. `[skip ci]` = bez buildu.
+- Każdy push buduje APK do rolling release `dev` (`p5m.apk` + `p5m-<wersja>-dev.N.apk`; N = numer runu = versionCode) — z niego aktualizuje się aplikacja. `[skip ci]` = bez buildu.
+- **Od PR #20 każdy build zostaje na stałe** jako wydanie `qs8-dev.N` (APK, gałąź, PR, commit). dev.26 dodane ręcznie; starsze APK skasowane (do odtworzenia powrotem). Przetestowane: `gh release edit qs8-dev.N --repo oltermcom-afk/QuestStation8 --title "QS8 dev.N ✅ przetestowana"`.
+- **Powrót do wersji:** Actions → Build APK → Run workflow → gałąź ze szczytu stosu (albo `qs8/main`) → `powrot_do` = N. Buduje kod dev.N jako `dev.<nowy>.r<N>` (w launcherze „dev.31 (25)”), instaluje się jak aktualizacja, rejestracja zostaje. Działa dla każdego udanego builda z historii Actions. Następny zwykły push znów publikuje najnowszy kod w `dev`.
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
-**Ostatni APK: dev.26** (gałąź `qs8/klatki-60`, cały stos #6–#18). Szczyt stosu: `qs8/klatki-60`.
+**Ostatni APK: dev.26** (gałąź `qs8/klatki-60`, cały stos #6–#18; APK z `qs8/wersje` = ten sam kod aplikacji + wersje/powrót). Szczyt stosu: `qs8/wersje`.
 
 | PR | Gałąź | Baza | Co (jedno zdanie) |
 |---|---|---|---|
@@ -28,8 +30,9 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 | #16 | `qs8/polski` | #15 | Wersja polska / angielska (domyślnie polski, Help › Język), słownik `qs8/Tlumaczenia.kt`. |
 | #17 | `qs8/opoznienie` | #16 | Po teście dev.21: „Automatic” znów z zestawem filtrów P5M (MQSR gubił klatki), profil „Responsywność” usunięty (180 Hz: 17 ms wobec 16–17 ms przy 120 Hz — brak zysku). |
 | #18 | `qs8/klatki-60` | #17 | Ustawienie „Generowane klatki: do 120 / do 60” dla shader + frames (`qs8/GenerowanieKlatek`, `qs8_klatki.cpp`). |
+| #20 | `qs8/wersje` | #18 | Stałe wydanie `qs8-dev.N` dla każdego builda + powrót do wersji (`powrot_do` w workflow, `dev.N.rM`, „dev.N (M)” w launcherze i karcie aktualizacji). (#19 to automatyczne zgłoszenie z nieudanego CI 24.) |
 
-**Merge po teście:** po kolei #6 → #18 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#18) do `qs8/main` jako jeden squash, a #6–#17 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
+**Merge po teście:** po kolei #6 → #20 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#20) do `qs8/main` jako jeden squash, a #6–#18 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
@@ -89,7 +92,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 ## Pliki QS8
 - Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek`.
 - Native: `qs8_touch.{h,cpp}`, `qs8_warstwa.h`, `qs8_hdr.{h,cpp}`, `qs8_klatki.{h,cpp}`. Zasoby: `res/mipmap-*/ic_qs8.png`. Patche: `0058` (rejestracja), `0059` (MaxCLL).
-- Punkty `// QS8:` (lista: `git grep -n "QS8:"`): `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt`, `Estilo.kt`, `PainelDeAjuste.kt`, `LogServer.kt`, `PsnLoginRelay.kt`, `PsnRemoteActivity.kt`, `VrStreamActivity.kt`, `xr_session.cpp`, `tone_mapper.cpp`, `CMakeLists.txt`, `tools/conferir.py`.
+- Punkty `// QS8:` / `# QS8:` (lista: `git grep -n "QS8:"`): `.github/workflows/build-apk.yml`, `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt`, `Estilo.kt`, `PainelDeAjuste.kt`, `LogServer.kt`, `PsnLoginRelay.kt`, `PsnRemoteActivity.kt`, `VrStreamActivity.kt`, `xr_session.cpp`, `tone_mapper.cpp`, `CMakeLists.txt`, `tools/conferir.py`.
 
 ## Klucz podpisu
 - Lokalna kopia: `~/QuestStation8/klucze/qs8-debug.keystore` (poza repo). W GitHub: `P5M_DEBUG_KEYSTORE_BASE64`.
@@ -97,7 +100,8 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 ## Następne kroki (kolejność)
 1. Dokończyć test na dev.26 (cały stos #6–#18; dev.21, dev.23 i dev.25 sprawdzone częściowo; „do 60” jak w dev.23 + „Zgłoś problem” z linią `QS8: frames rhythm`) → decyzja o merge'u stosu.
 2. Poprawki po teście (nowe PR-y na szczycie stosu albo na `qs8/main` po merge'u).
-3. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
-4. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
-5. Test trybu mobilnego (pad sparowany z Questem).
-6. Później: c) chroma sterowana lumą (jeśli A/B pokaże potrzebę), ikona z samym emblematem, dokończenie tłumaczeń (Diagnostyka, PSN).
+3. Kolejka uzgodniona 2026-11-22 (każde = PR na szczycie stosu): ~~wersje/powrót (#20)~~ → druga strona panelu w grze „Zaawansowane” → MQSR eksperymentalne (przełącznik, na żywo) → nazwane profile gier (obraz + ekran, bez bitrate'u, wbudowane zostają) → Poświata wokół ekranu (najpierw rozpoznanie). Szczegóły: PLAN, „Kolejka 2026-11-22”.
+4. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
+5. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
+6. Test trybu mobilnego (pad sparowany z Questem).
+7. Później: c) chroma sterowana lumą (jeśli A/B pokaże potrzebę), ikona z samym emblematem, dokończenie tłumaczeń (Diagnostyka, PSN).

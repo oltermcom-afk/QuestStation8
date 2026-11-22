@@ -202,6 +202,29 @@ spóźnionych. Dalej dopiero z danymi z dziennika; jeśli to rytm — okres i ch
 Automatu 60/120 nie robimy: brak wiarygodnego pomiaru
 błędu przewidywania w trakcie gry.
 
+## Kolejka 2026-11-22 (uzgodniona z Damianem)
+
+1. **Wersje i powrót (PR #20).** Każdy build → stałe wydanie `qs8-dev.N`. Powrót do dev.M: workflow_dispatch
+   `powrot_do` = M buduje kod tamtego commita jako `0.3.0-dev.<run>.r<M>` — wyższy numer, więc instaluje się jak
+   aktualizacja (zejście na niższy versionCode wymagałoby odinstalowania = utrata rejestracji). W launcherze i
+   karcie aktualizacji „dev.31 (25)”. Aplikacje sprzed #20 nie rozpoznają APK `….rM` (brak oferty w aplikacji;
+   wtedy pobrać ze stałego wydania).
+2. **Druga strona panelu w grze „Zaawansowane”.** Lista (krzyżak/drążek): klatki wył./do 60/do 120, 120/180 Hz,
+   3D (2D = siła 0 w sesji z 3D), siła 3D, głębia neuronowa, pop-out, głębia ekranu, HDR peak; czego nie da się
+   zmienić w sesji — przyciemnione z dopiskiem. Zapis do ustawień. Wejście: **nie przytrzymanie △** (zajęte przez
+   Peak HDR, #14) — do ustalenia, propozycja: przytrzymanie Options.
+3. **MQSR (eksperymentalne).** Przełącznik przy „Automatic”, domyślnie wył.: `AUTO_LAYER_FILTER` + sam
+   `QUALITY_SHARPENING` (wariant z dev.21), na żywo (bity warstwy co klatkę), także na stronie 2. Zgubione klatki
+   z dev.21 były przy włączonej głębi neuronowej — test bez niej: 120/180 Hz, direct/shader, 3D; klatki,
+   opóźnienie, „dysk za głową”, ostrość vs Automatic.
+4. **Nazwane profile gier.** Zapisz jako… (nazwa z klawiatury Questa), nadpisz, zmień nazwę, usuń; „BF6
+   (zmieniony)”. Zawartość: obraz, klatki, Hz, 3D, ekran (rozmiar, odległość, wysokość, kształt, krzywizna,
+   pokój); bez bitrate'u. Wbudowane (Balanced, Ultra smooth, Cinema) zostają. W grze: wiersz Profil i „Zapisz do
+   profilu” na stronie 2.
+5. **Poświata wokół ekranu (Ambilight).** Kolory krawędzi obrazu ~10–15 razy/s, wygładzone, jako miękka warstwa
+   za ekranem w ciemnym pokoju; tylko ścieżka shader (w direct obraz nie przechodzi przez aplikację). Najpierw
+   rozpoznanie warstw i pokoju w P5M, osobny plan.
+
 ## Później (po pomiarach)
 
 inwentaryzacja i uzupełnienie

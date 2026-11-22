@@ -20,13 +20,23 @@ import java.net.URL
  * Workflow buduje każdą gałąź do tego samego release, więc karta mówi, co to
  * za build: numer, gałąź, PR i tytuł commita. Dwa zapytania do publicznego API
  * (release + przebieg Actions dla commita), bez logowania.
+ *
+ * Powrót do starszej wersji (workflow_dispatch „powrot_do”) buduje kod dev.N
+ * pod nowym numerem: wersja `0.3.0-dev.31.r25`, w launcherze „dev.31 (25)”.
+ * Numer jest wyższy niż wszystko dotąd, więc instaluje się jak aktualizacja
+ * ([Atualizacao.comparar] porównuje człony po kolei: 31 > 30, a „r25” na
+ * końcu nie psuje porównania z dev.32).
  */
 object AktualizacjeDev
 {
 	private const val API = "https://api.github.com/repos/oltermcom-afk/QuestStation8"
 
-	/** Wersjonowany asset z workflow: `p5m-<wersja>-dev.<numer builda>.apk`. */
-	private val ASSET = Regex("""^p5m-(\d+\.\d+\.\d+-dev\.(\d+))\.apk$""")
+	/** Wersjonowany asset z workflow: `p5m-<wersja>-dev.<numer builda>[.r<powrót do>].apk`. */
+	private val ASSET = Regex("""^p5m-(\d+\.\d+\.\d+-dev\.(\d+)(?:\.r(\d+))?)\.apk$""")
+	private val POWROT = Regex("""-dev\.(\d+)\.r(\d+)$""")
+
+	/** Wersja do wyświetlenia: `0.3.0-dev.31.r25` → `0.3.0-dev.31 (25)`; reszta bez zmian. */
+	fun czytelna(wersja: String) = POWROT.replace(wersja) { "-dev.${it.groupValues[1]} (${it.groupValues[2]})" }
 	private val COMMIT = Regex("""Built from commit ([0-9a-f]{40})""")
 
 	/** Opis wyłącznika „Check for updates” w launcherze. */
@@ -44,6 +54,7 @@ object AktualizacjeDev
 		val assets = release.optJSONArray("assets") ?: return null
 		var oferta: Atualizacao.Oferta? = null
 		var numer = 0
+		var powrot: Int? = null
 		for(i in 0 until assets.length())
 		{
 			val a = assets.getJSONObject(i)
@@ -53,12 +64,13 @@ object AktualizacjeDev
 				continue
 			oferta = Atualizacao.Oferta(m.groupValues[1], a.optString("browser_download_url"))
 			numer = n
+			powrot = m.groupValues[3].toIntOrNull()
 		}
 		if(oferta == null)
 			return null
 
 		val sha = COMMIT.find(release.optString("body"))?.groupValues?.get(1)
-		val opis = try { opisBuilda(numer, sha) }
+		val opis = try { opisBuilda(numer, sha, powrot) }
 		catch(e: Exception)
 		{
 			Trace.log(context, "QS8 update: no build details (${e.javaClass.simpleName}: ${e.message})")
@@ -73,13 +85,19 @@ object AktualizacjeDev
 	fun tekstKarty(context: Context, wersja: String, zainstalowana: String): String
 	{
 		val opis = Qs8Prefs(context).opisAktualizacji(wersja) ?: "Build $wersja"
-		return "${Marka.NAZWA} $wersja is available. You have $zainstalowana.\n" +
+		return "${Marka.NAZWA} ${czytelna(wersja)} is available. You have ${czytelna(zainstalowana)}.\n" +
 				"$opis\nUpdate downloads it and opens the installer."
 	}
 
-	/** „Build dev.7 from qs8/xyz (PR #5): tytuł commita (commit abc1234)”. */
-	private fun opisBuilda(numer: Int, sha: String?): String
+	/**
+	 * „Build dev.7 from qs8/xyz (PR #5): tytuł commita (commit abc1234)”.
+	 * Powrót: „Build dev.31 (25), back to dev.25 from qs8/xyz (PR #5): …” — commit
+	 * jest commitem dev.25, więc gałąź, PR i tytuł bierzemy z tamtego przebiegu.
+	 */
+	private fun opisBuilda(numer: Int, sha: String?, powrot: Int? = null): String
 	{
+		if(powrot != null)
+			return opisBuilda(powrot, sha).replaceFirst("Build dev.$powrot", "Build dev.$numer ($powrot), back to dev.$powrot")
 		if(sha == null)
 			return "Build dev.$numer"
 		val tekst = pobierz("$API/actions/runs?head_sha=$sha&per_page=20")
