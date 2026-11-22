@@ -243,6 +243,14 @@ object Tlumaczenia
 		"↕ choose  ·  ↔ or ✕ / A change  ·  hold Options or ≡: page 1  ·  ○ / B close" to
 				"↕ wybór  ·  ↔ albo ✕ / A zmiana  ·  przytrzymaj Options albo ≡: strona 1  ·  ○ / B zamknij",
 		"Changes live" to "Zmienia się na żywo",
+		"Saved. Not active with the current settings." to "Zapisane. Nieaktywne przy obecnych ustawieniach.",
+		"MQSR (experimental)" to "MQSR (eksperymentalne)",
+		"Watch dropped frames and latency on page 1." to "Obserwuj zgubione klatki i opóźnienie na stronie 1.",
+		"Only with Sharpness: Automatic (□ on page 1)." to "Tylko przy ostrości „Automatyczne” (□ na stronie 1).",
+		"Automatic sharpness lets the headset use only MQSR, its best upscaling filter. Watch dropped frames and latency in the panel; it costs more GPU. Works only with Sharpness: Automatic." to
+				"Automatyczna ostrość pozwala goglom użyć tylko MQSR, najlepszego filtra skalowania. Obserwuj zgubione klatki i opóźnienie w panelu; kosztuje więcej GPU. Działa tylko przy ostrości „Automatyczne”.",
+		"Off: Automatic sharpness picks between normal sharpening, MQSR and supersampling, as in P5M. Turn on to test MQSR alone (works only with Sharpness: Automatic)." to
+				"Wył.: automatyczna ostrość wybiera między zwykłym wyostrzaniem, MQSR i supersamplingiem, jak w P5M. Włącz, żeby sprawdzić samo MQSR (działa tylko przy ostrości „Automatyczne”).",
 		"Saved. Takes effect from the next connection." to "Zapisane. Zadziała od następnego połączenia.",
 		"Saved. No effect in this session." to "Zapisane. W tej sesji bez efektu.",
 		"Needs the shader path: from the next connection." to "Wymaga ścieżki shader: od następnego połączenia.",

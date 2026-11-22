@@ -42,7 +42,7 @@ class PanelZaawansowany(
 	private val zastosujJakosc: () -> Unit,
 	private val dziennik: (String) -> Unit)
 {
-	enum class Kiedy { NA_ZYWO, NASTEPNE_POLACZENIE, NIE_W_TEJ_SESJI }
+	enum class Kiedy { NA_ZYWO, NASTEPNE_POLACZENIE, NIE_W_TEJ_SESJI, NIEAKTYWNE }
 
 	private class Wiersz(
 		val sekcja: Int,
@@ -102,6 +102,11 @@ class PanelZaawansowany(
 				{ if(sesja10) Kiedy.NA_ZYWO else Kiedy.NIE_W_TEJ_SESJI },
 				{ if(sesja10) null else "Only with 10-bit color." },
 				{ k -> if(k < 0) PeakHdr.poprzedni(activity) else PeakHdr.nastepny(activity) }),
+		Wiersz(0, Mqsr.NAZWA,
+				{ wlacz(Mqsr.wlaczone(activity)) },
+				{ if(Mqsr.aktywne(jakosc)) Kiedy.NA_ZYWO else Kiedy.NIEAKTYWNE },
+				{ if(Mqsr.aktywne(jakosc)) "Watch dropped frames and latency on page 1." else "Only with Sharpness: Automatic (□ on page 1)." },
+				{ _ -> Mqsr.przelacz(activity) }),
 		// --- 3D
 		Wiersz(1, "3D strength",
 				{ if(jakosc.stereoStrength <= 0f) "0% (2D)" else pct(jakosc.stereoStrength) },
@@ -229,6 +234,7 @@ class PanelZaawansowany(
 			Kiedy.NA_ZYWO -> "live"
 			Kiedy.NASTEPNE_POLACZENIE -> "from the next connection"
 			Kiedy.NIE_W_TEJ_SESJI -> "saved, not in this session"
+			Kiedy.NIEAKTYWNE -> "saved, inactive with current settings"
 		}
 		dziennik("QS8: advanced ${w.nazwa} = ${w.wartosc()} ($kiedy)")
 	}
@@ -275,6 +281,7 @@ class PanelZaawansowany(
 			Kiedy.NA_ZYWO -> t("Changes live") to ZYWO
 			Kiedy.NASTEPNE_POLACZENIE -> t("Saved. Takes effect from the next connection.") to AVISO
 			Kiedy.NIE_W_TEJ_SESJI -> t("Saved. No effect in this session.") to AVISO
+			Kiedy.NIEAKTYWNE -> t("Saved. Not active with the current settings.") to AVISO
 		}
 		p.textSize = 27f
 		p.color = kolorKiedy
@@ -310,7 +317,7 @@ class PanelZaawansowany(
 					c.drawRoundRect(r, 16f, 16f, Paint(Paint.ANTI_ALIAS_FLAG).apply {
 						style = Paint.Style.STROKE; strokeWidth = 3f; color = DESTAQUE })
 				}
-				val wygaszony = wiersz.kiedy() == Kiedy.NIE_W_TEJ_SESJI
+				val wygaszony = wiersz.kiedy() == Kiedy.NIE_W_TEJ_SESJI || wiersz.kiedy() == Kiedy.NIEAKTYWNE
 				val linia = y + wys / 2 + 11f
 				p.typeface = Typeface.DEFAULT
 				p.textSize = 30f
