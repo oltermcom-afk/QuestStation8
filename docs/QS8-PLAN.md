@@ -188,16 +188,18 @@ z zestawu P5M (zwykłe i MQSR wyostrzanie, supersampling). Zostaje dziennik bit�
 ## Generowane klatki „do 120 / do 60” (PR #18, 2026-11-22)
 
 Ustawienie w launcherze (Zaawansowane, widoczne przy „shader + frames”), domyślnie „do 120” = P5M.
-„Do 60” zmienia obraz co tyle odświeżeń ekranu, ile trwa 1/60 s (2 przy 120 Hz, 3 przy 180 Hz;
-`qs8_klatki.cpp`, jedna linia w `tone_mapper.cpp`): gra 30 fps → jedna przewidziana klatka (½ okresu)
-na prawdziwą, każdy obraz równo przez 2 (3) odświeżenia; gra 60 fps → bez przewidywania.
-Test dev.23: mniej artefaktów niż „do 120”, ale rzadkie szarpnięcie. Przyczyna: dev.23 obcinał czas
-do 1/60 s, a ta granica wypada dokładnie na odświeżeniu — drgania rzędu ułamka ms dawały rytm 3+1.
-Poprawka (dev.25): pełne odświeżenia liczone z zaokrągleniem (zapas pół odświeżenia), okres
-odświeżania mierzony z rysowań. Symulacja z drganiami 0,3 ms: 120 i 180 Hz równo. Licznik rytmu w
-dzienniku co 10 s (`QS8: frames rhythm …`): obrazy równe / krótsze / dłuższe i co ile odświeżeń
-przychodziła prawdziwa klatka — nierówność zostaje tylko od klatek gry/sieci poza rytmem.
-Przy 90 Hz rytm równy jest niemożliwy (1/60 s = 1,5 odświeżenia). Automatu 60/120 nie robimy: brak wiarygodnego pomiaru
+„Do 60” zaokrągla krok przewidywania w dół do 1/60 s (`qs8_klatki.cpp`, jedna linia w
+`tone_mapper.cpp`): gra 30 fps → jedna przewidziana klatka (½ okresu) na prawdziwą, każda przez dwa
+odświeżenia (120 Hz); gra 60 fps → bez przewidywania.
+Test dev.23: mniej artefaktów niż „do 120”, rzadkie szarpnięcie. Próba poprawki w dev.25 (pełne
+odświeżenia z zaokrągleniem i własnym pomiarem odświeżania) była na Queście gorsza: więcej artefaktów
+i chrupnięć przy szybkich obrotach (120 i 180 Hz, 3D bez głębi neuronowej) → cofnięta, logika z dev.23.
+Hipoteza: przy 3D aplikacja chwilami nie zdąża na odświeżenie i własny pomiar odświeżania się mylił;
+dev.23 bierze prawdziwy upływ czasu. Został sam licznik w dzienniku co 10 s (`QS8: frames rhythm …`,
+nie zmienia obrazu): obrazy równe / krótsze / dłuższe, co ile rysowań prawdziwa klatka, ile rysowań
+spóźnionych. Dalej dopiero z danymi z dziennika; jeśli to rytm — okres i chwila wyświetlenia z OpenXR
+(`predictedDisplayPeriod`), nie z własnego pomiaru.
+Automatu 60/120 nie robimy: brak wiarygodnego pomiaru
 błędu przewidywania w trakcie gry.
 
 ## Później (po pomiarach)
