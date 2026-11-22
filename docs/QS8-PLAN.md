@@ -193,7 +193,7 @@ Ustawienie w launcherze (Zaawansowane, widoczne przy „shader + frames”), dom
 na prawdziwą, każdy obraz równo przez 2 (3) odświeżenia; gra 60 fps → bez przewidywania.
 Test dev.23: mniej artefaktów niż „do 120”, ale rzadkie szarpnięcie. Przyczyna: dev.23 obcinał czas
 do 1/60 s, a ta granica wypada dokładnie na odświeżeniu — drgania rzędu ułamka ms dawały rytm 3+1.
-Poprawka (dev.24): pełne odświeżenia liczone z zaokrągleniem (zapas pół odświeżenia), okres
+Poprawka (dev.25): pełne odświeżenia liczone z zaokrągleniem (zapas pół odświeżenia), okres
 odświeżania mierzony z rysowań. Symulacja z drganiami 0,3 ms: 120 i 180 Hz równo. Licznik rytmu w
 dzienniku co 10 s (`QS8: frames rhythm …`): obrazy równe / krótsze / dłuższe i co ile odświeżeń
 przychodziła prawdziwa klatka — nierówność zostaje tylko od klatek gry/sieci poza rytmem.
