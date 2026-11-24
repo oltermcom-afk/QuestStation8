@@ -1,4 +1,4 @@
-# QuestStation8 — stan projektu (2026-11-22)
+# QuestStation8 — stan projektu (2026-11-24)
 
 Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.md`.
 Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `docs/podglad/`.
@@ -7,12 +7,12 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Fork: `oltermcom-afk/QuestStation8` (z `beecrepaldi-afk/P5M` @ `d61c8e6`). Klon: `~/QuestStation8/QuestStation8`.
 - `main` = lustro `upstream/main`; `qs8/main` = gałąź domyślna; Actions read/write; Issues włączone.
 - Każdy push buduje APK do rolling release `dev` (`p5m.apk` + `p5m-<wersja>-dev.N.apk`; N = numer runu = versionCode) — z niego aktualizuje się aplikacja. `[skip ci]` = bez buildu.
-- **Od PR #20 każdy build zostaje na stałe** jako wydanie `qs8-dev.N` (APK, gałąź, PR, commit). dev.26 dodane ręcznie; starsze APK skasowane (do odtworzenia powrotem). Przetestowane: `gh release edit qs8-dev.N --repo oltermcom-afk/QuestStation8 --title "QS8 dev.N ✅ przetestowana"`.
-- **Powrót do wersji:** Actions → Build APK → Run workflow → gałąź ze szczytu stosu (albo `qs8/main`) → `powrot_do` = N. Buduje kod dev.N jako `dev.<nowy>.r<N>` (w launcherze „dev.31 (25)”), instaluje się jak aktualizacja, rejestracja zostaje. Działa dla każdego udanego builda z historii Actions. Następny zwykły push znów publikuje najnowszy kod w `dev`.
+- **Od PR #20 każdy build zostaje na stałe** jako wydanie `qs8-dev.N` (APK, gałąź, PR, commit). Są `qs8-dev.26`–`31` (dev.26 dodane ręcznie); starsze APK skasowane (do odtworzenia powrotem). Tworzenie wydań sprawdzone w CI (dev.27–31). Przetestowane: `gh release edit qs8-dev.N --repo oltermcom-afk/QuestStation8 --title "QS8 dev.N ✅ przetestowana"`.
+- **Powrót do wersji:** Actions → Build APK → Run workflow → gałąź ze szczytu stosu (`qs8/main` dopiero po merge'u #20) → `powrot_do` = N. Buduje kod dev.N jako `dev.<nowy>.r<N>` (w launcherze „dev.31 (25)”), instaluje się jak aktualizacja, rejestracja zostaje. **Ścieżka `powrot_do` nigdy nie była uruchomiona.** Ma działać dla każdego udanego builda z historii Actions. Następny zwykły push znów publikuje najnowszy kod w `dev`.
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
-**Ostatni APK: dev.26** (gałąź `qs8/klatki-60`, cały stos #6–#18; APK z `qs8/wersje` = ten sam kod aplikacji + wersje/powrót). Szczyt stosu: `qs8/poswiata`.
+**Ostatni APK: dev.31** (gałąź `qs8/poprawki-panelu`, cały stos #6–#18, #20–#24; CI 31 zielone). Szczyt stosu: `qs8/poprawki-panelu`. `qs8/main` = `ebc6ecb` (#1–#5). **Nowe funkcje wstrzymane** do czasu przetestowania i zmergowania stosu (decyzja Damiana 2026-11-24).
 
 | PR | Gałąź | Baza | Co (jedno zdanie) |
 |---|---|---|---|
@@ -30,33 +30,51 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 | #16 | `qs8/polski` | #15 | Wersja polska / angielska (domyślnie polski, Help › Język), słownik `qs8/Tlumaczenia.kt`. |
 | #17 | `qs8/opoznienie` | #16 | Po teście dev.21: „Automatic” znów z zestawem filtrów P5M (MQSR gubił klatki), profil „Responsywność” usunięty (180 Hz: 17 ms wobec 16–17 ms przy 120 Hz — brak zysku). |
 | #18 | `qs8/klatki-60` | #17 | Ustawienie „Generowane klatki: do 120 / do 60” dla shader + frames (`qs8/GenerowanieKlatek`, `qs8_klatki.cpp`). |
-| #20 | `qs8/wersje` | #18 | Stałe wydanie `qs8-dev.N` dla każdego builda + powrót do wersji (`powrot_do` w workflow, `dev.N.rM`, „dev.N (M)” w launcherze i karcie aktualizacji). (#19 to automatyczne zgłoszenie z nieudanego CI 24.) |
+| #20 | `qs8/wersje` | #18 | Stałe wydanie `qs8-dev.N` dla każdego builda + powrót do wersji (`powrot_do` w workflow, `dev.N.rM`, „dev.N (M)” w launcherze i karcie aktualizacji). (#19 = automatyczne zgłoszenie z nieudanego CI 24, zamknięte 2026-11-24.) |
 | #21 | `qs8/panel-zaawansowany` | #20 | Strona 2 panelu w grze „Zaawansowane” (`qs8/PanelZaawansowany`): przytrzymanie Options / ≡; klatki, Hz, HDR peak, siła i głębia 3D, pop-out, głębia neuronowa na żywo; ścieżka, kolor, emulacja 3D od następnego połączenia. |
 | #22 | `qs8/mqsr-eksperymentalne` | #21 | Przełącznik „MQSR (eksperymentalne)”: przy ostrości Automatic sam `QUALITY_SHARPENING` (wariant dev.21), na żywo; launcher (pod Sharpness) i strona 2 panelu (`qs8/Mqsr`, `qs8_mqsr.cpp`). |
 | #23 | `qs8/poswiata` | #22 | Poświata wokół ekranu (wył./słaba/średnia/mocna): strefy 16×9 z krawędzi obrazu, wygładzone ~0,25 s, warstwa pod ekranem; tylko shader i ciemny pokój; launcher (Ekran) i strona 2 panelu (`qs8_poswiata.{h,cpp}`, `qs8/Poswiata`). |
+| #24 | `qs8/poprawki-panelu` | #23 | Poprawki po przeglądzie dev.30: tłumaczenie jasności („Bright” → poświata „Vivid”), rysowane przyciski zamiast ≡ ↕ ↔ ↻, linia „Przytrzymaj” z wejściem na stronę 2, komunikat w wierszu stanu, Options tylko z padem przy Queście, wyścigi głębi neuronowej (`qs8/GlebiaNeuronowa`). |
 
-**Merge po teście:** po kolei #6 → #23 (squash). Po zmergowaniu #N zmienić bazę #N+1 na `qs8/main` (`gh pr edit N+1 --base qs8/main`), potem merge. Squash tworzy nowe commity — kolejne PR-y mogą wymagać `git rebase --onto qs8/main <stara-baza> <gałąź>`; prościej: zmergować tylko szczyt (#23) do `qs8/main` jako jeden squash, a #6–#22 zamknąć z linkiem (Damian decyduje). Cofanie pojedynczego zadania przed merge'em: zamknąć PR i przestawić bazę następnego.
+**Merge (decyzja Damiana 2026-11-24):** po jego testach, **PR po PR, squash każdego** (#6 → #18, #20 → #24), żeby dało się cofnąć pojedynczą funkcję. Nie jeden squash całości. Po zmergowaniu #N: następną gałąź przenieść na nową bazę (`git rebase --onto qs8/main <stara-baza> <gałąź>`, stara baza = czubek gałęzi #N sprzed merge'u), `gh pr edit N+1 --base qs8/main`, dopiero potem merge. Konflikty spodziewane w `docs/` i tam, gdzie późniejszy PR poprawia wcześniejszy (#10→#17, #11→#17, #21/#23→#24). Po merge'ach kodu już przetestowanego nie trzeba nowego testu na Queście; jeśli rebase wymagał ręcznego rozwiązania konfliktu w kodzie, porównać wynik z czubkiem stosu (`git diff`).
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
 - dev.4 (1F): aktualizacja bez utraty rejestracji; preset Kino raz; centrowanie Meta.
 - dev.7 → dev.10 → dev.11 z aplikacji: karta, instalacja, rejestracja zostaje.
-- dev.10 / dev.11 (1B): ≡ otwiera panel, regulacja Touch, trzymane B kończy sesję, Touch nie wpływa na grę.
-- dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary kompozytora: 35–36 ms head-to-photon i wyższe CPU/GPU = głębia z sieci neuronowej w 3D (samo 3D bez wzrostu); direct 120 Hz 16–17 ms, direct 180 Hz 17 ms, shader 180 Hz 18–20 ms; MQSR-only w Automatic gubi 0–4 klatki, tryb A (bez filtra) 0 → poprawki w #17.
-- dev.23 (2026-11-22): „Generowane klatki: do 60” w grze 30 fps — mniej artefaktów niż „do 120”, rzadkie szarpnięcie. Poprawka w dev.25 gorsza (artefakty, chrupnięcia przy obrotach; 120 i 180 Hz, 3D bez głębi neuronowej) → cofnięta do logiki dev.23 + licznik `QS8: frames rhythm` w dzienniku (dev.26).
+- dev.10 / dev.11 (1B): ≡ otwiera panel, regulacja Touch, trzymane B kończy sesję, Touch nie wpływa na grę. **#21 zmienił krótkie ≡ na „po puszczeniu” — wymaga ponownego testu.**
+- dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary: patrz „Ustalenia: 35 ms”.
+- dev.23 (2026-11-22): „Generowane klatki: do 60” w grze 30 fps — mniej artefaktów niż „do 120”, bardzo rzadkie szarpnięcie.
+- dev.25 (2026-11-22): poprawka rytmu „do 60” gorsza (artefakty, chrupnięcia przy szybkich obrotach; 120 i 180 Hz, 3D bez głębi neuronowej) → cofnięta w dev.26.
+- **Wyników dla dev.26–dev.31 nie ma.**
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
-- Reszta PR #6–#18 (APK dev.26). Lista testów: raport końcowy sesji / sekcja niżej.
+- **#17:** brak zgubionych klatek po powrocie filtrów P5M (dev.22+). Pomiar „Zrównoważony 16–17 ms, 0 zgubionych” jest z dev.21.
+- **#18 (dev.26+):** „do 60” = logika dev.23 + licznik `QS8: frames rhythm` w dzienniku.
+- **#20:** „dev.31 (25)” w launcherze i karcie; `powrot_do`.
+- **#21:** strona 2 panelu; przełączanie na żywo (klatki, Hz, 3D, głębia neuronowa); krótkie Options / ≡ po puszczeniu.
+- **#22:** MQSR. **#23:** poświata — shadery GLSL kompilują się dopiero na Queście, orientacja góra/dół niepewna. **#24:** poprawki.
+- Wcześniejsze: #6–#9, #12, #14, #16, reszta #11 (profili używano tylko podczas pomiarów dev.21).
 - „Zgłoś problem” przy niezalogowanym GitHubie (poprawka w #6).
 - **Tryb mobilny (pad przy Queście) nigdy nie był testowany w QS8.**
-- Podglądy panelu (`docs/podglad/`, skrypt `tools/qs8_podglad_panelu.py`) to rekonstrukcja z kodu i fontów Roboto, nie zrzuty z Questa; wersja polska panelu niepodglądana (szerokości policzone).
+- Podglądy panelu (`docs/podglad/`, `tools/qs8_podglad_panelu.py`) to rekonstrukcja z kodu i fontów Roboto, nie zrzuty z Questa. Układ strony 2 i linii „Przytrzymaj” z #24 sprawdzony tak samo (obrazów nie ma w repo).
 
 ## Decyzje i odstępstwa od planu (wszystkie sesje)
-- **Keystore:** standardowy format debug Gradle (hasło/alias jak `debug.keystore`), sekret `P5M_DEBUG_KEYSTORE_BASE64`. Workflow niezmieniony (token gh bez scope `workflow`).
+- **2026-11-24 (Damian):** nowe funkcje wstrzymane do czasu przetestowania i zmergowania stosu; merge PR po PR (squash każdego); priorytet po merge'u = zamrożony obraz; 35 ms = głębia neuronowa, **3D z siecią tylko jako świadomy wybór**. Uwaga: `neuralDepth` jest w P5M domyślnie **włączone**, więc włączenie samego 3D włącza też sieć. Zmiana domyślnej wartości nie jest zrobiona (po merge'u, do ustalenia); dziś strona 2 pokazuje zmierzony koszt.
+- **35 ms:** wcześniejsze hipotezy (MQSR, 180 Hz, samo 3D) były błędne; żadnej poprawki w kodzie, to kod P5M.
+- **MQSR:** przyczyna zgubionych klatek z dev.21 nie jest wyizolowana (głębia neuronowa mogła być włączona; Balanced ma inną ostrość niż Automatic) → przełącznik #22.
+- **„Do 60”:** diagnoza z dev.25 była nietrafiona (symulacja z niezmierzonymi drganiami). Dalej tylko z linią `QS8: frames rhythm`; jeśli to rytm — `predictedDisplayPeriod` z OpenXR.
+- **Wersje (#20):** każdy build zostaje; powrót = nowy wyższy numer (`dev.31.r25`), bez odinstalowania.
+- **Strona 2 (#21):** wejście ≡ / Options (△ zajęte przez Peak HDR); bez bitrate'u (automatyczny bitrate P5M).
+- **Poświata (#23):** wył./słaba/średnia/mocna; tylko shader i ciemny pokój.
+- **Profile gier (odłożone):** obraz + ekran, bez bitrate'u, wbudowane zostają.
+- **Limit 3 plików P5M na PR:** #18 i #22 ruszyły po 4 (`CMakeLists.txt`, `tone_mapper.cpp`/`xr_session.cpp`, `VrStreamActivity.kt`, `LauncherActivity.kt`); dla #22 bez pytania Damiana. #23: zgoda na 4.
+- **Keystore:** standardowy format debug Gradle (hasło/alias jak `debug.keystore`), sekret `P5M_DEBUG_KEYSTORE_BASE64`. Token `gh` ma od 2026-11-22 scope `workflow`; workflow zmieniony w #20.
 - **1F centrowanie:** `REFERENCE_SPACE_CHANGE_PENDING` (LOCAL) ustawia `recenter_orientation_` na yaw 0. **Preset Kino:** pomijany, gdy `p5m_vr_screen` ma jakikolwiek klucz.
 - **Updater:** release `dev` forka (`qs8/AktualizacjeDev.kt`), interwał 15 min.
 - **1B:** Touch działa zawsze; JNI w `qs8_touch.cpp`; `qs8TouchKey` nie przekazuje UP do funkcji panelu.
 - **1C bez flagi `trybDomowy`:** Tryb domowy = w sesji nie było nazwanego pada (`qs8/TrybDomowy`, reguła `acceptsGamepadAxes` z patcha 0024). Komunikaty mówią o ≡ zawsze (decyzja Damiana). Przełącznik trybu dopiero z 1D.
+- **Znaki w panelu:** Roboto nie ma ≡ ↕ ↔ ↻ ✕ □ △; w panelu rysować przyciski (`LegendaTouch`). Teksty launchera z ✕ □ △ (np. opis HDR peak) zostały — czcionka zastępcza Questa, nieweryfikowane.
 - **Legenda:** `LegendaTouch.komorka` rysuje komórkę przycisku (Quest / PS5), tekst wierszy +26 px; „≡” w tekście nie jest używany (czcionka) — przycisk menu rysowany kreskami.
 - **„Zgłoś problem”:** raport tylko w schowku; URL z krótkim szablonem.
 - **Gałki Touch:** bity 13/14 → SELECT/START. Bez przycisku Questa: Adaptive triggers (R3), Touchpad click (PS).
@@ -64,20 +82,29 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - **1E-1:** brak Online ID (P5M zapisuje tylko numer konta); poprawka portu Broadcast w libchiaki nie robiona.
 - **MQSR (#10 → wycofane w #17):** samo `QUALITY_SHARPENING` w Automatic gubiło klatki na dev.21; #17 przywraca zestaw P5M (`AUTO_LAYER_FILTER` + NORMAL/QUALITY_SHARPENING + NORMAL_SUPER_SAMPLING). Z #10 zostaje dziennik bitów warstwy.
 - **Profile (#11):** bez bitrate'u / auto bitrate'u / 3D (decyzja Damiana). Profile: Zrównoważony / Ultra płynność / Kino, wszystkie 120 Hz (Responsywność usunięta w #17: 180 Hz bez zysku). Aktywny profil rozpoznawany po wartościach (toneMapped, tenBit, frameExtrapolation, panel180, sharpness), ekran nie wchodzi do porównania; zmiana ostrości w panelu → „Custom”. Kino: `toneMapped=false` + `tenBit=true` (shader przez 10-bit).
-- **Przytrzymania w panelu (#12–#14):** A / ✕ = rozmiar 1:1, X / □ = A/B, Y / △ = Peak HDR; próg 0,6 s; krótkie naciśnięcie wykonywane **po puszczeniu** (wcześniej natychmiast). UP pada dalej idzie do konsoli.
+- **Przytrzymania w panelu (#12–#14, #21):** A / ✕ = rozmiar 1:1, X / □ = A/B, Y / △ = Peak HDR, ≡ (Touch) lub Options (pad przy Queście; na Touch kliknięta prawa gałka) = strona 2; próg 0,6 s; krótkie naciśnięcie wykonywane **po puszczeniu** (wcześniej natychmiast). UP pada dalej idzie do konsoli.
 - **A/B:** tylko filtry (kompozytor Off, CAS 0), tylko w sesji, bez zapisu.
 - **Peak HDR:** `Qs8Prefs.peakHdr` (domyślnie 1000 jak P5M), atomik w `qs8_hdr.cpp`, uniform `uPicoFonte` przy każdym rysowaniu.
 - **Tłumaczenia (#16):** tłumacz ekranów 2D w `P5MApp` (OnPreDraw na każdej aktywności, TextView bez EditText/Spanned) zamiast hooków w setkach miejsc; panel/paski przez `t()` w `PainelDeAjuste` (desenhar, cabecalho, secao, medidores, faixa). `conferir.py` pomija `qs8/Tlumaczenia.kt`.
 
+## Ustalenia: 35 ms (pomiary Damiana, dev.21, 2026-11-22)
+Head-to-photon: direct 120 Hz 16–17 ms; direct 180 Hz 17 ms, 0 zgubionych; shader (10-bit) 180 Hz 18–20 ms; 3D bez sieci — bez skoku; **3D z głębią z sieci neuronowej 35–36 ms i wyższe CPU/GPU**.
+
 ## Znane błędy / otwarte sprawy
+- **ZAMROŻONY OBRAZ (priorytet po merge'u; odłożony przez Damiana 2026-11-24).** Objaw: pad zgasł i został włączony ponownie, obraz w goglach stoi, TV działa; pomaga wyjście i „Graj”. Także w starszych wersjach; build nieznany, dziennika brak, **przyczyna niepotwierdzona**.
+  - Luka (z czytania kodu): `lib/src/streamconnection.c` obsługuje `CHIAKI_TAKION_EVENT_TYPE_DISCONNECT` tylko w `STATE_TAKION_CONNECT`, więc śmierć wątku odbioru w trakcie gry nie kończy sesji; `takion_recv` bez limitu ciszy; po 25 próbach wysyłki tylko wpis w logu; `ctrl_failed` nie przerywa trwającego strumienia. Żaden patch tego nie zmienia.
+  - Warianty: A) martwa sesja (pad przy PS5), B) sesja żyje, stoi dekoder/wyświetlanie (pad przy Queście), C) PS5 wstrzymał obraz. Niesprawdzone: `MovimentoDualSense`, `EspelhoDualSense`, haptyka przy powrocie pada.
+  - Plan: (1) strażnik obrazu QS8 — wiek ostatniej zdekodowanej klatki (np. w `p5m_video_wait_for_display`, woła go każda klatka na obu ścieżkach), po ~3 s napis i wpis, czy pakiety przychodzą; (2) nowy patch na lukę w `streamconnection.c`; (3) **`display_sink`:** Android go nie ustawia, a `ctrl.c` (linie ~995, 1005, 1467) woła `cantdisplay_cb` bez sprawdzenia — sesja jest zerowana `memset`, więc możliwe wywołanie NULL (crash), gdy PS5 pokaże ekran, którego nie wolno strumieniować; (4) automatyczne łączenie dopiero z dziennikiem.
+  - Od Damiana potrzebne: pad przy PS5 czy Queście; czy zdjęte gogle i na jak długo; czy był dźwięk i działał panel (≡); „Zgłoś problem” przed kolejnym „Graj”.
+- **Rzadkie szarpnięcie „do 60”:** przyczyna nieustalona (gra/sieć albo rytm).
 - Nieprzetłumaczone (zostają po angielsku): długie teksty Diagnostyki (`DiagnosticActivity`, instrukcje „how to send this”, raport), ekran testów (test bench), kalibracja gałek, długie opisy w Połączeniu zdalnym (PSN) i strona logowania na telefonie, karta „Build dev.N from …” (opis z GitHuba), dynamiczne wartości bez wzoru, ekrany chiaki-ng (rejestracja poza wskazówkami 1E-1, lista konsol, ustawienia chiaki), dziennik (celowo).
 - Ikona `ic_qs8` = całe logo z napisem; przy 48–72 px napis nieczytelny (wariant z samym emblematem Q8 do rozważenia).
 - Skrypty `tools/` ze starym pakietem `io.github.gblandro.p5m`: `bitrate-latencia.sh`, `instalar-local.sh`, `tools/return/*`, `tools/haptics/*`.
-- Tekst release (`build-apk.yml`) mówi „P5M” i o L3+R3+R1 — wymaga scope `workflow`.
+- Tekst rolującego release `dev` (`build-apk.yml`) mówi „P5M” i o L3+R3+R1 (scope `workflow` już jest).
 - Brak sekretów do tagów `v*` → tag nie przejdzie CI. Klucz tagów ≠ klucz dev.
-- Asset `p5m-…-dev.N.apk` kasowany przy kolejnym buildzie → stara karta daje „HTTP 404”; wyłączyć/włączyć sprawdzanie.
+- W rolującym `dev` asset `p5m-…-dev.N.apk` jest kasowany przy kolejnym buildzie → stara karta daje „HTTP 404”; wyłączyć/włączyć sprawdzanie. W wydaniu `qs8-dev.N` zostaje.
 - MaxCLL: nie wiadomo, czy dekoder Questa podaje `hdr-static-info` — linia w dzienniku powie.
-- Głębia z sieci neuronowej (3D, kod P5M): 35–36 ms head-to-photon i więcej CPU/GPU. Do rozważenia: informacja o koszcie przy przełączniku.
+- Głębia z sieci neuronowej (kod P5M): koszt jak w „Ustalenia: 35 ms”. Na stronie 2 jest informacja; w launcherze nie ma.
 
 ## Pułapki w kodzie P5M
 - `VrStreamActivity`: `handleAdjustKey`, `handleQuitHold`, `teclaNoPin` przekazują **ACTION_UP do `StreamInput`** (konsola). Każde nowe źródło wejścia „tylko dla panelu” podaje im wyłącznie DOWN. `toggleAdjustMode` → `releaseChordButtons` → konsola.
@@ -92,8 +119,14 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - `PresetKino` zna nazwę pliku `p5m_vr_screen` z `ScreenPrefs` — przy merge'u z upstreamem sprawdzić.
 - Geometria panelu (`PainelDeAjuste`: margines 52, 5 kolumn, odstęp 44, wiersze 170/250/330) jest powielona w `LegendaTouch`, `TouchMenu`, `StanPanelu` i `tools/qs8_podglad_panelu.py`.
 
+- Klasa JNI musi mieć własny plik o tej samej nazwie (`conferir.py`); GCC w CI jest surowszy od lokalnego clanga (`<iterator>`, dev.24).
+- `Tlumaczenia.t` szuka najpierw dokładnego klucza, potem wariantu z małej litery: nowy klucz „Xyz” przejmuje istniejące „xyz” wyświetlane z wielkiej (błąd „Bright”, #24). Przed dodaniem sprawdzić warianty wielkości liter.
+- Po buildzie `powrot_do` następny zwykły push nadpisuje rolujące `dev`.
+- `ProfundidadeNeural.stop` czeka najwyżej 1 s, a wczytanie modelu trwa dłużej — start w trakcie sesji tylko przez `qs8/GlebiaNeuronowa` (zna nazwę wątku `p5m-neural-depth`; sprawdzić przy merge'u z upstreamem).
+- Poświata: stan w `qs8_poswiata.cpp` jest statyczny (jeden wątek pętli klatek); sprzątanie po `tone_mapper_.Destroy()`.
+
 ## Pliki QS8
-- Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek, PanelZaawansowany, Mqsr, MqsrNative, Poswiata, PoswiataNative`.
+- Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek, PanelZaawansowany, Mqsr, MqsrNative, Poswiata, PoswiataNative, GlebiaNeuronowa`.
 - Native: `qs8_touch.{h,cpp}`, `qs8_warstwa.h`, `qs8_hdr.{h,cpp}`, `qs8_klatki.{h,cpp}`, `qs8_mqsr.cpp`, `qs8_poswiata.{h,cpp}`. Zasoby: `res/mipmap-*/ic_qs8.png`. Patche: `0058` (rejestracja), `0059` (MaxCLL).
 - Punkty `// QS8:` / `# QS8:` (lista: `git grep -n "QS8:"`): `.github/workflows/build-apk.yml`, `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt`, `Estilo.kt`, `PainelDeAjuste.kt`, `LogServer.kt`, `PsnLoginRelay.kt`, `PsnRemoteActivity.kt`, `VrStreamActivity.kt`, `xr_session.cpp`, `tone_mapper.cpp`, `CMakeLists.txt`, `tools/conferir.py`.
 
@@ -101,10 +134,13 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Lokalna kopia: `~/QuestStation8/klucze/qs8-debug.keystore` (poza repo). W GitHub: `P5M_DEBUG_KEYSTORE_BASE64`.
 
 ## Następne kroki (kolejność)
-1. Dokończyć test na dev.26 (cały stos #6–#18; dev.21, dev.23 i dev.25 sprawdzone częściowo; „do 60” jak w dev.23 + „Zgłoś problem” z linią `QS8: frames rhythm`) → decyzja o merge'u stosu.
-2. Poprawki po teście (nowe PR-y na szczycie stosu albo na `qs8/main` po merge'u).
-3. Kolejka uzgodniona 2026-11-22 (każde = PR na szczycie stosu): ~~wersje/powrót (#20)~~ → ~~druga strona panelu w grze „Zaawansowane” (#21)~~ → ~~MQSR eksperymentalne (#22)~~ → ~~Poświata (#23)~~ → nazwane profile gier (obraz + ekran, bez bitrate'u, wbudowane zostają) → Poświata wokół ekranu (najpierw rozpoznanie). Szczegóły: PLAN, „Kolejka 2026-11-22”.
-4. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
-5. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
-6. Test trybu mobilnego (pad sparowany z Questem).
-7. Później: c) chroma sterowana lumą (jeśli A/B pokaże potrzebę), ikona z samym emblematem, dokończenie tłumaczeń (Diagnostyka, PSN).
+1. Test Damiana na **dev.31** (jeden APK, cały stos). Kolejność: zwykła gra i krótkie ≡ → strona 2 → poświata (orientacja!) → MQSR bez głębi neuronowej → „do 60” z dziennikiem → wcześniejsze #6–#16 → tryb mobilny.
+2. Poprawki po teście (małe PR-y na szczycie stosu). Bez nowych funkcji.
+3. Jedna próba `powrot_do` (uruchamia Damian albo za jego zgodą).
+4. Merge PR po PR (squash każdego), patrz „Merge”.
+5. **Zamrożony obraz:** strażnik obrazu + patch na `streamconnection.c` + `display_sink`.
+6. Domyślna głębia neuronowa („świadomy wybór”) — ustalić z Damianem.
+7. Odłożone funkcje: nazwane profile gier (PLAN, „Kolejka 2026-11-22”); poświata: czarne pasy, barwienie pokoju.
+8. 1D: ekran startowy „Tryb domowy / Tryb mobilny” (+ ostatni profil), z nim flaga Trybu domowego.
+9. 1E-2: rejestracja bez PIN-u (`auto_regist` przez JNI) — najpierw opis chiaki-ng desktop i propozycja zakresu.
+10. Później: c) chroma sterowana lumą (jeśli A/B pokaże potrzebę), ikona z samym emblematem, dokończenie tłumaczeń (Diagnostyka, PSN).

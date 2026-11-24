@@ -121,6 +121,69 @@ object LegendaTouch
 	}
 
 	/**
+	 * Linia nad legendą strony 1: co robią przytrzymania. Przyciski są rysowane, bo
+	 * czcionka nie ma znaków ≡ ✕ □ △; A, X, Y to te same przyciski co ✕, □, △ pada
+	 * (pary stoją przy wierszach wyżej). Mieści się między [x0] a [x1].
+	 */
+	fun przytrzymania(canvas: Canvas, x0: Float, x1: Float, cy: Float, padPrzyQuescie: Boolean)
+	{
+		val grupy = listOf(
+			elementyStrony(padPrzyQuescie) to "page 2, Advanced",
+			listOf<Element>(Element.Litera("A")) to "size 1:1",
+			listOf<Element>(Element.Litera("X")) to "original / enhanced",
+			listOf<Element>(Element.Litera("Y")) to "HDR peak")
+			.map { (e, en) -> e to Tlumaczenia.t(en) }
+		val wstep = Tlumaczenia.t("Hold:")
+		val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(140, 188, 255); textSize = 20f }
+		fun szer() = p.measureText(wstep) + 14f + grupy.sumOf { (e, t) ->
+			(e.sumOf { szerokosc(it, 17f).toDouble() } + 8f + p.measureText(t) + 28f) }.toFloat()
+		while(p.textSize > 13f && szer() > x1 - x0)
+			p.textSize -= 1f
+		canvas.drawText(wstep, x0, cy + 7f, p)
+		var x = x0 + p.measureText(wstep) + 14f
+		for((e, t) in grupy)
+		{
+			x += rzadOdLewej(canvas, e, x, cy, 17f) + 8f
+			canvas.drawText(t, x, cy + 7f, p)
+			x += p.measureText(t) + 28f
+		}
+	}
+
+	/** Przycisk strony panelu: ≡, a z padem sparowanym z Questem też Options (w Trybie domowym idzie do konsoli). */
+	private fun elementyStrony(padPrzyQuescie: Boolean) =
+		if(padPrzyQuescie) listOf(Element.Menu, Element.Ukosnik, Element.Ps(PainelDeAjuste.Botao.Nome("Options")))
+		else listOf<Element>(Element.Menu)
+
+	/** Prawa strona nagłówka strony 2: wybór, zmiana, powrót na stronę 1, zamknięcie. Same rysunki przycisków. */
+	fun naglowekStrony2(canvas: Canvas, w: Float, padPrzyQuescie: Boolean)
+	{
+		val dica = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = SZARY; textSize = 22f; textAlign = Paint.Align.RIGHT }
+		var x = w - 52f
+		val cy = 58f
+		fun tekst(en: String)
+		{
+			val t = Tlumaczenia.t(en)
+			canvas.drawText(t, x, 66f, dica)
+			x -= dica.measureText(t) + 14f
+		}
+		fun przyciski(elementy: List<Element>, odstep: Float)
+		{
+			x -= rzad(canvas, elementy, x, cy, 1000f, 19f) + odstep
+		}
+		tekst("close")
+		przyciski(listOf(Element.Litera("B"), Element.Ukosnik, Element.Ps(PainelDeAjuste.Botao.Circulo)), 26f)
+		tekst("page 1  ·")
+		przyciski(elementyStrony(padPrzyQuescie), 10f)
+		tekst("hold")
+		x -= 12f
+		tekst("change  ·")
+		przyciski(listOf(Element.Litera("A"), Element.Ukosnik, Element.Ps(PainelDeAjuste.Botao.Cruz)), 10f)
+		przyciski(listOf(Element.Galka, Element.Ukosnik, Element.Ps(PainelDeAjuste.Botao.DirecionalHorizontal)), 26f)
+		tekst("choose  ·")
+		przyciski(listOf(Element.Galka, Element.Ukosnik, Element.Ps(PainelDeAjuste.Botao.DirecionalVertical)), 0f)
+	}
+
+	/**
 	 * Przypomnienie na starcie sesji (w miejsce faixy P5M o samym akordzie).
 	 * [padPrzyQuescie]: pad sparowany z goglami. Bez niego to Tryb domowy — pad
 	 * gra przez konsolę, a akord na nim nie dociera do aplikacji, więc pierwszy

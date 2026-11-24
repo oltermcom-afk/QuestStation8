@@ -17,7 +17,7 @@ import io.github.gblandro.p5m.StreamQualityPrefs
  */
 object Poswiata
 {
-	val NAZWY = listOf("Off", "Faint", "Moderate", "Bright")
+	val NAZWY = listOf("Off", "Faint", "Moderate", "Vivid")
 
 	const val NAZWA = "Glow"
 

@@ -458,7 +458,8 @@ class VrStreamActivity: ComponentActivity()
 	private val qs8Stan = io.github.gblandro.p5m.qs8.StanPanelu()
 	private val qs8Hold by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, { handleAdjustKey(it) }, { qs8Dlugo(it) })
 			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X); dodaj(KeyEvent.KEYCODE_BUTTON_Y); dodaj(KeyEvent.KEYCODE_BUTTON_START) } }
-	private val qs8Zaaw by lazy { io.github.gblandro.p5m.qs8.PanelZaawansowany(this, qualityPrefs, qs8Stan, { xr }, { applyQualityParams() }, { trace(it) }) }
+	private val qs8ZaawLeniwy = lazy { io.github.gblandro.p5m.qs8.PanelZaawansowany(this, qualityPrefs, qs8Stan, { xr }, { applyQualityParams() }, { input?.preferredGamepadId != null }, { trace(it) }) }
+	private val qs8Zaaw by qs8ZaawLeniwy
 	// Kontroler Questa: krótkie ≡ otwiera/zamyka panel (po puszczeniu), przytrzymanie = strona 2 „Zaawansowane”.
 	private val qs8Menu by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, {
 				adjustMode = !adjustMode
@@ -1035,6 +1036,7 @@ class VrStreamActivity: ComponentActivity()
 		// Mesmo motivo: a thread do microfone entrega a sessao nativa.
 		microfone?.stop()
 		microfone = null
+		if(qs8ZaawLeniwy.isInitialized()) qs8Zaaw.zamknij()  // QS8: po tym przelacznik glebi nie uruchomi juz sieci.
 		io.github.gblandro.p5m.ProfundidadeNeural.stop()
 		// Devolve os gatilhos ao neutro antes de soltar a ponte.
 		espelho?.stop()
@@ -2353,7 +2355,7 @@ class VrStreamActivity: ComponentActivity()
 	{
 		val bitmap = hudBitmap ?: Bitmap.createBitmap(HUD_WIDTH, HUD_HEIGHT, Bitmap.Config.ARGB_8888)
 			.also { hudBitmap = it }
-		if(qs8Stan.strona2) { qs8Zaaw.rysuj(bitmap); qs8Stan.dorysuj(bitmap); xr?.setHudBitmap(bitmap); return }  // QS8: strona 2.
+		if(qs8Stan.strona2) { qs8Zaaw.rysuj(bitmap); xr?.setHudBitmap(bitmap); return }  // QS8: strona 2.
 
 		// O realce dura um instante: o bastante para confirmar que o botao
 		// pegou. O medidor redesenha a cada segundo, e e ele quem apaga.
@@ -2438,7 +2440,7 @@ class VrStreamActivity: ComponentActivity()
 
 		PainelDeAjuste.desenhar(bitmap, StreamQualityPrefs.CHORD_NAMES[qualityPrefs.tuningChord].uppercase(),
 				tela, imagem, outros, medidores())
-		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap, qualityPrefs); qs8Stan.dorysuj(bitmap)  // QS8: legenda, profil, komunikat.
+		io.github.gblandro.p5m.qs8.TouchMenu.dorysujLegende(bitmap, qualityPrefs, input?.preferredGamepadId != null); qs8Stan.dorysuj(bitmap)  // QS8: legenda, profil, komunikat.
 		xr?.setHudBitmap(bitmap)
 	}
 
