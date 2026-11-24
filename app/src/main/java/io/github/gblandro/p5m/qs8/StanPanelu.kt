@@ -32,14 +32,18 @@ class StanPanelu
 	}
 
 	/** Komunikat na środku nagłówka panelu, dopóki nie minie jego czas. */
+	/** Komunikat do pokazania (przetłumaczony) albo null, gdy nie ma lub minął jego czas. */
+	fun aktualny(): String?
+	{
+		if(komunikat != null && SystemClock.uptimeMillis() > komunikatDo)
+			komunikat = null
+		return komunikat?.let { Tlumaczenia.t(it) }
+	}
+
+	/** Strona 1. Na stronie 2 komunikat rysuje [PanelZaawansowany] w swoim wierszu stanu. */
 	fun dorysuj(bitmap: Bitmap)
 	{
-		val tekst = Tlumaczenia.t(komunikat ?: return)
-		if(SystemClock.uptimeMillis() > komunikatDo)
-		{
-			komunikat = null
-			return
-		}
+		val tekst = aktualny() ?: return
 		val canvas = Canvas(bitmap)
 		val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 			color = Color.rgb(16, 24, 40)

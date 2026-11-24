@@ -6,22 +6,21 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.view.KeyEvent
 import android.view.MotionEvent
 import io.github.gblandro.p5m.PainelDeAjuste
-import io.github.gblandro.p5m.ProfundidadeNeural
 import io.github.gblandro.p5m.ScreenPrefs
 import io.github.gblandro.p5m.StreamQualityPrefs
 import io.github.gblandro.p5m.XrBridge
-import java.util.concurrent.Executors
 
 /**
  * Druga strona panelu w grze: „Zaawansowane” (kolejka 2026-11-22, pkt 2).
  *
- * Wejście i powrót: przytrzymanie Options (DualSense) albo ≡ (kontroler
- * Questa; przy zamkniętym panelu otwiera go od razu na tej stronie). Krzyżak
+ * Wejście i powrót: przytrzymanie ≡ (kontroler Questa; przy zamkniętym panelu
+ * otwiera go od razu na tej stronie) albo Options (tylko pad sparowany z Questem). Krzyżak
  * / drążek góra-dół wybiera wiersz, lewo-prawo albo ✕ / A zmienia wartość,
  * ○ / B zamyka panel jak na stronie 1.
  *
@@ -41,6 +40,7 @@ class PanelZaawansowany(
 	private val stan: StanPanelu,
 	private val xr: () -> XrBridge?,
 	private val zastosujJakosc: () -> Unit,
+	private val padPrzyQuescie: () -> Boolean,
 	private val dziennik: (String) -> Unit)
 {
 	enum class Kiedy { NA_ZYWO, NASTEPNE_POLACZENIE, NIE_W_TEJ_SESJI, NIEAKTYWNE }
@@ -59,8 +59,8 @@ class PanelZaawansowany(
 	private val sesja10 = jakosc.tenBitNaSessao
 	private val ekran = ScreenPrefs(activity)
 
-	/** Start i stop sieci neuronowej po kolei, poza głównym wątkiem (stop czeka na wątek sieci do 1 s). */
-	private val neuronowa = Executors.newSingleThreadExecutor { Thread(it, "qs8-neural-toggle").apply { isDaemon = true } }
+	/** Sieć głębi w tej sesji; stan początkowy jak przy starcie sesji (VrStreamActivity). */
+	private val neuronowa = GlebiaNeuronowa(activity, sesja3D && jakosc.neuralDepth)
 
 	private var wybrany = 0
 	private var hatX = 0
@@ -107,7 +107,7 @@ class PanelZaawansowany(
 		Wiersz(0, Mqsr.NAZWA,
 				{ wlacz(Mqsr.wlaczone(activity)) },
 				{ if(Mqsr.aktywne(jakosc)) Kiedy.NA_ZYWO else Kiedy.NIEAKTYWNE },
-				{ if(Mqsr.aktywne(jakosc)) "Watch dropped frames and latency on page 1." else "Only with Sharpness: Automatic (□ on page 1)." },
+				{ if(Mqsr.aktywne(jakosc)) "Watch dropped frames and latency on page 1." else "Only with Sharpness: Automatic (set it on page 1)." },
 				{ _ -> Mqsr.przelacz(activity) }),
 		Wiersz(0, Poswiata.NAZWA,
 				{ Poswiata.nazwa(activity) },
@@ -120,7 +120,7 @@ class PanelZaawansowany(
 				{ when
 					{
 						!sesjaShader -> "Needs the shader path."
-						!Poswiata.ciemnyPokoj(ekran) -> "Only in a dark room: Room hidden or cinema (△ on page 1)."
+						!Poswiata.ciemnyPokoj(ekran) -> "Only in a dark room: set Room on page 1 to hidden or cinema."
 						else -> null
 					} },
 				{ k -> Poswiata.zmien(activity, k) }),
@@ -157,10 +157,7 @@ class PanelZaawansowany(
 				{ _ ->
 					jakosc.neuralDepth = !jakosc.neuralDepth
 					if(sesja3D)
-					{
-						val wl = jakosc.neuralDepth
-						neuronowa.execute { if(wl) ProfundidadeNeural.start(activity) else ProfundidadeNeural.stop() }
-					}
+						neuronowa.ustaw(jakosc.neuralDepth)
 				}),
 		// --- OD NASTĘPNEGO POŁĄCZENIA
 		Wiersz(2, "Video path",
@@ -192,7 +189,10 @@ class PanelZaawansowany(
 				{ _ -> jakosc.syntheticStereo = !jakosc.syntheticStereo })
 	)
 
-	/** Przytrzymanie Options / ≡: strona 1 ↔ strona 2. */
+	/** Koniec sesji, przed zatrzymaniem sieci głębi przez P5M. */
+	fun zamknij() = neuronowa.zamknij()
+
+	/** Przytrzymanie ≡ / Options: strona 1 ↔ strona 2. */
 	fun przelacz()
 	{
 		stan.strona2 = !stan.strona2
@@ -287,28 +287,14 @@ class PanelZaawansowany(
 		p.color = TEKST
 		c.drawText(t("ADVANCED") + "  ·  2/2", margem, 66f, p)
 		p.typeface = Typeface.DEFAULT
-		p.textSize = 26f
-		p.color = SUAVE
-		val podpowiedz = t("↕ choose  ·  ↔ or ✕ / A change  ·  hold Options or ≡: page 1  ·  ○ / B close")
-		c.drawText(podpowiedz, w - margem - p.measureText(podpowiedz), 66f, p)
+		LegendaTouch.naglowekStrony2(c, w, padPrzyQuescie())
 
-		val sel = wiersze[wybrany]
-		val (opisKiedy, kolorKiedy) = when(sel.kiedy())
-		{
-			Kiedy.NA_ZYWO -> t("Changes live") to ZYWO
-			Kiedy.NASTEPNE_POLACZENIE -> t("Saved. Takes effect from the next connection.") to AVISO
-			Kiedy.NIE_W_TEJ_SESJI -> t("Saved. No effect in this session.") to AVISO
-			Kiedy.NIEAKTYWNE -> t("Saved. Not active with the current settings.") to AVISO
-		}
-		p.textSize = 27f
-		p.color = kolorKiedy
-		var x = margem
-		c.drawText(opisKiedy, x, 112f, p)
-		x += p.measureText(opisKiedy)
-		sel.uwaga()?.let {
-			p.color = SUAVE
-			c.drawText("  ·  " + t(it), x, 112f, p)
-		}
+		// Komunikat (A/B, rozmiar 1:1, Peak HDR ze strony 1) zajmuje na chwilę wiersz stanu.
+		val komunikat = stan.aktualny()
+		if(komunikat != null)
+			pigulka(c, komunikat, margem)
+		else
+			stanWiersza(c, p, margem)
 
 		val szer = (w - 2 * margem - 2 * vao) / 3
 		val gora = 168f
@@ -340,7 +326,8 @@ class PanelZaawansowany(
 				p.textSize = 28f
 				p.color = if(wygaszony) Color.argb(150, 142, 152, 173) else SUAVE
 				c.drawText(t(wiersz.nazwa), x0, linia, p)
-				val wartosc = t(wiersz.wartosc()) + if(wiersz.kiedy() == Kiedy.NASTEPNE_POLACZENIE) "  ↻" else ""
+				val pozniej = wiersz.kiedy() == Kiedy.NASTEPNE_POLACZENIE
+				val wartosc = t(wiersz.wartosc())
 				p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 				p.textSize = 30f
 				p.color = when
@@ -349,8 +336,65 @@ class PanelZaawansowany(
 					aktywny -> DESTAQUE
 					else -> TEKST
 				}
-				c.drawText(wartosc, x0 + szer - p.measureText(wartosc), linia, p)
+				val prawa = x0 + szer - if(pozniej) 36f else 0f
+				c.drawText(wartosc, prawa - p.measureText(wartosc), linia, p)
+				if(pozniej)
+					ponownie(c, x0 + szer - 12f, y + wys / 2)
 			}
 		}
+	}
+
+	/** Kiedy zadziała wybrany wiersz i uwaga do niego. */
+	private fun stanWiersza(c: Canvas, p: Paint, x0: Float)
+	{
+		val sel = wiersze[wybrany]
+		val (opisKiedy, kolorKiedy) = when(sel.kiedy())
+		{
+			Kiedy.NA_ZYWO -> t("Changes live") to ZYWO
+			Kiedy.NASTEPNE_POLACZENIE -> t("Saved. Takes effect from the next connection.") to AVISO
+			Kiedy.NIE_W_TEJ_SESJI -> t("Saved. No effect in this session.") to AVISO
+			Kiedy.NIEAKTYWNE -> t("Saved. Not active with the current settings.") to AVISO
+		}
+		p.textSize = 27f
+		p.color = kolorKiedy
+		c.drawText(opisKiedy, x0, 116f, p)
+		val x = x0 + p.measureText(opisKiedy)
+		sel.uwaga()?.let {
+			p.color = SUAVE
+			c.drawText("  ·  " + t(it), x, 116f, p)
+		}
+	}
+
+	private fun pigulka(c: Canvas, tekst: String, x0: Float)
+	{
+		val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+			color = Color.rgb(16, 24, 40)
+			textSize = 26f
+			typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+		}
+		c.drawRoundRect(RectF(x0, 88f, x0 + p.measureText(tekst) + 48f, 128f), 20f, 20f,
+				Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DESTAQUE })
+		c.drawText(tekst, x0 + 24f, 117f, p)
+	}
+
+	/** Strzałka w kółko (od następnego połączenia), rysowana: znak z czcionki może nie istnieć w goglach. */
+	private fun ponownie(c: Canvas, cx: Float, cy: Float)
+	{
+		val r = 9f
+		val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+			color = AVISO
+			style = Paint.Style.STROKE
+			strokeWidth = 3f
+			strokeCap = Paint.Cap.ROUND
+		}
+		c.drawArc(RectF(cx - r, cy - r, cx + r, cy + r), -20f, 290f, false, p)
+		// Koniec łuku: 270 stopni, czyli góra kółka; ruch w prawo.
+		p.style = Paint.Style.FILL
+		c.drawPath(Path().apply {
+			moveTo(cx - 1f, cy - r - 6f)
+			lineTo(cx + 7f, cy - r)
+			lineTo(cx - 1f, cy - r + 6f)
+			close()
+		}, p)
 	}
 }

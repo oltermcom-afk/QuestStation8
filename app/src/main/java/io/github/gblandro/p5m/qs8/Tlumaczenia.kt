@@ -240,22 +240,25 @@ object Tlumaczenia
 		"ADVANCED" to "ZAAWANSOWANE",
 		"PICTURE" to "OBRAZ",
 		"Glow" to "Poświata",
-		// Poziomy poświaty: własne słowa, bo „Soft/Medium/Strong” mają już formy dla ostrości i pokoju.
+		// Poziomy poświaty: własne słowa, bo „Soft/Medium/Strong/Bright” mają już formy dla ostrości, pokoju i jasności.
 		"Faint" to "Słaba",
 		"Moderate" to "Średnia",
-		"Bright" to "Mocna",
+		"Vivid" to "Mocna",
 		"Needs the shader path." to "Wymaga ścieżki shader.",
-		"Only in a dark room: Room hidden or cinema (△ on page 1)." to "Tylko w ciemnym pokoju: pokój ukryty albo kino (△ na stronie 1).",
+		"Only in a dark room: set Room on page 1 to hidden or cinema." to "Tylko w ciemnym pokoju: na stronie 1 ustaw pokój ukryty albo kino.",
 		"Light around the screen in the colors of its edges, like Ambilight. Only in a dark room (room hidden or dimmed for cinema) and with the shader video path. No added latency." to
 				"Światło wokół ekranu w kolorach jego krawędzi, jak Ambilight. Tylko w ciemnym pokoju (pokój ukryty albo przyciemniony na kino) i przy ścieżce wideo shader. Bez dodatkowego opóźnienia.",
 		"NEXT CONNECTION" to "OD NASTĘPNEGO POŁĄCZENIA",
-		"↕ choose  ·  ↔ or ✕ / A change  ·  hold Options or ≡: page 1  ·  ○ / B close" to
-				"↕ wybór  ·  ↔ albo ✕ / A zmiana  ·  przytrzymaj Options albo ≡: strona 1  ·  ○ / B zamknij",
+		"choose  ·" to "wybór  ·",
+		"change  ·" to "zmiana  ·",
+		"hold" to "przytrzymaj",
+		"page 1  ·" to "strona 1  ·",
+		"close" to "zamknij",
 		"Changes live" to "Zmienia się na żywo",
 		"Saved. Not active with the current settings." to "Zapisane. Nieaktywne przy obecnych ustawieniach.",
 		"MQSR (experimental)" to "MQSR (eksperymentalne)",
 		"Watch dropped frames and latency on page 1." to "Obserwuj zgubione klatki i opóźnienie na stronie 1.",
-		"Only with Sharpness: Automatic (□ on page 1)." to "Tylko przy ostrości „Automatyczne” (□ na stronie 1).",
+		"Only with Sharpness: Automatic (set it on page 1)." to "Tylko przy ostrości „Automatyczne” (ustaw na stronie 1).",
 		"Automatic sharpness lets the headset use only MQSR, its best upscaling filter. Watch dropped frames and latency in the panel; it costs more GPU. Works only with Sharpness: Automatic." to
 				"Automatyczna ostrość pozwala goglom użyć tylko MQSR, najlepszego filtra skalowania. Obserwuj zgubione klatki i opóźnienie w panelu; kosztuje więcej GPU. Działa tylko przy ostrości „Automatyczne”.",
 		"Off: Automatic sharpness picks between normal sharpening, MQSR and supersampling, as in P5M. Turn on to test MQSR alone (works only with Sharpness: Automatic)." to
@@ -474,8 +477,12 @@ object Tlumaczenia
 		"A · ORIGINAL — no sharpening" to "A · ORYGINAŁ — bez wyostrzania",
 		"1:1 size is not available on this headset" to "Rozmiar 1:1 niedostępny w tych goglach",
 		// --- legenda Questa (QS8)
-		"Quest / PS5 controller  ·  LT RT  Quest triggers  ·  Grip  grip buttons  ·  stick: either one, L / R: press the stick  ·  hold A / ✕: size 1:1 pixel  ·  hold X / □: original / enhanced  ·  hold Y / △: HDR peak  ·  triggers, touchpad: PS5 only" to
-				"Kontroler Questa / pad PS5  ·  LT RT  triggery Questa  ·  Grip  przyciski chwytu  ·  gałka: dowolna, L / R: wciśnij gałkę  ·  przytrzymaj A / ✕: rozmiar 1:1  ·  przytrzymaj X / □: oryginał / ulepszony  ·  przytrzymaj Y / △: szczyt HDR  ·  triggery, touchpad: tylko PS5",
+		"Quest / PS5 controller  ·  LT RT  Quest triggers  ·  Grip  grip buttons  ·  stick: either one, L / R: press the stick  ·  triggers, touchpad: PS5 only" to
+				"Kontroler Questa / pad PS5  ·  LT RT  triggery Questa  ·  Grip  przyciski chwytu  ·  gałka: dowolna, L / R: wciśnij gałkę  ·  triggery, touchpad: tylko PS5",
+		"Hold:" to "Przytrzymaj:",
+		"page 2, Advanced" to "strona 2, Zaawansowane",
+		"size 1:1" to "rozmiar 1:1",
+		"original / enhanced" to "oryginał / ulepszony",
 		// --- rejestracja (1E-1, QS8)
 		"Generate the PIN on the PS5 while logged in to the PSN account you signed in with here (for Home mode: the second account)." to
 				"PIN wygeneruj na PS5 na koncie PSN, którym logujesz się tutaj (w Trybie domowym: na drugim koncie).",

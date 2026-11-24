@@ -146,8 +146,7 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 
 		/** Przyciski są przy każdym wierszu (LegendaTouch); tu tylko, co znaczą skróty i czego Quest nie robi. */
 		private const val LEGENDA = "Quest / PS5 controller  ·  LT RT  Quest triggers  ·  Grip  grip buttons  ·  " +
-				"stick: either one, L / R: press the stick  ·  hold A / ✕: size 1:1 pixel  ·  hold X / □: original / enhanced  ·  hold Y / △: HDR peak  ·  " +
-				"triggers, touchpad: PS5 only"
+				"stick: either one, L / R: press the stick  ·  triggers, touchpad: PS5 only"
 
 		/**
 		 * Objaśnienie legendy kontrolerów Questa w dolnym pasku panelu (pod trzecim rzędem,
@@ -161,7 +160,7 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 			return 52f + 4 * (kolumna + 44f)
 		}
 
-		fun dorysujLegende(bitmap: Bitmap, jakosc: io.github.gblandro.p5m.StreamQualityPrefs)
+		fun dorysujLegende(bitmap: Bitmap, jakosc: io.github.gblandro.p5m.StreamQualityPrefs, padPrzyQuescie: Boolean)
 		{
 			// Aktywny profil (tylko podgląd) pod kolumną odczytów.
 			Canvas(bitmap).drawText(Tlumaczenia.t("Profile: " + Profile.nazwa(jakosc)), prawaKolumna(bitmap), bitmap.height - 22f,
@@ -170,11 +169,13 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 			val margines = 52f
 			val kolumna = (w - 2 * margines - 4 * 44f) / 5
 			val prawa = margines + 4 * kolumna + 3 * 44f
-			val farba = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(142, 152, 173); textSize = 20f }
+			val farba = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(142, 152, 173); textSize = 17f }
+			val plotno = Canvas(bitmap)
 			val legenda = Tlumaczenia.t(LEGENDA)
 			while(farba.textSize > 13f && farba.measureText(legenda) > prawa - margines)
 				farba.textSize -= 1f
-			Canvas(bitmap).drawText(legenda, margines, bitmap.height - 22f, farba)
+			LegendaTouch.przytrzymania(plotno, margines, prawa, bitmap.height - 46f, padPrzyQuescie)
+			plotno.drawText(legenda, margines, bitmap.height - 16f, farba)
 		}
 	}
 }
