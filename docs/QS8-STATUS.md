@@ -8,7 +8,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - `main` = lustro `upstream/main`; `qs8/main` = gałąź domyślna; Actions read/write; Issues włączone.
 - Każdy push buduje APK do rolling release `dev` (`p5m.apk` + `p5m-<wersja>-dev.N.apk`; N = numer runu = versionCode) — z niego aktualizuje się aplikacja. `[skip ci]` = bez buildu.
 - **Od PR #20 każdy build zostaje na stałe** jako wydanie `qs8-dev.N` (APK, gałąź, PR, commit). Są `qs8-dev.26`–`31` (dev.26 dodane ręcznie); starsze APK skasowane (do odtworzenia powrotem). Tworzenie wydań sprawdzone w CI (dev.27–31). Przetestowane: `gh release edit qs8-dev.N --repo oltermcom-afk/QuestStation8 --title "QS8 dev.N ✅ przetestowana"`.
-- **Powrót do wersji:** Actions → Build APK → Run workflow → gałąź ze szczytu stosu (albo `qs8/main`) → `powrot_do` = N. Buduje kod dev.N jako `dev.<nowy>.r<N>` (w launcherze „dev.31 (25)”), instaluje się jak aktualizacja, rejestracja zostaje. **Ścieżka `powrot_do` nigdy nie była uruchomiona.** Ma działać dla każdego udanego builda z historii Actions. Następny zwykły push znów publikuje najnowszy kod w `dev`.
+- **Powrót do wersji:** Actions → Build APK → Run workflow → gałąź ze szczytu stosu (`qs8/main` dopiero po merge'u #20) → `powrot_do` = N. Buduje kod dev.N jako `dev.<nowy>.r<N>` (w launcherze „dev.31 (25)”), instaluje się jak aktualizacja, rejestracja zostaje. **Ścieżka `powrot_do` nigdy nie była uruchomiona.** Ma działać dla każdego udanego builda z historii Actions. Następny zwykły push znów publikuje najnowszy kod w `dev`.
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
