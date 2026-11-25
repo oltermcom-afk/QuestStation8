@@ -49,7 +49,8 @@ add_library(p5m-vr SHARED
         qs8_hdr.cpp
         qs8_klatki.cpp
         qs8_mqsr.cpp
-        qs8_poswiata.cpp)
+        qs8_poswiata.cpp
+        qs8_lezaco.cpp)
 
 target_include_directories(p5m-vr PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

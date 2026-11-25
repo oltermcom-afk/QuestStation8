@@ -162,8 +162,9 @@ class TouchMenu(private val naKlawisz: (KeyEvent) -> Unit): LifecycleEventObserv
 
 		fun dorysujLegende(bitmap: Bitmap, jakosc: io.github.gblandro.p5m.StreamQualityPrefs, padPrzyQuescie: Boolean)
 		{
-			// Aktywny profil (tylko podgląd) pod kolumną odczytów.
-			Canvas(bitmap).drawText(Tlumaczenia.t("Profile: " + Profile.nazwa(jakosc)), prawaKolumna(bitmap), bitmap.height - 22f,
+			// Aktywny profil (tylko podgląd) i tryb na leżąco pod kolumną odczytów.
+			val lezenie = if(NaLezaco.wlaczony()) "  ·  " + Tlumaczenia.t(NaLezaco.NAZWA) else ""
+			Canvas(bitmap).drawText(Tlumaczenia.t("Profile: " + Profile.nazwa(jakosc)) + lezenie, prawaKolumna(bitmap), bitmap.height - 22f,
 					Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(142, 152, 173); textSize = 18f })
 			val w = bitmap.width.toFloat()
 			val margines = 52f
