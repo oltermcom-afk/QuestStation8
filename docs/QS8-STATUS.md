@@ -1,4 +1,4 @@
-# QuestStation8 — stan projektu (2026-11-24)
+# QuestStation8 — stan projektu (2026-11-25)
 
 Punkt startowy dla następnej sesji. Zasady: `CLAUDE.md`. Plan: `docs/QS8-PLAN.md`.
 Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `docs/podglad/`.
@@ -12,7 +12,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - Wartość referencyjna: `~/QuestStation8/baseline/p5m-0.3.0-beta.apk` (nie commitować). Logo źródłowe: `~/QuestStation8/qs8-logo.png`.
 
 ## Stos PR (nic nie zmergowane do `qs8/main` przed testem Damiana)
-**Ostatni APK: dev.31** (gałąź `qs8/poprawki-panelu`, cały stos #6–#18, #20–#24; CI 31 zielone). Szczyt stosu: `qs8/poprawki-panelu`. `qs8/main` = `ebc6ecb` (#1–#5). **Nowe funkcje wstrzymane** do czasu przetestowania i zmergowania stosu (decyzja Damiana 2026-11-24).
+**Ostatni APK: dev.32** (gałąź `qs8/na-lezaco`, cały stos #6–#18, #20–#25). Szczyt stosu: `qs8/na-lezaco`. `qs8/main` = `ebc6ecb` (#1–#5). **Nowe funkcje wstrzymane** do czasu przetestowania i zmergowania stosu (decyzja Damiana 2026-11-24); jedyny wyjątek: tryb „na leżąco” (#25, Damian 2026-11-25).
 
 | PR | Gałąź | Baza | Co (jedno zdanie) |
 |---|---|---|---|
@@ -35,8 +35,9 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 | #22 | `qs8/mqsr-eksperymentalne` | #21 | Przełącznik „MQSR (eksperymentalne)”: przy ostrości Automatic sam `QUALITY_SHARPENING` (wariant dev.21), na żywo; launcher (pod Sharpness) i strona 2 panelu (`qs8/Mqsr`, `qs8_mqsr.cpp`). |
 | #23 | `qs8/poswiata` | #22 | Poświata wokół ekranu (wył./słaba/średnia/mocna): strefy 16×9 z krawędzi obrazu, wygładzone ~0,25 s, warstwa pod ekranem; tylko shader i ciemny pokój; launcher (Ekran) i strona 2 panelu (`qs8_poswiata.{h,cpp}`, `qs8/Poswiata`). |
 | #24 | `qs8/poprawki-panelu` | #23 | Poprawki po przeglądzie dev.30: tłumaczenie jasności („Bright” → poświata „Vivid”), rysowane przyciski zamiast ≡ ↕ ↔ ↻, linia „Przytrzymaj” z wejściem na stronę 2, komunikat w wierszu stanu, Options tylko z padem przy Queście, wyścigi głębi neuronowej (`qs8/GlebiaNeuronowa`). |
+| #25 | `qs8/na-lezaco` | #24 | Tryb „na leżąco” (na plecach / na boku): ekran według pełnej orientacji i pozycji głowy; przytrzymanie LT / L2 w panelu albo wiersz na stronie 2; tylko bieżąca sesja (`qs8_lezaco.{h,cpp}`, `qs8/NaLezaco`). |
 
-**Merge (decyzja Damiana 2026-11-24):** po jego testach, **PR po PR, squash każdego** (#6 → #18, #20 → #24), żeby dało się cofnąć pojedynczą funkcję. Nie jeden squash całości. Po zmergowaniu #N: następną gałąź przenieść na nową bazę (`git rebase --onto qs8/main <stara-baza> <gałąź>`, stara baza = czubek gałęzi #N sprzed merge'u), `gh pr edit N+1 --base qs8/main`, dopiero potem merge. Konflikty spodziewane w `docs/` i tam, gdzie późniejszy PR poprawia wcześniejszy (#10→#17, #11→#17, #21/#23→#24). Po merge'ach kodu już przetestowanego nie trzeba nowego testu na Queście; jeśli rebase wymagał ręcznego rozwiązania konfliktu w kodzie, porównać wynik z czubkiem stosu (`git diff`).
+**Merge (decyzja Damiana 2026-11-24):** po jego testach, **PR po PR, squash każdego** (#6 → #18, #20 → #25), żeby dało się cofnąć pojedynczą funkcję. Nie jeden squash całości. Po zmergowaniu #N: sprawdzić, że `qs8/main` jest identyczny z czubkiem #N, `git merge -s ours qs8/main` na następnej gałęzi (`[skip ci]`, bez force-pusha; `rebase --onto` daje to samo), `gh pr edit N+1 --base qs8/main`, dopiero potem merge. Próba na kopii (2026-11-24, #6–#24): zero konfliktów; bez tej synchronizacji 13 z 18 PR-ów ma konflikty. **Squash z jawnym tytułem i opisem**: `[skip ci]` we wszystkich oprócz ostatniego (inaczej każdy merge wystawi w `dev` niepełny kod z wyższym numerem), a w ostatnim bez niego (domyślny opis zbiera komunikaty commitów i przeniósłby `[skip ci]`). `git revert` pojedynczego squasha na końcowym kodzie przeszedł czysto tylko dla #24; #15, #17, #20 mają konflikt tylko w docs, reszta w kodzie. Po merge'ach kodu już przetestowanego nie trzeba nowego testu na Queście; jeśli rebase wymagał ręcznego rozwiązania konfliktu w kodzie, porównać wynik z czubkiem stosu (`git diff`).
 
 ## Przetestowane na Queście (Damian)
 - dev.1: instalacja obok P5M, rejestracja, Tryb domowy (drugie konto PSN, DualSense przy PS5).
@@ -46,7 +47,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - dev.21 (częściowo, 2026-11-22): przytrzymanie X (A/B) działa. Pomiary: patrz „Ustalenia: 35 ms”.
 - dev.23 (2026-11-22): „Generowane klatki: do 60” w grze 30 fps — mniej artefaktów niż „do 120”, bardzo rzadkie szarpnięcie.
 - dev.25 (2026-11-22): poprawka rytmu „do 60” gorsza (artefakty, chrupnięcia przy szybkich obrotach; 120 i 180 Hz, 3D bez głębi neuronowej) → cofnięta w dev.26.
-- **Wyników dla dev.26–dev.31 nie ma.**
+- **Wyników dla dev.26–dev.32 nie ma** (Damian przetestuje wszystko razem).
 
 ## Tylko skompilowane / CI zielone, bez testu na sprzęcie
 - **#17:** brak zgubionych klatek po powrocie filtrów P5M (dev.22+). Pomiar „Zrównoważony 16–17 ms, 0 zgubionych” jest z dev.21.
@@ -54,6 +55,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - **#20:** „dev.31 (25)” w launcherze i karcie; `powrot_do`.
 - **#21:** strona 2 panelu; przełączanie na żywo (klatki, Hz, 3D, głębia neuronowa); krótkie Options / ≡ po puszczeniu.
 - **#22:** MQSR. **#23:** poświata — shadery GLSL kompilują się dopiero na Queście, orientacja góra/dół niepewna. **#24:** poprawki.
+- **#25:** cały tryb „na leżąco”. Matematyka i maszyna stanów sprawdzone na atrapie runtime'u (63 936 orientacji, Meta, utrata śledzenia). Niewiadome: czy i jak Horizon OS zmienia LOCAL przy centrowaniu Meta na leżąco, zachowanie po zdjęciu gogli, krótkie L2 / LT po puszczeniu.
 - Wcześniejsze: #6–#9, #12, #14, #16, reszta #11 (profili używano tylko podczas pomiarów dev.21).
 - „Zgłoś problem” przy niezalogowanym GitHubie (poprawka w #6).
 - **Tryb mobilny (pad przy Queście) nigdy nie był testowany w QS8.**
@@ -68,7 +70,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - **Strona 2 (#21):** wejście ≡ / Options (△ zajęte przez Peak HDR); bez bitrate'u (automatyczny bitrate P5M).
 - **Poświata (#23):** wył./słaba/średnia/mocna; tylko shader i ciemny pokój.
 - **Profile gier (odłożone):** obraz + ekran, bez bitrate'u, wbudowane zostają.
-- **Limit 3 plików P5M na PR:** #18 i #22 ruszyły po 4 (`CMakeLists.txt`, `tone_mapper.cpp`/`xr_session.cpp`, `VrStreamActivity.kt`, `LauncherActivity.kt`); dla #22 bez pytania Damiana. #23: zgoda na 4.
+- **Limit 3 plików P5M na PR:** #18 i #22 ruszyły po 4 (`CMakeLists.txt`, `tone_mapper.cpp`/`xr_session.cpp`, `VrStreamActivity.kt`, `LauncherActivity.kt`); dla #22 bez pytania Damiana. #23: zgoda na 4. Ponad 3 miały też #8 (9 plików), #14 i #16 (po 4) — zgody nie odnotowano. #25: 3.
 - **Keystore:** standardowy format debug Gradle (hasło/alias jak `debug.keystore`), sekret `P5M_DEBUG_KEYSTORE_BASE64`. Token `gh` ma od 2026-11-22 scope `workflow`; workflow zmieniony w #20.
 - **1F centrowanie:** `REFERENCE_SPACE_CHANGE_PENDING` (LOCAL) ustawia `recenter_orientation_` na yaw 0. **Preset Kino:** pomijany, gdy `p5m_vr_screen` ma jakikolwiek klucz.
 - **Updater:** release `dev` forka (`qs8/AktualizacjeDev.kt`), interwał 15 min.
@@ -83,6 +85,7 @@ Analizy (profile, jakość obrazu): `docs/QS8-ANALIZY.md`. Podglądy panelu: `do
 - **MQSR (#10 → wycofane w #17):** samo `QUALITY_SHARPENING` w Automatic gubiło klatki na dev.21; #17 przywraca zestaw P5M (`AUTO_LAYER_FILTER` + NORMAL/QUALITY_SHARPENING + NORMAL_SUPER_SAMPLING). Z #10 zostaje dziennik bitów warstwy.
 - **Profile (#11):** bez bitrate'u / auto bitrate'u / 3D (decyzja Damiana). Profile: Zrównoważony / Ultra płynność / Kino, wszystkie 120 Hz (Responsywność usunięta w #17: 180 Hz bez zysku). Aktywny profil rozpoznawany po wartościach (toneMapped, tenBit, frameExtrapolation, panel180, sharpness), ekran nie wchodzi do porównania; zmiana ostrości w panelu → „Custom”. Kino: `toneMapped=false` + `tenBit=true` (shader przez 10-bit).
 - **Przytrzymania w panelu (#12–#14, #21):** A / ✕ = rozmiar 1:1, X / □ = A/B, Y / △ = Peak HDR, ≡ (Touch) lub Options (pad przy Queście; na Touch kliknięta prawa gałka) = strona 2; próg 0,6 s; krótkie naciśnięcie wykonywane **po puszczeniu** (wcześniej natychmiast). UP pada dalej idzie do konsoli.
+- **Na leżąco (#25):** nie rusza matematyki P5M — warstwy i poza głowy (dźwięk) idą w przestrzeni LOCAL przesuniętej do pozy głowy; `recenter_orientation_` zostaje na powrót. „Na plecach”: do 45° w górę / w dół ekran równo względem pokoju, dalej góra ekranu = góra głowy; „na boku”: zawsze według głowy. Zdarzenie zmiany LOCAL = ponowne centrowanie od `changeTime`. Nie zapisywane; koniec sesji kasuje. Przytrzymanie LT / L2 (krótkie = kształt, po puszczeniu) działa na obu stronach panelu.
 - **A/B:** tylko filtry (kompozytor Off, CAS 0), tylko w sesji, bez zapisu.
 - **Peak HDR:** `Qs8Prefs.peakHdr` (domyślnie 1000 jak P5M), atomik w `qs8_hdr.cpp`, uniform `uPicoFonte` przy każdym rysowaniu.
 - **Tłumaczenia (#16):** tłumacz ekranów 2D w `P5MApp` (OnPreDraw na każdej aktywności, TextView bez EditText/Spanned) zamiast hooków w setkach miejsc; panel/paski przez `t()` w `PainelDeAjuste` (desenhar, cabecalho, secao, medidores, faixa). `conferir.py` pomija `qs8/Tlumaczenia.kt`.
@@ -126,15 +129,15 @@ Head-to-photon: direct 120 Hz 16–17 ms; direct 180 Hz 17 ms, 0 zgubionych; sha
 - Poświata: stan w `qs8_poswiata.cpp` jest statyczny (jeden wątek pętli klatek); sprzątanie po `tone_mapper_.Destroy()`.
 
 ## Pliki QS8
-- Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek, PanelZaawansowany, Mqsr, MqsrNative, Poswiata, PoswiataNative, GlebiaNeuronowa`.
-- Native: `qs8_touch.{h,cpp}`, `qs8_warstwa.h`, `qs8_hdr.{h,cpp}`, `qs8_klatki.{h,cpp}`, `qs8_mqsr.cpp`, `qs8_poswiata.{h,cpp}`. Zasoby: `res/mipmap-*/ic_qs8.png`. Patche: `0058` (rejestracja), `0059` (MaxCLL).
+- Kotlin `qs8/`: `Qs8Prefs, PresetKino, AktualizacjeDev, TouchNative, TouchMenu, LegendaTouch, TrybDomowy, Marka, RejestracjaPsn, Profile, Przytrzymanie, StanPanelu, PikselWPiksel, PorownanieAB, HdrNative, PeakHdr, Tlumaczenia, KlatkiNative, GenerowanieKlatek, PanelZaawansowany, Mqsr, MqsrNative, Poswiata, PoswiataNative, GlebiaNeuronowa, NaLezaco, NaLezacoNative`.
+- Native: `qs8_touch.{h,cpp}`, `qs8_warstwa.h`, `qs8_hdr.{h,cpp}`, `qs8_klatki.{h,cpp}`, `qs8_mqsr.cpp`, `qs8_poswiata.{h,cpp}`, `qs8_lezaco.{h,cpp}`. Zasoby: `res/mipmap-*/ic_qs8.png`. Patche: `0058` (rejestracja), `0059` (MaxCLL).
 - Punkty `// QS8:` / `# QS8:` (lista: `git grep -n "QS8:"`): `.github/workflows/build-apk.yml`, `app/build.gradle`, `AndroidManifest.xml`, `CaBundle.kt`, `DiagnosticActivity.kt`, `InstaladorDeAtualizacao.kt`, `Atualizacao.kt`, `LauncherActivity.kt`, `CrashCatcher.kt`, `Estilo.kt`, `PainelDeAjuste.kt`, `LogServer.kt`, `PsnLoginRelay.kt`, `PsnRemoteActivity.kt`, `VrStreamActivity.kt`, `xr_session.cpp`, `tone_mapper.cpp`, `CMakeLists.txt`, `tools/conferir.py`.
 
 ## Klucz podpisu
 - Lokalna kopia: `~/QuestStation8/klucze/qs8-debug.keystore` (poza repo). W GitHub: `P5M_DEBUG_KEYSTORE_BASE64`.
 
 ## Następne kroki (kolejność)
-1. Test Damiana na **dev.31** (jeden APK, cały stos). Kolejność: zwykła gra i krótkie ≡ → strona 2 → poświata (orientacja!) → MQSR bez głębi neuronowej → „do 60” z dziennikiem → wcześniejsze #6–#16 → tryb mobilny.
+1. Test Damiana na **dev.32** (jeden APK, cały stos). Kolejność: zwykła gra i krótkie ≡ → strona 2 → poświata (orientacja!) → MQSR bez głębi neuronowej → „do 60” z dziennikiem → na leżąco (lista w PR #25) → wcześniejsze #6–#16 → tryb mobilny.
 2. Poprawki po teście (małe PR-y na szczycie stosu). Bez nowych funkcji.
 3. Jedna próba `powrot_do` (uruchamia Damian albo za jego zgodą).
 4. Merge PR po PR (squash każdego), patrz „Merge”.

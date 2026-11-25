@@ -5,6 +5,7 @@
 #include "qs8_touch.h"  // QS8: kontrolery Questa -> panel ustawien (plan 1B).
 #include "qs8_warstwa.h"  // QS8: dziennik bitow filtrow warstwy wideo.
 #include "qs8_poswiata.h"  // QS8: poswiata wokol ekranu.
+#include "qs8_lezaco.h"  // QS8: tryb "na lezaco".
 
 #include <chrono>
 #include <algorithm>
@@ -940,7 +941,7 @@ bool XrVideoSession::UpdateHudLayer(XrCompositionLayerQuad &layer, float yaw,
 	// Mistura por alfa: o painel tem cantos e fundo translucido, e o Canvas do
 	// Android entrega alfa ja pre-multiplicado, que e o que o OpenXR assume.
 	layer.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
-	layer.space = app_space_;
+	layer.space = qs8::LezacoPrzestrzen(app_space_);  // QS8: tryb na lezaco; normalnie app_space_.
 	layer.eyeVisibility = XR_EYE_VISIBILITY_BOTH;
 	layer.subImage.swapchain = hud_swapchain_;
 	layer.subImage.imageRect.offset = XrOffset2Di{0, 0};
@@ -2015,6 +2016,7 @@ void XrVideoSession::PollEvents()
 					std::lock_guard<std::mutex> lock(params_mutex_);
 					recenter_orientation_ = XrQuaternionf{0.0f, 0.0f, 0.0f, 1.0f};
 					LOGI("QS8: system recenter, the screen follows it");
+					qs8::LezacoZmianaPrzestrzeni(change->changeTime);  // QS8: na lezaco ekran wraca przed glowe.
 				}
 				break;
 			}
@@ -2121,6 +2123,9 @@ void XrVideoSession::RenderFrame()
 		ContarFalhaDeQuadro("xrBeginFrame", begin_res);
 		return;
 	}
+	// QS8: tryb na lezaco (w trybie normalnym nic nie robi).
+	if(qs8::LezacoKlatka(session_, view_space_, app_space_, frame_state.predictedDisplayTime, YawFromQuat(recenter_orientation_)))
+		recenter_requested_ = true;
 
 	// Localizar as views todo frame e o que qualquer app OpenXR faz. A camada e
 	// posicionada no espaco LOCAL e nao por olho, entao a pose em si nao e
@@ -2132,7 +2137,7 @@ void XrVideoSession::RenderFrame()
 		XrViewLocateInfo locate{XR_TYPE_VIEW_LOCATE_INFO};
 		locate.viewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 		locate.displayTime = frame_state.predictedDisplayTime;
-		locate.space = app_space_;
+		locate.space = qs8::LezacoPrzestrzen(app_space_);  // QS8: glowa w tej samej przestrzeni co ekran (dzwiek).
 		XrViewState view_state{XR_TYPE_VIEW_STATE};
 		uint32_t located = 0;
 		xrLocateViews(session_, &locate, &view_state, view_count_, &located, views_.data());
@@ -2210,7 +2215,7 @@ void XrVideoSession::RenderFrame()
 				params.centralAngle * 0.5f);
 	}
 
-	if(recenter_requested_.exchange(false))
+	if(recenter_requested_.exchange(false) && !qs8::LezacoCentruj())  // QS8: w trybie na lezaco centruje qs8_lezaco.
 	{
 		XrSpaceLocation loc{XR_TYPE_SPACE_LOCATION};
 		if(XR_SUCCEEDED(xrLocateSpace(view_space_, app_space_, frame_state.predictedDisplayTime, &loc))
@@ -2381,7 +2386,7 @@ void XrVideoSession::RenderFrame()
 			cylinder.next = &image_layout;
 		}
 
-		cylinder.space = app_space_;
+		cylinder.space = qs8::LezacoPrzestrzen(app_space_);  // QS8: tryb na lezaco; normalnie app_space_.
 		cylinder.eyeVisibility = XR_EYE_VISIBILITY_BOTH;
 		cylinder.subImage.swapchain = video_swapchain_;
 		cylinder.subImage.imageRect.offset = XrOffset2Di{0, 0};
@@ -2684,6 +2689,7 @@ void XrVideoSession::Destroy()
 	view_space_ = XR_NULL_HANDLE;
 
 	qs8::TouchDestroy();  // QS8: action set kontrolerow Touch.
+	qs8::LezacoZniszcz();  // QS8: nowa sesja zaczyna w trybie normalnym.
 	if(session_ != XR_NULL_HANDLE)
 		xrDestroySession(session_);
 	session_ = XR_NULL_HANDLE;

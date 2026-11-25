@@ -131,7 +131,9 @@ object LegendaTouch
 			elementyStrony(padPrzyQuescie) to "page 2, Advanced",
 			listOf<Element>(Element.Litera("A")) to "size 1:1",
 			listOf<Element>(Element.Litera("X")) to "original / enhanced",
-			listOf<Element>(Element.Litera("Y")) to "HDR peak")
+			listOf<Element>(Element.Litera("Y")) to "HDR peak",
+			(if(padPrzyQuescie) listOf(Element.QuestNazwa("LT"), Element.Ukosnik, Element.Ps(PainelDeAjuste.Botao.Nome("L2")))
+				else listOf<Element>(Element.QuestNazwa("LT"))) to "lying down")
 			.map { (e, en) -> e to Tlumaczenia.t(en) }
 		val wstep = Tlumaczenia.t("Hold:")
 		val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(140, 188, 255); textSize = 20f }

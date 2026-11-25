@@ -241,6 +241,13 @@ błędu przewidywania w trakcie gry.
    FBO / swapchaina = poświata wyłączona na sesję z linią w dzienniku. Później (osobno): wykrywanie czarnych pasów,
    zabarwienie pokoju (passthrough) kolorem gry.
 
+## Tryb „na leżąco” (PR #25, 2026-11-25)
+
+Wyjątek od wstrzymania nowych funkcji. Centrowanie (włączenie trybu, A / ✕, przytrzymanie Meta) stawia ekran
+w osi wzroku, także na suficie, przodem do patrzącego, licząc od pozycji głowy. Warianty: na plecach i na boku
+(z przechyleniem głowy). Wejście: przytrzymanie LT / L2 w panelu (włącza i wyłącza) albo wiersz „Na leżąco” na
+stronie 2. Tylko bieżąca sesja. Tryb normalny: ta sama przestrzeń i te same wywołania co w P5M.
+
 ## Później (po pomiarach)
 
 inwentaryzacja i uzupełnienie

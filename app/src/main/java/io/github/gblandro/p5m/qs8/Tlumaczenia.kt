@@ -249,6 +249,18 @@ object Tlumaczenia
 		"Light around the screen in the colors of its edges, like Ambilight. Only in a dark room (room hidden or dimmed for cinema) and with the shader video path. No added latency." to
 				"Światło wokół ekranu w kolorach jego krawędzi, jak Ambilight. Tylko w ciemnym pokoju (pokój ukryty albo przyciemniony na kino) i przy ścieżce wideo shader. Bez dodatkowego opóźnienia.",
 		"NEXT CONNECTION" to "OD NASTĘPNEGO POŁĄCZENIA",
+		// Tryb na leżąco (qs8/NaLezaco).
+		"Lying down" to "Na leżąco",
+		"lying down" to "na leżąco",
+		"On back" to "Na plecach",
+		"On side" to "Na boku",
+		"Normal mode" to "Tryb normalny",
+		"Lying down: on back" to "Na leżąco: na plecach",
+		"Lying down: on side" to "Na leżąco: na boku",
+		"Look where you want the screen and recenter. Off returns to normal." to
+				"Spójrz, gdzie ma być ekran, i wycentruj. Wył. = tryb normalny.",
+		"The screen goes where you look, also up. This session only." to
+				"Ekran staje tam, gdzie patrzysz, także w górze. Tylko w tej sesji.",
 		"choose  ·" to "wybór  ·",
 		"change  ·" to "zmiana  ·",
 		"hold" to "przytrzymaj",

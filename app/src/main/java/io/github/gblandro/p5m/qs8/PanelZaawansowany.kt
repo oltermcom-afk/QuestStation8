@@ -186,7 +186,17 @@ class PanelZaawansowany(
 		Wiersz(2, "Emulated 3D",
 				{ wlacz(jakosc.syntheticStereo) },
 				{ Kiedy.NASTEPNE_POLACZENIE }, { null },
-				{ _ -> jakosc.syntheticStereo = !jakosc.syntheticStereo })
+				{ _ -> jakosc.syntheticStereo = !jakosc.syntheticStereo }),
+		// --- EKRAN (pod „od następnego połączenia”)
+		Wiersz(3, NaLezaco.NAZWA,
+				{ NaLezaco.nazwa() },
+				{ Kiedy.NA_ZYWO },
+				{ if(NaLezaco.wlaczony()) "Look where you want the screen and recenter. Off returns to normal."
+					else "The screen goes where you look, also up. This session only." },
+				{ k ->
+					NaLezaco.zmien(k)
+					stan.pokaz(NaLezaco.komunikat(), 1500L)
+				})
 	)
 
 	/** Koniec sesji, przed zatrzymaniem sieci głębi przez P5M. */
@@ -265,7 +275,7 @@ class PanelZaawansowany(
 	private val AVISO = Color.rgb(217, 184, 112)
 	private val ZYWO = Color.rgb(95, 211, 141)
 
-	private val SEKCJE = arrayOf("PICTURE", "3D", "NEXT CONNECTION")
+	private val SEKCJE = arrayOf("PICTURE", "3D", "NEXT CONNECTION", "SCREEN")
 
 	private fun t(s: String) = Tlumaczenia.t(s)
 
@@ -299,19 +309,21 @@ class PanelZaawansowany(
 		val szer = (w - 2 * margem - 2 * vao) / 3
 		val gora = 168f
 		val wys = 56f  // pięć wierszy w kolumnie „Obraz”
-		for(s in 0..2)
+		for(s in SEKCJE.indices)
 		{
-			val x0 = margem + s * (szer + vao)
+			// Czwarta sekcja ma jeden wiersz i stoi na dole trzeciej kolumny.
+			val x0 = margem + minOf(s, 2) * (szer + vao)
+			val y0 = if(s < 3) gora else gora + 4 * wys
 			p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 			p.textSize = 22f
 			p.color = CABECALHO
 			p.letterSpacing = 0.08f
-			c.drawText(t(SEKCJE[s]), x0, gora - 16f, p)
+			c.drawText(t(SEKCJE[s]), x0, y0 - 16f, p)
 			p.letterSpacing = 0f
 			for((j, wiersz) in wiersze.filter { it.sekcja == s }.withIndex())
 			{
 				val indeks = wiersze.indexOf(wiersz)
-				val y = gora + j * wys
+				val y = y0 + j * wys
 				val r = RectF(x0 - 14f, y + 4f, x0 + szer + 14f, y + wys - 4f)
 				val aktywny = indeks == wybrany
 				if(aktywny)

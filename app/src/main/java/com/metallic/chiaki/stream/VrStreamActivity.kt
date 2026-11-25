@@ -457,7 +457,7 @@ class VrStreamActivity: ComponentActivity()
 	// QS8: przytrzymanie w panelu (A / ✕ = rozmiar 1:1) i komunikaty panelu; logika w qs8/.
 	private val qs8Stan = io.github.gblandro.p5m.qs8.StanPanelu()
 	private val qs8Hold by lazy { io.github.gblandro.p5m.qs8.Przytrzymanie(handler, { handleAdjustKey(it) }, { qs8Dlugo(it) })
-			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X); dodaj(KeyEvent.KEYCODE_BUTTON_Y); dodaj(KeyEvent.KEYCODE_BUTTON_START) } }
+			.apply { dodaj(KeyEvent.KEYCODE_BUTTON_A); dodaj(KeyEvent.KEYCODE_BUTTON_X); dodaj(KeyEvent.KEYCODE_BUTTON_Y); dodaj(KeyEvent.KEYCODE_BUTTON_START); dodaj(KeyEvent.KEYCODE_BUTTON_L2) } }
 	private val qs8ZaawLeniwy = lazy { io.github.gblandro.p5m.qs8.PanelZaawansowany(this, qualityPrefs, qs8Stan, { xr }, { applyQualityParams() }, { input?.preferredGamepadId != null }, { trace(it) }) }
 	private val qs8Zaaw by qs8ZaawLeniwy
 	// Kontroler Questa: krótkie ≡ otwiera/zamyka panel (po puszczeniu), przytrzymanie = strona 2 „Zaawansowane”.
@@ -475,6 +475,12 @@ class VrStreamActivity: ComponentActivity()
 	{
 		if(!adjustMode) return
 		if(kod == KeyEvent.KEYCODE_BUTTON_START) { qs8Zaaw.przelacz(); renderHud(); return }  // Options: strona 2 „Zaawansowane”.
+		if(kod == KeyEvent.KEYCODE_BUTTON_L2)  // QS8: tryb na leżąco wł./wył. (obie strony panelu).
+		{
+			io.github.gblandro.p5m.qs8.NaLezaco.przelacz()
+			qs8Stan.pokaz(io.github.gblandro.p5m.qs8.NaLezaco.komunikat()); renderHud()
+			return
+		}
 		if(qs8Stan.strona2) return
 		if(kod == KeyEvent.KEYCODE_BUTTON_A) qs8Piksel.dopasuj()
 		if(kod == KeyEvent.KEYCODE_BUTTON_X) { io.github.gblandro.p5m.qs8.PorownanieAB.przelacz(qs8Stan, qualityPrefs) { trace(it) }; applyQualityParams(); renderHud() }
